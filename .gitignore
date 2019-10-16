@@ -1,7 +1,8 @@
 node_modules/
 __pycache__/
 *.pyc
-*.vsix
 
 .vscode/
 .idea/
+
+backend/server/static/
