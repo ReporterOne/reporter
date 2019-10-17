@@ -4,7 +4,8 @@
   "main": "frontend/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode development",
-    "start:dev": "webpack-dev-server"
+    "start:dev": "webpack-dev-server",
+    "start:docker": "docker-compose --file docker-compose.watch.yaml up --build"
   },
   "author": "Elran Shefer, Ariel Domb, Michael Tugy",
   "license": "MIT",
