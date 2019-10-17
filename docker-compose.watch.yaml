@@ -7,8 +7,12 @@ services:
       context: .
     ports:
       - 80:9010
+    volumes:
+      - ./:/app/
 
   backend:
     build:
       dockerfile: ./backend/Dockerfile
       context: .
+    volumes:
+      - ./:/app/
