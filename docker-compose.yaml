@@ -6,7 +6,7 @@ services:
       dockerfile: ./frontend/Dockerfile
       context: .
     ports:
-      - 80:9010
+      - 80:80
 
   backend:
     build:

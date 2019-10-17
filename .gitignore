@@ -5,4 +5,5 @@ __pycache__/
 .vscode/
 .idea/
 
-backend/server/static/
+dist/
+build/
