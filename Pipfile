@@ -6,7 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask = "*"
+fastapi = "*"
+uvicorn = "*"
+docker-compose = "*"
+jinja2 = "*"
+aiofiles = "*"
 
 [requires]
 python_version = "3.7"

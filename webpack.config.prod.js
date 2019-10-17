@@ -17,7 +17,7 @@ module.exports = {
         port: 9010,
         proxy: {
             '/api': {
-                target: 'http://0.0.0.0:8443',
+                target: 'http://backend:8443',
             },
         },
     },
