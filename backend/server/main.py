@@ -1,8 +1,19 @@
+"""Main backend API serving."""
+from pydantic import BaseModel
+
 from fastapi import FastAPI
 
-app = FastAPI(debug=True)
+
+class TestModel(BaseModel):
+    """Test model."""
+    test: int
+    test2: int
 
 
-@app.get("/api/test_me")
+app = FastAPI(debug=True)  # pylint: disable=invalid-name
+
+
+@app.get("/api/test_me", response_model=TestModel)
 async def index():
+    """Serve a test method."""
     return {"test": 123, "test2": 1234}
