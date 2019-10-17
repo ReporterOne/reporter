@@ -4,6 +4,7 @@
   "main": "frontend/index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode development",
+    "install": "npm install; pipenv install",
     "start:frontend": "webpack-dev-server",
     "start:backend": "cd backend/server/; uvicorn main:app --reload --host '0.0.0.0' --port 8443",
     "start:docker": "docker-compose --file docker-compose.watch.yaml up --build"
