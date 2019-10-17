@@ -15,11 +15,10 @@ module.exports = {
         host: "0.0.0.0",
         disableHostCheck: true,
         port: 9010,
-        proxy: {
-            '/api': {
-                target: 'http://backend:8443',
-            },
-        },
+        proxy: [{
+            context: ["/api", "/docs", "/openapi.json"],
+            target: 'http://backend:8443'
+        }],
     },
     entry: {
         'js/main': "./frontend/src/index.js"
