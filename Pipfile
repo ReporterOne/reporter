@@ -11,6 +11,7 @@ uvicorn = "*"
 docker-compose = "*"
 jinja2 = "*"
 aiofiles = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.7"
