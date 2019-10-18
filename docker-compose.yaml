@@ -3,12 +3,12 @@ version: '3'
 services:
   frontend:
     build:
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./app/frontend/Dockerfile
       context: .
     ports:
       - 80:80
 
   backend:
     build:
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./app/backend/Dockerfile
       context: .

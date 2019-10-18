@@ -9,8 +9,8 @@ RUN pip install pipenv
 COPY Pipfile* /app/
 RUN pipenv install --system
 
-ADD . .
+ADD ./app/backend ./app/backend/
 
-WORKDIR /app/backend/server
+WORKDIR /app/app/backend/server
 
 CMD uvicorn main:app --host 0.0.0.0 --port 8443

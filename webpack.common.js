@@ -1,18 +1,22 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin'); 
 
+const frontend = path.resolve(__dirname, 'app', 'frontend');
+const dist = path.resolve(frontend, 'dist');
+const src = path.resolve(frontend, 'src');
+
 module.exports = {
     output: {
         library: 'one_report_web',
         filename: "bundle.js",
-        path: path.resolve(__dirname, 'frontend/dist')
+        path: dist 
     },
     entry: {
-        'js/main': "./frontend/src/index.js"
+        'js/main': path.resolve(src, 'index.js')
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'frontend/src/', 'index.html')
+            template: path.resolve(src, 'index.html')
         })
     ],
     module: {

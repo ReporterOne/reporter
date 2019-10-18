@@ -7,7 +7,7 @@ module.exports = merge(common, {
     devtool: "eval-source-map",
     mode: 'development',
     devServer: {
-        contentBase: path.join(__dirname, 'frontend/dist'),
+        contentBase: common.output.path,
         watchContentBase: true,
         host: "0.0.0.0",
         disableHostCheck: true,
