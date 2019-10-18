@@ -4,7 +4,7 @@
   "main": "frontend/index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "install": "npm install; pipenv install",
+    "install": "npm install; pipenv install --dev",
     "start:frontend": "webpack-dev-server --config webpack.dev.js",
     "start:backend": "cd backend/server/; uvicorn main:app --reload --host '0.0.0.0' --port 8443"
   },

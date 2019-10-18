@@ -12,6 +12,7 @@ module.exports = merge(common, {
         host: "0.0.0.0",
         disableHostCheck: true,
         port: 8000,
+        hot: true,
         proxy: [{
             context: ["/api", "/docs", "/openapi.json", "/redoc"],
             target: 'http://0.0.0.0:8443'
