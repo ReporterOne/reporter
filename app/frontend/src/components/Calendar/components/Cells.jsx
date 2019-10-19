@@ -82,7 +82,7 @@ const Cells = (props) => {
         rows.push(
             <Row key={day}> {days} </Row>
             );
-        console.log(rows)
+        
         days = [];
     }
     return <Container >{rows}</Container>;

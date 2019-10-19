@@ -34,7 +34,6 @@ const Days = (props) => {
         flex-direction: row;
         flex-wrap: wrap;
         text-align:center;
-        width: 100%;
     `;
     const days = [];
     const daysArray = { 1: 's', 2: 'm', 3: 't', 4: 'w', 5: 't',6:'f',7:'s' }

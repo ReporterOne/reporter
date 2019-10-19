@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import styled from 'styled-components';
-import GlobalStyle from '~/components/GlobalStyles';
-
+import GlobalStyle from '~/components/GlobalStyles.js';
+import Calender from '~/components/Calendar'
 
 const App = (props) => {
   const Container = styled.div`
@@ -19,6 +19,7 @@ const App = (props) => {
           <Switch>
             <Route path="/">
               {/* <Dashboard /> */}
+              <Calender />
             </Route>
           </Switch>
         </Router>
