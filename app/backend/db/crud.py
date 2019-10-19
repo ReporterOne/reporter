@@ -17,7 +17,6 @@ DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)
-s = Session()
 
 
 @contextmanager
@@ -35,11 +34,12 @@ def transaction():
 
 
 def recreate_database():
-    models.Base.metadata.drop_all(engine)
-    models.Base.metadata.create_all(engine)
-    mador = models.Mador(name='pie')
-    mador_settings = models.MadorSettings(
-        mador=mador, key='default_reminder_time', value='08:00', type='time')
+    with transaction() as s:
+        models.Base.metadata.drop_all(engine)
+        models.Base.metadata.create_all(engine)
+        mador = models.Mador(name='pie')
+        mador_settings = models.MadorSettings(
+            mador=mador, key='default_reminder_time', value='08:00', type='time')
 
-    s.add_all([mador, mador_settings])
-    s.commit()
+        s.add_all([mador, mador_settings])
+        s.commit()
