@@ -1,7 +1,8 @@
+from sqlalchemy.dialects.postgresql import TIME
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Enum, String, Column, Integer, ForeignKey
 
-from models import Base
+from .models import Base
 
 
 class Settings(Base):

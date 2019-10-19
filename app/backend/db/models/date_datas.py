@@ -1,8 +1,9 @@
 from datetime import date
+
 from sqlalchemy.orm import relationship
 from sqlalchemy import Integer, String, Column, ForeignKey, Date, Enum
 
-from models import Base
+from .models import Base
 
 
 class Reason(Base):

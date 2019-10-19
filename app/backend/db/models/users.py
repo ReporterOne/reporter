@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import TIME
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Integer, String, Column, ForeignKey, Date, Enum, select
 
@@ -18,7 +19,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, unique=True)
     commander_id = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'), index=True)
     soldiers = relationship('User', backref=backref('commander', remote_side=[id]))
-    reminder_time = Column(String)
+    reminder_time = Column(TIME)
     last_reminded_date = Column(Date)
     english_name = Column(String)
     type = Column(Enum('facebook', 'google', 'local', name='user_type'), default='local')

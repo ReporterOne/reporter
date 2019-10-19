@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String, Column, ForeignKey, Table
 
-from models import Base
+from .models import Base
 
 
 permission_map = Table('permissions_map', Base.metadata,
