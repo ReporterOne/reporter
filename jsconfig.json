@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "allowSyntheticDefaultImports": false,
-    "baseUrl": "./",
+    "baseUrl": "./app/frontend/src/",
+    "module": "commonjs",
+    "jsx": "react",
     "paths": {
-      "~/*": [
-        "app/frontend/src/*"
-      ],
       "@/*": [
-        "app/frontend/src/screens/*"
+        "screens/*"
+      ],
+      "~/*": [
+        "*"
       ]
     }
   },

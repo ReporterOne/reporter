@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import {GlobalStyle, Container} from '~/components/common';
-import {Dashboard} from '~/screens';
+import { GlobalStyle, Container } from '~/components/common';
+import { Dashboard } from '~/screens';
 
 
 const App = (props) => {
