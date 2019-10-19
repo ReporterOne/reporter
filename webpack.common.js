@@ -1,5 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin'); 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 
 const frontend = path.resolve(__dirname, 'app', 'frontend');
 const dist = path.resolve(frontend, 'dist');
@@ -9,33 +11,30 @@ module.exports = {
     output: {
         library: 'one_report_web',
         filename: "bundle.js",
-        path: dist 
+        path: dist
     },
     entry: {
         'js/main': path.resolve(src, 'index.js')
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            template: path.resolve(src, 'index.html')
+            template: path.resolve(src, 'index.html'),
         })
     ],
     module: {
         rules: [
             {
                 test: /\.jsx?/,
-                loader: "babel-loader"
-            },
-            {
-                test: /\.html$/,
-                loader: 'html-loader'
+                loader: "babel-loader",
             },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loader: "file-loader",
                 options: {
                     name: "[name].[ext]",
-                    outputPath: "img/",
-                    publicPath: "static/img/"
+                    outputPath: "static/img/",
+                    publicPath: "/static/img/"
                 }
             },
             {
@@ -43,8 +42,8 @@ module.exports = {
                 loader: "file-loader",
                 options: {
                     name: "[name].[ext]",
-                    outputPath: "font/",
-                    publicPath: "static/font/"
+                    outputPath: "static/font/",
+                    publicPath: "/static/font/"
                 }
             },
             {
