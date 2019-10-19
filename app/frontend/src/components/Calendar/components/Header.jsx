@@ -17,11 +17,11 @@ const Header = (props) => {
     `;
     const MonthName = styled.span`
         text-transform: uppercase;
-        font-size: 10px;
+        font-size: 75%;
         font-weight: 600;
     `;
     const YearNumber = styled.span`
-        font-size: 8px;
+        font-size: 65%;
         font-weight: 600;
     `;
 

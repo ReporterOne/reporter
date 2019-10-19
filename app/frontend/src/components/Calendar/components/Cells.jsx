@@ -39,16 +39,21 @@ const Cells = (props) => {
         flex-wrap: wrap;
         border-color:red;
         border-width:1px;
-
-        /* flex-basis: calc(100%/7); */
-        /* width: calc(100%/7); */
         align-items: center;
         justify-content: center;
     `;
-    const DateNumber = styled.span`
-        font-size: 8px;
+    
+    const DateNumberNotMonth = styled.span`
+        font-size: 65%;
         line-height: 1;
-        font-weight: 700;
+        font-weight: 600;
+        `;
+    const DateNumber = styled.span`
+        font-size: 65%;
+        line-height: 1;
+        font-weight: 600;
+        opacity: 0.2;
+
     `;
     const monthStart = startOfMonth(props.currentDate);
     const monthEnd = endOfMonth(monthStart);
@@ -67,7 +72,9 @@ const Cells = (props) => {
                 key={day}
                 onClick={() => props.onDateClick(cloneDay)}
                 >
-                    <DateNumber>{formattedDate}</DateNumber>
+                    {isSameMonth(day,monthStart) ? 
+                    <DateNumberNotMonth>{formattedDate}</DateNumberNotMonth> :
+                    <DateNumber>{formattedDate}</DateNumber>}
                 </Column>
             );
             day = addDays(day, 1);
