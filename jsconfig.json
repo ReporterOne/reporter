@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": [
+        "app/frontend/src/*"
+      ]
+    }
+  },
+  "exclude": ["node_modules"]
+}

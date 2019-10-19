@@ -1,23 +1,30 @@
-import React, {Fragment} from 'react';
-
-import Calendar from './components/Calendar/Calendar.jsx';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import styled from 'styled-components';
-import GlobalStyle from './components/GlobalStyles.js';
+import GlobalStyle from '~/components/GlobalStyles';
+
 
 const App = (props) => {
-
-    const Div = styled.div`
+  const Container = styled.div`
     display: flex;
-    flex:1;
+    flex-direction: column;
+    flex: 1;
     `;
-    return (
-        <> 
-            <GlobalStyle />   
-                <Div>
-                    <Calendar />
-                </Div>
-        </>
-    );
+
+  return (
+    <>
+      <GlobalStyle />
+      <Container>
+        <Router>
+          <Switch>
+            <Route path="/">
+              {/* <Dashboard /> */}
+            </Route>
+          </Switch>
+        </Router>
+      </Container>
+    </>
+  );
 }
 
 export default App;

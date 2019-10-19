@@ -22,6 +22,11 @@ module.exports = {
             template: path.resolve(src, 'index.html'),
         })
     ],
+    resolve: {
+      alias: {
+        "~": path.resolve(src)
+      }
+    },
     module: {
         rules: [
             {
