@@ -23,13 +23,11 @@ import styled from 'styled-components';
 
 const Calendar = (props) => {
     const Container = styled.div`
-        ${'' /* width: 90%; */}
         flex:1;
-        flex-grow:1;
         background: white;
-        height: auto;
         margin:0 auto;
-        flex-direction:row;
+        display:flex;
+        flex-direction:column;
     `;
     const date = new Date()
     const [currentDate, setCurrentDate] = useState(date);

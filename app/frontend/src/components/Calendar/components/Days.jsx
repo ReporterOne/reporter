@@ -23,14 +23,13 @@ const Days = (props) => {
         font-weight: 600;
         color: gray;
         font-size: 8px;
-        flex-grow:1;
+        flex:1;
         padding: .75em 0;
         border-bottom: 1px solid lightgray;
     `;
     const Container = styled.div`
         margin: 0;
         padding: 0;
-        flex:1;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;

@@ -21,6 +21,7 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         display: flex;
+        flex:1;
         flex-direction: column;
     }
 

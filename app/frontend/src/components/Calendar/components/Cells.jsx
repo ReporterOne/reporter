@@ -20,24 +20,28 @@ const CellsDateFormat = "d";
 const Cells = (props) => {
     const Container = styled.div`
         flex: 1 ;
-        flex-grow:1;
         display: flex;
         flex-wrap: wrap;
+        flex-direction:column;
     `;
     const Row = styled.div`
         margin: 0;
         padding: 0;
         display: flex;
-        flex-direction: row;
+        flex-direction:row;
         flex-wrap: wrap;
+        flex:1;
         width: 100%;
     `;
     const Column = styled.div`
-        position: relative;
         display: flex;
         flex:1;
-        flex-basis: calc(100%/7);
-        width: calc(100%/7);
+        flex-wrap: wrap;
+        border-color:red;
+        border-width:1px;
+
+        /* flex-basis: calc(100%/7); */
+        /* width: calc(100%/7); */
         align-items: center;
         justify-content: center;
     `;
@@ -70,7 +74,8 @@ const Cells = (props) => {
         }
         rows.push(
             <Row key={day}> {days} </Row>
-        );
+            );
+        console.log(rows)
         days = [];
     }
     return <Container >{rows}</Container>;

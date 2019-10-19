@@ -10,8 +10,7 @@ const YearFormat = "yyyy";
 
 const Header = (props) => {
     
-    const HeaderCell = styled.div`
-        flex:1;
+    const Container = styled.div`
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -27,10 +26,10 @@ const Header = (props) => {
     `;
 
     return (
-        <HeaderCell>
+        <Container>
                 <MonthName> {format(props.currentDate,MonthFormat)} </MonthName>
                 <YearNumber> {format(props.currentDate,YearFormat)} </YearNumber>            
-        </HeaderCell>
+        </Container>
     );
 };
 
