@@ -1,14 +1,29 @@
 version: '3'
 
 services:
-  frontend:
-    build:
-      dockerfile: ./app/frontend/Dockerfile
-      context: .
+  db:
+    image: postgres:11.5
+    environment:
+      POSTGRES_PASSWORD: one_report
+      POSTGRES_USER: one_report
+      POSTGRES_DB: one_report
     ports:
-      - 80:80
+      - 15432:5432
 
   backend:
     build:
       dockerfile: ./app/backend/Dockerfile
       context: .
+    depends_on:
+      - db
+    environment:
+      ONE_REPORT_PORT: 15432
+
+  frontend:
+    build:
+      dockerfile: ./app/frontend/Dockerfile
+      context: .
+    depends_on:
+      - backend
+    ports:
+      - 80:80

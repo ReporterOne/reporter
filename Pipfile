@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 pycodestyle = "*"
+ipdb = "*"
+autopep8 = "*"
 
 [packages]
 fastapi = "*"
@@ -13,6 +15,9 @@ docker-compose = "*"
 jinja2 = "*"
 aiofiles = "*"
 pylint = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
+alembic = "*"
 
 [requires]
 python_version = "3.7"
