@@ -4,7 +4,7 @@
   "main": "frontend/index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "install": "npm install; pipenv install --dev",
+    "requirements": "npm install; pipenv install --dev",
     "start:frontend": "webpack-dev-server --config webpack.dev.js",
     "start:backend": "cd app/backend/; uvicorn server.main:app --reload --host '0.0.0.0' --port 8443",
     "start:db": "docker-compose up db",
@@ -48,6 +48,8 @@
     "react-dom": "^16.10.2",
     "react-material-ripple": "^0.1.1",
     "react-reveal": "^1.2.2",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
     "react-sticky": "^6.0.3",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.4.0",
