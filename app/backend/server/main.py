@@ -3,9 +3,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from fastapi import FastAPI
-from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
-from starlette.templating import Jinja2Templates
 
 
 class TestModel(BaseModel):
