@@ -24,7 +24,8 @@ module.exports = {
     ],
     resolve: {
       alias: {
-        "~": path.resolve(src)
+        "~": path.resolve(src),
+        "@": path.resolve(src, 'screens'),
       }
     },
     module: {

@@ -6,6 +6,9 @@
     "paths": {
       "~/*": [
         "app/frontend/src/*"
+      ],
+      "@/*": [
+        "app/frontend/src/screens/*"
       ]
     }
   },

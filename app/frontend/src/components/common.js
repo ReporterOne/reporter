@@ -1,5 +1,6 @@
+import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
-import Rubik from '../assets/fonts/Rubik/Rubik-Black.ttf';
+import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
 
 
 const GlobalStyle = createGlobalStyle`
@@ -21,4 +22,12 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-export default GlobalStyle;
+
+const Container = styled.div`
+  display: flex;
+  flex: ${props => (props.flex || props.stretched ? 1 : 0)};
+  flex-direction: ${props => (props.row ? 'row' : 'column')};
+`;
+
+
+export {GlobalStyle, Container,};
