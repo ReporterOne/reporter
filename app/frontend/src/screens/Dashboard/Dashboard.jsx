@@ -1,13 +1,20 @@
 import React from "react";
 
-import { Container } from '~/components/common';
+import styled from 'styled-components';
+import { Container, RoundedContainer, theme } from '~/components/common';
+
 
 
 const Dashboard = (props) => {
 
   return (
     <Container stretched>
-        test
+        <Container flex={2} style={{padding: '15px'}}>
+          test
+        </Container>
+        <RoundedContainer flex={4} shadow={5} background={theme.cards}>
+          Michael Tugendhaft
+        </RoundedContainer>
     </Container>
   );
 }

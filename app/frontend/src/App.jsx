@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import { GlobalStyle, Container } from '~/components/common';
-import Dashboard from '@/Dashboard';
+import Menu from '~/components/Menu'
+import { GlobalStyle, Container, theme } from '~/components/common';
+import { Dashboard } from '~/screens';
 
 
 const App = (props) => {
@@ -9,7 +10,8 @@ const App = (props) => {
   return (
     <>
       <GlobalStyle />
-      <Container stretched>
+      <Container stretched background={theme.main}>
+        <Menu/>
         <Router>
           <Switch>
             <Route path="/">
