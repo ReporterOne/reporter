@@ -24,7 +24,7 @@ module.exports = {
     ],
     resolve: {
       alias: {
-        Root: path.resolve(src)
+        "~": path.resolve(src)
       }
     },
     module: {

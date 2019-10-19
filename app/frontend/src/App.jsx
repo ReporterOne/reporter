@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import styled from 'styled-components';
-import GlobalStyle from 'Root/components/GlobalStyles';
+import GlobalStyle from '~/components/GlobalStyles';
 
 
 const App = (props) => {
