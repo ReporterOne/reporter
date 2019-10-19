@@ -1,0 +1,17 @@
+title: Date
+type: object
+properties:
+  date:
+    type: string
+  user_id:
+    type: integer
+  reason:
+    type: string
+  type:
+    type: string
+    enum:
+      - required
+      - not_required
+      - not_important
+required:
+  - date
