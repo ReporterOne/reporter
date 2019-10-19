@@ -3,7 +3,7 @@ from sqlalchemy import Integer, String, Column, ForeignKey, Date, Enum, select
 
 from .models import Base
 from .settings import MadorSettings
-from .permissions import Permission, permission_map
+from .permissions import permission_map
 
 
 class Mador(Base):
