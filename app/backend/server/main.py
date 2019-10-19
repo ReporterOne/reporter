@@ -30,4 +30,3 @@ async def test_me():
 @app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
