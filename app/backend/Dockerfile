@@ -4,6 +4,7 @@ WORKDIR /app
 
 RUN apk --update add openssl ca-certificates py-openssl wget
 RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev build-base libxslt-dev
+RUN apk --update add postgresql-dev
 
 RUN pip install pipenv
 COPY Pipfile* /app/

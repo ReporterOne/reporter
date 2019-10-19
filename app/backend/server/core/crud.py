@@ -7,7 +7,9 @@ from models import *  # pylint: disable=wildcard-import, unused-wildcard-import
 username = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
 password = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
 host = os.environ.get('ONE_REPORT_HOST', 'localhost')
-DATABASE_URI = f'postgres+psycopg2://{username}:{password}@{host}:5432/one_report'
+db = os.environ.get('ONE_REPORT_DB', 'one_report')
+port = os.environ.get('ONE_REPORT_PORT', '5432')
+DATABASE_URI = f'postgres+psycopg2://{username}:{password}@{host}:{port}/{db}'
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)
