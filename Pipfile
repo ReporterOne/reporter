@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pycodestyle = "*"
 ipdb = "*"
+autopep8 = "*"
 
 [packages]
 fastapi = "*"
