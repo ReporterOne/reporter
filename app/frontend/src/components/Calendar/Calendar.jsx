@@ -18,6 +18,7 @@ import {
     Days,
     Cells 
 } from './components';
+import {Swipe, Position} from "react-swipe-component"
 import styled from 'styled-components';
 
 
@@ -43,9 +44,14 @@ const Calendar = (props) => {
     }
     return (
         <Container >
-            <Header currentDate={currentDate} selectedDate={selectedDate} nextMonth={nextMonth} prevMonth={prevMonth}/>
+        <Swipe 
+        node='Container'
+        onSwipedRight={nextMonth()}
+        onSwipedLeft={prevMonth()}>
+            <Header currentDate={currentDate} selectedDate={selectedDate} />
             <Days currentDate={currentDate} />
             <Cells currentDate={currentDate} onDateClick={onDateClick}/>
+        </Swipe>
         </Container>
     );
 };
