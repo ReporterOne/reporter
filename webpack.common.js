@@ -10,7 +10,7 @@ const src = path.resolve(frontend, 'src');
 module.exports = {
     output: {
         library: 'one_report_web',
-        filename: "bundle.js",
+        filename: "static/bundle.js",
         path: dist
     },
     entry: {

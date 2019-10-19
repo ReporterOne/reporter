@@ -21,7 +21,9 @@ COPY Pipfile* /app/
 RUN pipenv install --system
 
 ADD ./app/backend ./app/backend/
-COPY --from=build-stage /app/app/frontend/dist/ /app/app/backend/server/static/
+COPY --from=build-stage /app/app/frontend/dist/static/ /app/app/backend/server/static/
+COPY --from=build-stage /app/app/frontend/dist/index.html /app/app/backend/server/templates/
+
 
 WORKDIR /app/app/backend/
 
