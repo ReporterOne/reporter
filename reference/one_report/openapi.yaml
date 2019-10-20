@@ -2,14 +2,21 @@ openapi: 3.0.0
 info:
   title: one_report v1
   version: '1.0'
+  description: API For TDoh1 application.
+  contact:
+    name: TeamTash
+  license:
+    name: MIT
 servers:
   - url: 'http://localhost:3000'
 paths:
   /api/v1/dates_status:
     get:
-      summary: Get dates status.
+      summary: Get date status.
       tags:
         - Personal
+        - Operator
+        - Admin
         - Commander
       responses:
         '200':
@@ -27,23 +34,145 @@ paths:
           in: query
           name: start
           required: true
+          description: 'example: 03/01/1997'
         - schema:
             type: string
           in: query
           name: end
+          description: 'example: 03/01/2117'
         - schema:
             type: integer
           in: query
           name: user_id
+          description: id of user
       security:
         - Token: []
-      operationId: getDateStatus
+      operationId: getDatesStatus
     parameters: []
     post:
-      summary: ''
+      summary: Post status for date.
+      responses:
+        '201':
+          description: Created
+      operationId: postDatesStatus
+      description: Post status for date.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/date.v1.yaml
+            examples: {}
+        description: ''
+      security:
+        - Token: []
+      tags:
+        - Personal
+        - commander
+        - Operator
+        - Admin
+    delete:
+      summary: "Delete date's status."
       responses:
         '200':
           description: OK
+      description: "Delete date's status."
+      operationId: deleteDatesStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/date.v1.yaml
+        description: ''
+      security:
+        - Token: []
+      tags:
+        - Personal
+        - Admin
+        - commander
+  /api/v1/users:
+    get:
+      summary: Get Users.
+      tags:
+        - Personal
+        - commander
+        - Operator
+        - Admin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/user.v1.yaml
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      security:
+        - Token: []
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: mador
+          description: Users of specific mador
+        - schema:
+            type: integer
+          in: query
+          name: user_id
+          description: id_of specific_user
+      description: Get Users.
+      operationId: getUsers
+    parameters: []
+    post:
+      summary: Creat new User.
+      responses:
+        '201':
+          description: Created
+      description: Creat new User.
+      operationId: postUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/userauthkeys.v1.yaml
+      tags:
+        - Personal
+    put:
+      summary: Creat new User.
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/user.v1.yaml
+      operationId: putUsers
+      description: Creat new User.
+      tags:
+        - Personal
+        - commander
+        - Operator
+        - Admin
+    delete:
+      summary: Delete specific User.
+      responses:
+        '200':
+          description: OK
+      description: Delete specific User.
+      operationId: deleteUsers
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ../common/models/user.v1.yaml
+      tags:
+        - Personal
+        - Admin
 components:
   schemas: {}
   securitySchemes:

@@ -1,0 +1,19 @@
+title: UserAuthKeys
+type: object
+properties:
+  username:
+    type: string
+  password:
+    type: string
+    format: password
+    minLength: 8
+  type:
+    type: string
+    enum:
+      - facebook
+      - google
+      - local
+required:
+  - username
+  - password
+  - type

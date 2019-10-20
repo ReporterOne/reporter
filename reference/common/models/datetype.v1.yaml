@@ -1,5 +1,0 @@
-title: DateType
-type: object
-properties:
-  id:
-    type: string
