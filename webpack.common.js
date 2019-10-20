@@ -1,4 +1,5 @@
 const path = require("path");
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin'); 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -20,7 +21,10 @@ module.exports = {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.resolve(src, 'index.html'),
-        })
+        }),
+        new CopyPlugin([
+          { from: path.resolve(src, 'manifest.json'), to: path.resolve(dist, 'static') }
+        ])
     ],
     resolve: {
       alias: {
@@ -31,7 +35,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx?/,
+                test: /\.jsx?$/,
                 loader: "babel-loader",
             },
             {

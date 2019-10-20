@@ -13,7 +13,7 @@ const Dashboard = (props) => {
           test
         </Container>
         <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-          Michael Tugendhaft
+          Michael Tugendhaft, 123
         </RoundedContainer>
     </Container>
   );

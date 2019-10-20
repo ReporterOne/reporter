@@ -1,0 +1,7 @@
+{
+  "short_name": "One Report App",
+  "name": "One Report Applicaion",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}
