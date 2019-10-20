@@ -3,6 +3,7 @@ import {
     startOfWeek,
     format,
     addDays,
+    addWeeks,
     startOfMonth,
     endOfMonth,
     endOfWeek,
@@ -58,7 +59,7 @@ const Cells = (props) => {
     const monthStart = startOfMonth(props.currentDate);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
+    const endDate = endOfWeek(addWeeks(monthEnd,1));
     const rows = [];
     let days = [];
     let day = startDate;
