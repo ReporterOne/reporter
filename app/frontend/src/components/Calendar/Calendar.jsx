@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import {
-    startOfWeek,
-    format,
-    addDays,
-    startOfMonth,
-    endOfMonth,
-    endOfWeek,
-    isSameMonth,
-    isSameDay,
-    parse,
+
     subMonths,
     addMonths,
 
@@ -19,6 +11,8 @@ import {
     Cells 
 } from './components';
 import styled from 'styled-components';
+import { Swipeable } from 'react-swipeable';
+
 
 
 const Calendar = (props) => {
@@ -42,12 +36,13 @@ const Calendar = (props) => {
     }
 
     return (
-        <Container >
-        
+        // <Container >
+        <Swipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} nodeName={Container} >
             <Header currentDate={currentDate} selectedDate={selectedDate} />
             <Days currentDate={currentDate} />
             <Cells currentDate={currentDate} onDateClick={onDateClick}/>
-        </Container>
+        </Swipeable>
+        // </Container>
         
     );
 };
