@@ -36,13 +36,11 @@ const Calendar = (props) => {
     }
 
     return (
-        // <Container >
         <Swipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} nodeName={Container} >
             <Header currentDate={currentDate} selectedDate={selectedDate} />
             <Days currentDate={currentDate} />
             <Cells currentDate={currentDate} onDateClick={onDateClick}/>
         </Swipeable>
-        // </Container>
         
     );
 };
