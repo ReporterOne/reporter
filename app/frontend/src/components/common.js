@@ -1,14 +1,16 @@
 import styled from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
 
 
-const theme = {
-  main: "#4725a5",
-  cards: "white"
+export const theme = {
+  main: '#4725a5',
+  drawer: '#353535',
+  cards: 'white',
+  drawerSpeed: 0.2
 }
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
     @font-face {
       font-family: 'Rubik', sans-serif;
       src: url(${Rubik}) format("truetype");
@@ -22,41 +24,39 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         display: flex;
-        flex-direction: column;
         flex: 1;
         font-family: 'Assistant', sans-serif;
+        overflow-x: hidden;
     }
 `;
 
-const Icon = styled.img`
+export const Icon = styled.img`
   width: 25px;
   height: 25px;
 `;
 
-const Container = styled.div`
-  display: flex;
+export const Container = styled.div`
+  position: relative;
+  display: ${props => (props.block ? 'block' : 'flex')};
   flex: ${props => (props.flex || (props.stretched ? 1 : 0))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
 `;
 
-const shadows = [
+export const shadows = [
   undefined,
-  "0 0px 3px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.24)",
-  "0 0px 6px rgba(0,0,0,0.16), 0 0px 6px rgba(0,0,0,0.23)",
-  "0 0px 20px rgba(0,0,0,0.19), 0 0px 6px rgba(0,0,0,0.23)",
-  "0 0px 28px rgba(0,0,0,0.25), 0 0px 10px rgba(0,0,0,0.22)",
-  "0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22)"
+  css`box-shadow: 0 0px 3px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.24);`,
+  css`box-shadow: 0 0px 6px rgba(0,0,0,0.16), 0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: 0 0px 20px rgba(0,0,0,0.19), 0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: 0 0px 28px rgba(0,0,0,0.25), 0 0px 10px rgba(0,0,0,0.22);`,
+  css`box-shadow: 0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);`
 ];
 
-const DEFAULT_RADIUS = 30;
+export const DEFAULT_RADIUS = 30;
 
-const RoundedContainer = styled(Container)`
+export const RoundedContainer = styled(Container)`
   border-top-left-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   border-top-right-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   padding: ${props => props.padding || '20px 15px'};
-  box-shadow: ${props => { const i = props.shadow || 1; return shadows[i]; }}  
+  ${props => { const i = props.shadow || 1; return shadows[i]; }}
 `;
-
-
-export {GlobalStyle, Container, RoundedContainer, theme, Icon};

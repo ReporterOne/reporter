@@ -25,10 +25,10 @@ const Calendar = (props) => {
     const date = new Date()
     const [currentDate, setCurrentDate] = useState(date);
     const [selectedDate, setSelectedDate] = useState(date);
-    const nextMonth = () => {
+    const nextMonth = (e) => {
         setCurrentDate(addMonths(currentDate, 1));
     };
-    const prevMonth = () => {
+    const prevMonth = (e) => {
         setCurrentDate(subMonths(currentDate, 1));
     };
     const onDateClick = day => {
