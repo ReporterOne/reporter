@@ -42,8 +42,16 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader'
+        test: /\.inline.svg$/,
+        loader: 'react-svg-loader'
+      },
+      {
+        test: /^(?!.*\.inline\.svg$).*\.svg$/,
+        loader: 'svg-url-loader',
+        options: {
+          limit: 10000,
+          name: 'static/[name].[ext]'
+        }
       },
       {
         test: /\.(jpe?g|png|gif)$/i,

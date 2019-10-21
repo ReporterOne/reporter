@@ -18,7 +18,7 @@ const Body = styled(Container)`
 `;
 
 
-export const Drawer = ({children, onDrag = undefined}) => {
+export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onDragStart = undefined, onToggle = undefined}) => {
   const [drawer, changeDrawer] = useState({
     isOpen: false,
     pose: 'close',
@@ -28,21 +28,36 @@ export const Drawer = ({children, onDrag = undefined}) => {
   });
 
   const toggleDrawer = useCallback(() => {
-    changeDrawer({
+    const newDrawer = {
       isOpen: !drawer.isOpen,
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
       position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
-    })
-  }, []);
+    };
+    changeDrawer(newDrawer);
+    console.log("toggled!");
+    if (onToggle) {
+      onToggle({drawer: newDrawer});
+    }
+  });
+
+  const onStart = useCallback((e, data) => {
+    if (onDragStart) {
+      onDragStart({event: e, data, drawer});
+    }
+  });
 
   const onStop = useCallback((e, data) => {
     const movePercent = Math.round(data.x * 100 / drawerWidth);
     const isOpen = drawer.isOpen ? movePercent > 70 : movePercent > 30;
-    changeDrawer({
+    const newDrawer = {
       ...drawer, isOpen: isOpen,
       position: { x: isOpen ? drawerWidth : 0, y: 0 }
-    })
-  }, []);
+    };
+    if (onDragEnd) {
+      onDragEnd({event: e, data, drawer: newDrawer});
+    }
+    changeDrawer(newDrawer);
+  });
 
   const onDragCallback = useCallback((event, data) => {
     if (onDrag) {
@@ -59,6 +74,7 @@ export const Drawer = ({children, onDrag = undefined}) => {
         position={drawer.position}
         positionOffset={{ x: closedDrawer, y: 0 }}
         onStop={onStop}
+        onStart={onStart}
         onDrag={onDragCallback}
         bounds={{ left: 0, right: drawerWidth }}
       >

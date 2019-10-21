@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -21,12 +21,24 @@ const Separator = styled.div`
 `;
 
 const App = (props) => {
-  // const [avatarAppearing, changeAvatarApearing] = useState(0);
+  const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
+  const avatarRef = useRef(null);
 
-  const onDragAvatarAppear = useCallback(({data, drawer}) => {
-    const movePercent = Math.round(data.x * 100 / drawer.drawerWidth);
-    console.log(movePercent);
-    changeAvatarApearing(movePercent);
+  const onDrawerDrag = useCallback(({ data, drawer }) => {
+    const movePercent = data.x * 100 / drawer.drawerWidth;
+    if(avatar.manual === true) changeAvatar({ ...avatar, manual: true });
+    if(avatarRef.current) {
+      avatarRef.current.style.transform = `translateY(${100 - movePercent}%)`;
+    }
+  }, []);
+
+  const onDrawerToggle = useCallback(({ drawer }) => {
+    changeAvatar({ ...avatar, appearing: drawer.isOpen? 100 : 0})
+  }, []);
+
+
+  const onDrawerDragEnd = useCallback(({drawer, event}) => {
+    changeAvatar({ ...avatar, manual: false, appearing: drawer.isOpen? 100 : 0})
   }, []);
 
   return (
@@ -35,10 +47,11 @@ const App = (props) => {
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <AppContext.Provider value={{}}>
-            <Drawer>
+            <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
+              onDragEnd={onDrawerDragEnd}>
               <DrawerMenu>
                 <OptionsContainer>
-                  <Avatar appearing={100}/>
+                  <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef}/>
                   <Separator />
                 </OptionsContainer>
               </DrawerMenu>

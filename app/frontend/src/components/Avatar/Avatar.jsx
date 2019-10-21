@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { SVGIcon } from '~/components/common';
+import { Icon } from '~/components/common';
 
 import {
   Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
@@ -15,18 +15,19 @@ const AvatarContainer = styled.div`
   position: relative;
 `;
 
-const AvatarImage = styled(SVGIcon)`
+const AvatarImage = styled(Icon)`
   width: ${({ size = 60 }) => size}px;
   height: ${({ size = 60 }) => size}px;
   position: absolute;
-  will-change: transform;
   transform: translateY(0);
-  &:not(.manual) {
+  bottom: 0;
+  left: -${({size, background_size}) => (background_size > size)?  0 : Math.round((size - background_size) / 2)}px;
+  margin: auto;
+
+  will-change: transform;
+  &:not(.avatarManual) {
     transition: transform 0.3s;
   }
-  bottom: 0;
-  left: -${({size, backgroundSize}) => (backgroundSize > size)?  0 : Math.round((size - backgroundSize) / 2)}px;
-  margin: auto;
 `;
 
 const Background = styled.div`
@@ -40,20 +41,6 @@ const Background = styled.div`
   top: 0;
   left: 0;
 `;
-
-// const AvatarImageTopHalf = styled(AvatarImage)`
-//   clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-// `;
-
-// const AvatarImageBottomHalf = styled(AvatarImage)`
-//   clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
-//   position: absolute;
-//   top: -${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
-//   left: -${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
-// `;
 
 const BackgroundTopHalf = styled(Background)`
   background-color: ${({ color = 'white' }) => color};
@@ -82,34 +69,36 @@ const avatarsAvailable = [
 const sized = {
   normal: {
     avatarSize: 52, 
-    backgroundSize: 48
+    background_size: 48
   },
   small: {
     avatarSize: 42, 
-    backgroundSize: 38
+    background_size: 38
   },
   smaller: {
     avatarSize: 32, 
-    backgroundSize: 28
+    background_size: 28
   },
   big: {
     avatarSize: 62, 
-    backgroundSize: 58
+    background_size: 58
   },
   bigger: {
     avatarSize: 72, 
-    backgroundSize: 68
+    background_size: 68
   }
 };
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 50, ...props }) => {
+export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 50, manual = true, innerRef = undefined, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
 
   return (
     <AvatarContainer>
-      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.backgroundSize}>
-        <BackgroundTopHalf size={style.backgroundSize} avatarSize={style.avatarSize}/>
+      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
+        <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize}/>
         <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
-          backgroundSize={style.backgroundSize}
+          ref={innerRef}
+          background_size={style.background_size}
+          className={manual? 'avatarManual': 'avatarAutomatic'}
           style={{
             transform: `translateY(${(100 - appearing)}%)`,
           }} />
