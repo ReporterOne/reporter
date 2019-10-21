@@ -11,11 +11,12 @@ const src = path.resolve(frontend, 'src');
 module.exports = {
   output: {
     library: 'one_report_web',
-    filename: "static/bundle.js",
+    filename: "static/[name].js",
     path: dist
   },
   entry: {
-    'js/main': path.resolve(src, 'index.js')
+    main: path.resolve(src, 'index.js'),
+    avatars: path.resolve(src, 'assets', 'avatars', 'index.js'),
   },
   plugins: [
     new CleanWebpackPlugin(),
