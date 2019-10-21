@@ -29,12 +29,12 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
 
   const toggleDrawer = useCallback(() => {
     const newDrawer = {
+      ...drawer,
       isOpen: !drawer.isOpen,
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
       position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
     };
     changeDrawer(newDrawer);
-    console.log("toggled!");
     if (onToggle) {
       onToggle({drawer: newDrawer});
     }

@@ -26,20 +26,20 @@ const App = (props) => {
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
-    if(avatar.manual === true) changeAvatar({ ...avatar, manual: true });
+    if(avatar.manual !== true) changeAvatar({ ...avatar, manual: true });
     if(avatarRef.current) {
       avatarRef.current.style.transform = `translateY(${100 - movePercent}%)`;
     }
-  }, []);
+  }, [avatar, avatarRef]);
 
   const onDrawerToggle = useCallback(({ drawer }) => {
     changeAvatar({ ...avatar, appearing: drawer.isOpen? 100 : 0})
-  }, []);
+  }, [avatar]);
 
 
   const onDrawerDragEnd = useCallback(({drawer, event}) => {
     changeAvatar({ ...avatar, manual: false, appearing: drawer.isOpen? 100 : 0})
-  }, []);
+  }, [avatar]);
 
   return (
     <>
