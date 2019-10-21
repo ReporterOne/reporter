@@ -1,13 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { makeStyles } from '@material-ui/core/styles';
-import { Container, Icon, shadows} from '~/components/common';
+import { Container, shadows } from '~/components/common';
+import { DrawerContext } from './BaseDrawer.jsx';
 
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1),
-  }
-}));
 
 
 const DrawerContainer = styled(Container)`
@@ -19,19 +14,19 @@ const DrawerContainer = styled(Container)`
 `;
 
 
-export const MenuDrawer = (props) => {
-  const classes = useStyles();
+export const DrawerMenu = (props) => {
+  const { isOpen, drawerWidth } = useContext(DrawerContext);
 
   return (
     <DrawerContainer
       style={{
-        width: props.width,
-        boxShadow: props.isOpen ? undefined : "0 0 0"
+        width: drawerWidth,
+        boxShadow: isOpen ? undefined : "0 0 0"
       }}
-      flex="none" isOpen={props.isOpen} ref={props.innerRef}>
+      flex="none" isOpen={isOpen} ref={props.innerRef}>
       {props.children}
     </DrawerContainer>
   );
 }
 
-export default MenuDrawer;
+export default DrawerMenu;
