@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import {
   startOfWeek,
   format,
-  addDays,
   addWeeks,
   startOfMonth,
   endOfMonth,
@@ -44,10 +43,7 @@ const DateNumber = styled.span`
   font-size: 65%;
   line-height: 1;
   font-weight: 600;
-`;
-
-const DateNumberNotInMonth = styled(DateNumber)`
-  opacity: 0.2;
+  opacity: ${props => props.isSameMonth ? 1 : 0.2};
 `;
 
 const Cells = (props) => {
@@ -60,19 +56,23 @@ const Cells = (props) => {
       start: startDate,
       end: endDate
     }).map(date => {
-      const weekDays = eachDayOfInterval({
-        start: date,
-        end: endOfWeek(date)
-      }).map(date => {
-        const formattedDate = format(date, CellsDateFormat);
-        return (
-          <Column key={date} onClick={() => props.onDateClick(date)}>
-            {isSameMonth(date, monthStart) ?
-              <DateNumber>{formattedDate}</DateNumber> :
-              <DateNumberNotInMonth>{formattedDate}</DateNumberNotInMonth>}
-          </Column>);
-      })
-      return (<Row key={date}>{weekDays}</Row>)
+      return (
+        <Row key={date}>
+          {
+            eachDayOfInterval({
+              start: date,
+              end: endOfWeek(date)
+            }).map(date => {
+              return (
+                <Column key={date} onClick={() => props.onDateClick(date)}>
+                  <DateNumber isSameMonth={isSameMonth(date, monthStart)}>
+                    {format(date, CellsDateFormat)}
+                  </DateNumber>
+                </Column>);
+            })
+          }
+        </Row>
+      );
     });
   }, [props.currentDate]);
 
