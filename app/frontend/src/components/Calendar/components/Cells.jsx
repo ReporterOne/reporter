@@ -36,7 +36,7 @@ const Day = styled.div`
 
 const DateLabel = styled.span`
   line-height: 1;
-  font-weight: 600;
+  font-weight: bold;
   color: rgb(120, 120, 120);
   opacity: ${props => props.isSameMonth ? 1 : 0.2};
 `;

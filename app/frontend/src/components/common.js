@@ -19,7 +19,7 @@ export const GlobalStyle = createGlobalStyle`
       font-weight: normal;
       font-style: normal;
     }
-    @import url('https://fonts.googleapis.com/css?family=Assistant&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Assistant:200,300,400,600,700,800&display=swap&subset=hebrew');
     html, body, #root {
         width: 100%;
         height: 100%;
@@ -51,6 +51,10 @@ export const Container = styled.div`
   flex: ${props => (props.flex || (props.stretched ? 1 : 0))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
+`;
+
+export const CenteredContainer = styled(Container)`
+  margin: auto;
 `;
 
 export const shadows = [
