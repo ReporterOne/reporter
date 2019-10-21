@@ -35,9 +35,9 @@ const Day = styled.div`
 `;
 
 const DateLabel = styled.span`
-  font-size: 65%;
   line-height: 1;
   font-weight: 600;
+  color: rgb(120, 120, 120);
   opacity: ${props => props.isSameMonth ? 1 : 0.2};
 `;
 
@@ -50,7 +50,7 @@ const Cells = (props) => {
     return eachWeekOfInterval({
       start: startDate,
       end: endDate
-    }).map(date => {
+    }).slice(0, 6).map(date => {
       return (
         <Week key={date}>
           {

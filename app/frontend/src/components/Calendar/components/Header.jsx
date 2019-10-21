@@ -12,13 +12,16 @@ const Container = styled.div`
   flex-direction: column;
 `;
 const MonthName = styled.span`
-  text-transform: uppercase;
-  font-size: 75%;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: lighter;
+  color: rgb(130, 130, 130);
+  text-align: center;
 `;
 const YearNumber = styled.span`
-  font-size: 65%;
+  font-size: 1.2rem;
   font-weight: 600;
+  color: rgb(160, 160, 160);
+  letter-spacing: 0.1rem;
 `;
 
 const Header = (props) => {
