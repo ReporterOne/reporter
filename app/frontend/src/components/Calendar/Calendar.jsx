@@ -1,15 +1,6 @@
 import React, { useState, useCallback } from "react";
-import {
-
-    subMonths,
-    addMonths,
-
-} from "date-fns";
-import {
-    Header,
-    Days,
-    Cells
-} from './components';
+import { subMonths, addMonths } from "date-fns";
+import { Header, Days, Cells } from './components';
 import styled from 'styled-components';
 import { Swipeable } from 'react-swipeable';
 
