@@ -11,16 +11,11 @@ import {
   eachDayOfInterval
 } from "date-fns";
 import styled from 'styled-components';
+import { Container } from '~/components/common';
 
 const CellsDateFormat = "d";
 
-const Container = styled.div`
-  flex: 1 ;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction:column;
-`;
-const Row = styled.div`
+const Week = styled.div`
   margin: 0;
   padding: 0;
   display: flex;
@@ -29,7 +24,7 @@ const Row = styled.div`
   flex:1;
   width: 100%;
 `;
-const Column = styled.div`
+const Day = styled.div`
   display: flex;
   flex:1;
   flex-wrap: wrap;
@@ -39,7 +34,7 @@ const Column = styled.div`
   justify-content: center;
 `;
 
-const DateNumber = styled.span`
+const DateLabel = styled.span`
   font-size: 65%;
   line-height: 1;
   font-weight: 600;
@@ -57,26 +52,26 @@ const Cells = (props) => {
       end: endDate
     }).map(date => {
       return (
-        <Row key={date}>
+        <Week key={date}>
           {
             eachDayOfInterval({
               start: date,
               end: endOfWeek(date)
             }).map(date => {
               return (
-                <Column key={date} onClick={() => props.onDateClick(date)}>
-                  <DateNumber isSameMonth={isSameMonth(date, monthStart)}>
+                <Day key={date} onClick={() => props.onDateClick(date)}>
+                  <DateLabel isSameMonth={isSameMonth(date, monthStart)}>
                     {format(date, CellsDateFormat)}
-                  </DateNumber>
-                </Column>);
+                  </DateLabel>
+                </Day>);
             })
           }
-        </Row>
+        </Week>
       );
     });
   }, [props.currentDate]);
 
-  return <Container>{rows}</Container>;
+  return <Container stretched>{rows}</Container>;
 };
 
 export default Cells;
