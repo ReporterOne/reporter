@@ -5,15 +5,17 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { MenuHeader, MenuDrawer, Overlay } from '~/components/Menu';
 import { GlobalStyle, Container, theme } from '~/components/common';
 import { Dashboard } from '~/screens';
+import Draggable from 'react-draggable';
 
 const drawerWidth = 80;
 const closedDrawer = -drawerWidth;
 const openDrawer = 0;
 
 const Body = styled(Container)`
-  transition: transform ${props => props.theme.drawerSpeed}s linear;
-  transform: translateX(${closedDrawer}px);
   will-change: transform;
+  &:not(.react-draggable-dragging) {
+    transition: transform ${props => props.theme.drawerSpeed}s linear;
+  }
 `;
 
 const PosedBody = posed(Body)({
@@ -45,51 +47,24 @@ const App = (props) => {
     isOpen: false,
     pose: 'close',
     translateX: closedDrawer,
-    poseKey: 0
-  });
-  const drawerRef = useRef(null);
-  const overlayRef = useRef(null);
-  const [delta, changeDelta] = useState({ x: 0, y: 0 });
-  let [start, changeStart] = useState({ x: 0, y: 0 });
-
-  const onSwiping = useCallback((e) => {
-    if (["Left", "Right"].indexOf(e.dir) !== -1) {
-      changeDrawer({
-        ...drawer,
-        deltaX: e.deltaX
-      })
-    }
+    position: { x: 0, y: 0 }
   });
 
   const toggleDrawer = useCallback(() => {
     changeDrawer({
       isOpen: !drawer.isOpen,
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
-      pose: !drawer.isOpen ? 'open' : 'close'
+      position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
     })
   });
 
-  const onMove = useCallback((e) => {
-    changeDelta({
-      x: e.touches[0].pageX - start.x,
-      y: e.touches[0].pageY - start.y
-    });
-    console.log(drawerRef.current == e.target || e.target == overlayRef.current);
-    console.log(delta, start);
-  });
-
-  const onStart = useCallback((e) => {
-    console.log(e.touch)
-    changeStart({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientX
-    });
-  });
-
-  const onEnd = useCallback((e) => {
-    changeDelta({
-      x: 0,
-      y: 0
+  const onStop = useCallback((e, data) => {
+    const movePercent = Math.round(data.x * 100 / drawerWidth);
+    const isOpen = drawer.isOpen ? movePercent > 70 : movePercent > 30;
+    console.log(isOpen, movePercent);
+    changeDrawer({
+      ...drawer, isOpen: isOpen,
+      position: { x: isOpen ? drawerWidth : 0, y: 0 }
     })
   });
 
@@ -97,21 +72,31 @@ const App = (props) => {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Body row stretched style={{ transform: `translateX(${drawer.transformX + delta.x}px)` }} onTouchMove={onMove} onTouchStart={onStart} onTouchEnd={onEnd} draggable>
-          <MenuDrawer width={drawerWidth} isOpen={drawer.isOpen} innerRef={drawerRef}>
-          </MenuDrawer>
-          <Content stretched background={theme.main} flex="none">
-            <Overlay isOpen={drawer.isOpen} onClick={toggleDrawer} innerRef={overlayRef} />
-            <MenuHeader onMenuClick={toggleDrawer} />
-            <Router>
-              <Switch>
-                <Route path="/">
-                  <Dashboard />
-                </Route>
-              </Switch>
-            </Router>
-          </Content>
-        </Body>
+        <Draggable
+          axis='x'
+          // handle='.overlay'
+          disabled={!drawer.isOpen}
+          position={drawer.position}
+          positionOffset={{ x: closedDrawer, y: 0 }}
+          onStop={onStop}
+          bounds={{ left: 0, right: drawerWidth }}
+        >
+          <Body row stretched>
+            <MenuDrawer width={drawerWidth} isOpen={drawer.isOpen}>
+            </MenuDrawer>
+            <Content stretched background={theme.main} flex="none">
+              <Overlay className="overlay" isOpen={drawer.isOpen} onClick={toggleDrawer}/>
+              <MenuHeader onMenuClick={toggleDrawer} />
+              <Router>
+                <Switch>
+                  <Route path="/">
+                    <Dashboard />
+                  </Route>
+                </Switch>
+              </Router>
+            </Content>
+          </Body>
+        </Draggable>
       </ThemeProvider>
     </>
   );
