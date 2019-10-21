@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const MenuHeader = (props) => {
+export const MenuHeader = (props) => {
   const classes = useStyles();
 
   return (
