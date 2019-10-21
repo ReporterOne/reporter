@@ -1,12 +1,17 @@
 import React from 'react';
 import { StylesProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
-import { GlobalStyle, theme } from '~/components/common';
+import { GlobalStyle, theme, Container } from '~/components/common';
 import { Dashboard } from '~/screens';
 import AppContext from './AppContext.jsx';
+import Avatar from './components/Avatar/Avatar.jsx';
 
+const OptionsContainer = styled(Container)`
+  align-items: center;
+  padding: 25px 0;
+`;
 
 const App = (props) => {
 
@@ -18,6 +23,9 @@ const App = (props) => {
           <AppContext.Provider value={{}}>
             <Drawer>
               <DrawerMenu>
+                <OptionsContainer>
+                  <Avatar/>
+                </OptionsContainer>
               </DrawerMenu>
               <DrawerContent>
                 <Router>

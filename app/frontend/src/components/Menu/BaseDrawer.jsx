@@ -52,6 +52,7 @@ export const Drawer = (props) => {
         position={drawer.position}
         positionOffset={{ x: closedDrawer, y: 0 }}
         onStop={onStop}
+        bounds={{ left: 0, right: drawerWidth }}
       >
         <Body row stretched>
           {props.children}
