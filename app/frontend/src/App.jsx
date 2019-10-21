@@ -21,7 +21,7 @@ const Separator = styled.div`
 `;
 
 const App = (props) => {
-  const [avatarAppearing, changeAvatarApearing] = useState(0);
+  // const [avatarAppearing, changeAvatarApearing] = useState(0);
 
   const onDragAvatarAppear = useCallback(({data, drawer}) => {
     const movePercent = Math.round(data.x * 100 / drawer.drawerWidth);
@@ -35,10 +35,10 @@ const App = (props) => {
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <AppContext.Provider value={{}}>
-            <Drawer onDrag={onDragAvatarAppear}>
+            <Drawer>
               <DrawerMenu>
                 <OptionsContainer>
-                  <Avatar appearing={avatarAppearing}/>
+                  <Avatar appearing={100}/>
                   <Separator />
                 </OptionsContainer>
               </DrawerMenu>

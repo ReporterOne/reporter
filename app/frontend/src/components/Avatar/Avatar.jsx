@@ -12,48 +12,64 @@ import {
 
 
 const AvatarContainer = styled.div`
-  width: ${({ size = 60 }) => size}px;
-  height: ${({ size = 60 }) => size}px;
   position: relative;
 `;
 
 const AvatarImage = styled(SVGIcon)`
   width: ${({ size = 60 }) => size}px;
   height: ${({ size = 60 }) => size}px;
-  position: relative;
+  position: absolute;
   will-change: transform;
   transform: translateY(0);
   &:not(.manual) {
     transition: transform 0.3s;
   }
+  bottom: 0;
+  left: -${({size, backgroundSize}) => (backgroundSize > size)?  0 : Math.round((size - backgroundSize) / 2)}px;
+  margin: auto;
 `;
 
 const Background = styled.div`
   width: ${({ size = 48 }) => size}px;
   height: ${({ size = 48 }) => size}px;
-  margin: ${({ spacing = 6 }) => spacing}px;
-  border-radius: 50%;
+  margin: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
+  /* border-radius: 50%; */
   mask-image: radial-gradient(white, black);
-  background-color: ${({ color = 'white' }) => color};
   overflow: hidden;
   position: relative;
   top: 0;
   left: 0;
 `;
 
-const AvatarImageTopHalf = styled(AvatarImage)`
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-  position: absolute;
-  top: 0;
+// const AvatarImageTopHalf = styled(AvatarImage)`
+//   clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+// `;
+
+// const AvatarImageBottomHalf = styled(AvatarImage)`
+//   clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
+//   position: absolute;
+//   top: -${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
+//   left: -${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
+// `;
+
+const BackgroundTopHalf = styled(Background)`
+  background-color: ${({ color = 'white' }) => color};
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  bottom: 0;
   left: 0;
+  margin: 0;
+`;
+const BackgroundBottomHalf = styled(Background)`
+  /* clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%); */
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  padding-top: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size))}px;
 `;
 
-const AvatarImageBottomHalf = styled(AvatarImage)`
-  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
-  position: absolute;
-  top: -${({ spacing = 6 }) => spacing}px;
-  left: -${({ spacing = 6 }) => spacing}px;
-`;
 
 
 const avatarsAvailable = [
@@ -65,56 +81,39 @@ const avatarsAvailable = [
 
 const sized = {
   normal: {
-    spacing: 6,
-    size: 60,
+    avatarSize: 52, 
     backgroundSize: 48
   },
   small: {
-    spacing: 5,
-    size: 50,
-    backgroundSize: 40
+    avatarSize: 52, 
+    backgroundSize: 48
   },
   smaller: {
-    spacing: 4,
-    size: 40,
-    backgroundSize: 32
+    avatarSize: 52, 
+    backgroundSize: 48
   },
   big: {
-    spacing: 7,
-    size: 70,
-    backgroundSize: 56
+    avatarSize: 52, 
+    backgroundSize: 48
   },
   bigger: {
-    spacing: 8,
-    size: 80,
-    backgroundSize: 64
+    avatarSize: 52, 
+    backgroundSize: 48
   }
 };
 export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 50, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
 
   return (
-    <AvatarContainer size={style.size}>
-      {
-        appearing < 70 ?
-          <Background size={style.backgroundSize} spacing={style.spacing} color={background}>
-            <AvatarImage src={avatarsAvailable[kind]} size={style.size}
-              style={{
-                transform: `translateY(${(100 - appearing)}%)`,
-                position: 'absolute', 
-                top: `-${style.spacing}px`, 
-                left: `-${style.spacing}px`
-              }} />
-          </Background>
-          : (
-            <>
-              <Background size={style.backgroundSize} spacing={style.spacing} color={background}>
-                <AvatarImageBottomHalf src={avatarsAvailable[kind]} spacing={style.spacing} size={style.size} style={{ transform: `translateY(${(100 - appearing)}%)` }} />
-              </Background>
-              <AvatarImageTopHalf src={avatarsAvailable[kind]} size={style.size} style={{ transform: `translateY(${(100 - appearing)}%)` }} />
-            </>
-          )
-      }
+    <AvatarContainer>
+      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.backgroundSize}>
+        <BackgroundTopHalf size={style.backgroundSize} avatarSize={style.avatarSize}/>
+        <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
+          backgroundSize={style.backgroundSize}
+          style={{
+            transform: `translateY(${(100 - appearing)}%)`,
+          }} />
+      </BackgroundBottomHalf>
     </AvatarContainer>
   );
 }
