@@ -21,12 +21,12 @@ const AvatarImage = styled(Icon)`
   position: absolute;
   transform: translateY(0);
   bottom: 0;
-  left: -${({size, background_size}) => (background_size > size)?  0 : Math.round((size - background_size) / 2)}px;
+  left: -${({ size, background_size }) => (background_size > size) ? 0 : Math.round((size - background_size) / 2)}px;
   margin: auto;
 
   will-change: transform;
   &:not(.avatarManual) {
-    transition: transform 0.3s;
+    transition: transform ${props => props.theme.avatarSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 
@@ -68,23 +68,23 @@ const avatarsAvailable = [
 
 const sized = {
   normal: {
-    avatarSize: 52, 
+    avatarSize: 52,
     background_size: 48
   },
   small: {
-    avatarSize: 42, 
+    avatarSize: 42,
     background_size: 38
   },
   smaller: {
-    avatarSize: 32, 
+    avatarSize: 32,
     background_size: 28
   },
   big: {
-    avatarSize: 62, 
+    avatarSize: 62,
     background_size: 58
   },
   bigger: {
-    avatarSize: 72, 
+    avatarSize: 72,
     background_size: 68
   }
 };
@@ -94,11 +94,11 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
   return (
     <AvatarContainer>
       <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
-        <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize}/>
+        <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize} />
         <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
           ref={innerRef}
           background_size={style.background_size}
-          className={manual? 'avatarManual': 'avatarAutomatic'}
+          className={manual ? 'avatarManual' : 'avatarAutomatic'}
           style={{
             transform: `translateY(${(100 - appearing)}%)`,
           }} />

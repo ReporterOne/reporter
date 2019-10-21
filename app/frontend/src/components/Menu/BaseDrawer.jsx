@@ -13,7 +13,7 @@ const openDrawer = 0;
 const Body = styled(Container)`
   will-change: transform;
   &:not(.react-draggable-dragging) {
-    transition: transform ${props => props.theme.drawerSpeed}s linear;
+    transition: transform ${props => props.theme.drawerSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 

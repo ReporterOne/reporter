@@ -9,7 +9,8 @@ export const theme = {
   main: '#4725a5',
   drawer: '#353535',
   cards: 'white',
-  drawerSpeed: 0.2
+  drawerSpeed: 0.3,
+  avatarSpeed: 0.3
 }
 
 export const GlobalStyle = createGlobalStyle`
