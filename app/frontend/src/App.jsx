@@ -61,7 +61,6 @@ const App = (props) => {
   const onStop = useCallback((e, data) => {
     const movePercent = Math.round(data.x * 100 / drawerWidth);
     const isOpen = drawer.isOpen ? movePercent > 70 : movePercent > 30;
-    console.log(isOpen, movePercent);
     changeDrawer({
       ...drawer, isOpen: isOpen,
       position: { x: isOpen ? drawerWidth : 0, y: 0 }
