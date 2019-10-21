@@ -85,20 +85,20 @@ const sized = {
     backgroundSize: 48
   },
   small: {
-    avatarSize: 52, 
-    backgroundSize: 48
+    avatarSize: 42, 
+    backgroundSize: 38
   },
   smaller: {
-    avatarSize: 52, 
-    backgroundSize: 48
+    avatarSize: 32, 
+    backgroundSize: 28
   },
   big: {
-    avatarSize: 52, 
-    backgroundSize: 48
+    avatarSize: 62, 
+    backgroundSize: 58
   },
   bigger: {
-    avatarSize: 52, 
-    backgroundSize: 48
+    avatarSize: 72, 
+    backgroundSize: 68
   }
 };
 export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 50, ...props }) => {
