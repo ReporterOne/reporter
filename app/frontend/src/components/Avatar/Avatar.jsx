@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { SVGIcon } from '~/components/common';
 
 import {
   Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8, 
@@ -16,7 +17,7 @@ const AvatarContainer = styled.div`
   position: relative;
 `;
 
-const AvatarImage = styled.img`
+const AvatarImage = styled(SVGIcon)`
   width: ${({ size = 60 }) => size}px;
   height: ${({ size = 60 }) => size}px;
   position: relative;
