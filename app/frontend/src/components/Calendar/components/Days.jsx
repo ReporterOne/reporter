@@ -4,10 +4,9 @@ import styled from 'styled-components';
 const DayChar = styled.span`
   text-transform: uppercase;
   font-weight: 600;
-  color: gray;
-  font-size: 8px;
-  flex:1;
-  padding: .75em 0;
+  color: rgb(170, 170, 170);
+  flex: 1;
+  padding: .75rem 0;
   border-bottom: 1px solid lightgray;
 `;
 const Container = styled.div`
