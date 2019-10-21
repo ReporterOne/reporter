@@ -13,6 +13,13 @@ const OptionsContainer = styled(Container)`
   padding: 25px 0;
 `;
 
+const Separator = styled.div`
+  height: 2px;
+  width: 70%;
+  background-color: #888888;
+  margin: 15px 0;
+`;
+
 const App = (props) => {
 
   return (
@@ -25,6 +32,7 @@ const App = (props) => {
               <DrawerMenu>
                 <OptionsContainer>
                   <Avatar/>
+                  <Separator />
                 </OptionsContainer>
               </DrawerMenu>
               <DrawerContent>

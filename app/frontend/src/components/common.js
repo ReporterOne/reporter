@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { createGlobalStyle, css } from 'styled-components';
 import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
 import IconButton from '@material-ui/core/IconButton';
+import SVG from 'react-inlinesvg';
 
 
 export const theme = {
@@ -32,6 +33,11 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const Icon = styled.img`
+  width: 30px;
+  height: 30px;
+`;
+
+export const SVGIcon = styled(SVG)`
   width: 30px;
   height: 30px;
 `;

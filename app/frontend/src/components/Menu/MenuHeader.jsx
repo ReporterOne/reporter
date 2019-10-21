@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Icon, StyledIconButton } from '~/components/common';
+import {Container, StyledIconButton, SVGIcon } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 
 
@@ -7,7 +7,7 @@ export const MenuHeader = (props) => {
   return (
     <Container row>
       <StyledIconButton onClick={props.onMenuClick}>
-        <Icon src={iconUrl}/>
+        <SVGIcon src={iconUrl}/>
       </StyledIconButton>
     </Container>
   );
