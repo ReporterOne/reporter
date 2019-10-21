@@ -18,11 +18,12 @@ const Body = styled(Container)`
 `;
 
 
-export const Drawer = (props) => {
+export const Drawer = ({children, onDrag = undefined}) => {
   const [drawer, changeDrawer] = useState({
     isOpen: false,
     pose: 'close',
     translateX: closedDrawer,
+    drawerWidth: drawerWidth,
     position: { x: 0, y: 0 }
   });
 
@@ -32,7 +33,7 @@ export const Drawer = (props) => {
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
       position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
     })
-  });
+  }, []);
 
   const onStop = useCallback((e, data) => {
     const movePercent = Math.round(data.x * 100 / drawerWidth);
@@ -41,7 +42,13 @@ export const Drawer = (props) => {
       ...drawer, isOpen: isOpen,
       position: { x: isOpen ? drawerWidth : 0, y: 0 }
     })
-  });
+  }, []);
+
+  const onDragCallback = useCallback((event, data) => {
+    if (onDrag) {
+      onDrag({event, data, drawer});
+    }
+  }, [onDrag]);
 
   return (
     <DrawerContext.Provider value={{ isOpen: drawer.isOpen, drawerWidth: drawerWidth, toggleDrawer: toggleDrawer }}>
@@ -52,10 +59,11 @@ export const Drawer = (props) => {
         position={drawer.position}
         positionOffset={{ x: closedDrawer, y: 0 }}
         onStop={onStop}
+        onDrag={onDragCallback}
         bounds={{ left: 0, right: drawerWidth }}
       >
         <Body row stretched>
-          {props.children}
+          {children}
         </Body>
       </Draggable>
     </DrawerContext.Provider>

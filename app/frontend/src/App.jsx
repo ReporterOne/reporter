@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -21,6 +21,13 @@ const Separator = styled.div`
 `;
 
 const App = (props) => {
+  const [avatarAppearing, changeAvatarApearing] = useState(0);
+
+  const onDragAvatarAppear = useCallback(({data, drawer}) => {
+    const movePercent = Math.round(data.x * 100 / drawer.drawerWidth);
+    console.log(movePercent);
+    changeAvatarApearing(movePercent);
+  }, []);
 
   return (
     <>
@@ -28,10 +35,10 @@ const App = (props) => {
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <AppContext.Provider value={{}}>
-            <Drawer>
+            <Drawer onDrag={onDragAvatarAppear}>
               <DrawerMenu>
                 <OptionsContainer>
-                  <Avatar/>
+                  <Avatar appearing={avatarAppearing}/>
                   <Separator />
                 </OptionsContainer>
               </DrawerMenu>
