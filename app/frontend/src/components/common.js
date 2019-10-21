@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { createGlobalStyle, css } from 'styled-components';
 import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
+import IconButton from '@material-ui/core/IconButton';
 
 
 export const theme = {
@@ -35,6 +36,9 @@ export const Icon = styled.img`
   height: 25px;
 `;
 
+export const StyledIconButton = styled(IconButton)`
+`;
+
 export const Container = styled.div`
   position: relative;
   display: ${props => (props.block ? 'block' : 'flex')};
@@ -60,3 +64,4 @@ export const RoundedContainer = styled(Container)`
   padding: ${props => props.padding || '20px 15px'};
   ${props => { const i = props.shadow || 1; return shadows[i]; }}
 `;
+

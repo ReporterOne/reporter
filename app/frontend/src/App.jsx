@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { StylesProvider } from '@material-ui/core/styles';
 import posed from 'react-pose';
 import styled, { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -69,34 +70,36 @@ const App = (props) => {
 
   return (
     <>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <Draggable
-          axis='x'
-          // handle='.overlay'
-          disabled={!drawer.isOpen}
-          position={drawer.position}
-          positionOffset={{ x: closedDrawer, y: 0 }}
-          onStop={onStop}
-          bounds={{ left: 0, right: drawerWidth }}
-        >
-          <Body row stretched>
-            <MenuDrawer width={drawerWidth} isOpen={drawer.isOpen}>
-            </MenuDrawer>
-            <Content stretched background={theme.main} flex="none">
-              <Overlay className="overlay" isOpen={drawer.isOpen} onClick={toggleDrawer}/>
-              <MenuHeader onMenuClick={toggleDrawer} />
-              <Router>
-                <Switch>
-                  <Route path="/">
-                    <Dashboard />
-                  </Route>
-                </Switch>
-              </Router>
-            </Content>
-          </Body>
-        </Draggable>
-      </ThemeProvider>
+      <StylesProvider injectFirst>
+        <GlobalStyle />
+        <ThemeProvider theme={theme}>
+          <Draggable
+            axis='x'
+            // handle='.overlay'
+            disabled={!drawer.isOpen}
+            position={drawer.position}
+            positionOffset={{ x: closedDrawer, y: 0 }}
+            onStop={onStop}
+            bounds={{ left: 0, right: drawerWidth }}
+          >
+            <Body row stretched>
+              <MenuDrawer width={drawerWidth} isOpen={drawer.isOpen}>
+              </MenuDrawer>
+              <Content stretched background={theme.main} flex="none">
+                <Overlay className="overlay" isOpen={drawer.isOpen} onClick={toggleDrawer} />
+                <MenuHeader onMenuClick={toggleDrawer} />
+                <Router>
+                  <Switch>
+                    <Route path="/">
+                      <Dashboard />
+                    </Route>
+                  </Switch>
+                </Router>
+              </Content>
+            </Body>
+          </Draggable>
+        </ThemeProvider>
+      </StylesProvider>
     </>
   );
 }
