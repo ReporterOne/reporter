@@ -17,6 +17,7 @@ module.exports = {
   entry: {
     main: path.resolve(src, 'index.js'),
     avatars: path.resolve(src, 'assets', 'avatars', 'index.js'),
+    fonts: path.resolve(src, 'assets', 'fonts', 'index.js')
   },
   plugins: [
     new CleanWebpackPlugin(),

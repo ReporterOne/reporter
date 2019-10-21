@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { createGlobalStyle, css } from 'styled-components';
-import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
+import { Rubik } from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
 
