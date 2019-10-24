@@ -1,1 +1,1 @@
-export { default as default } from "./AttendingButton.jsx";
+export {default as default} from './AttendingButton.jsx';
