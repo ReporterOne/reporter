@@ -11,7 +11,7 @@ const Dashboard = (props) => {
 
   return (
     <Container stretched>
-        <Container flex={2} style={{padding: '15px'}}>
+        <Container flex={2} >
           <AttendingButton />
         </Container>
         <RoundedContainer flex={4} shadow={5} background={theme.cards}>

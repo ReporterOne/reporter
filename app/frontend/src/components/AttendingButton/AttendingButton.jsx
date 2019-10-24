@@ -13,6 +13,8 @@ import  {spring} from "popmotion";
 
 const ContainerHeight = 40;
 const windowSize = window.innerWidth;
+const circleDiameter = ContainerHeight - 6;
+const rectangleMargin = 25;
 
 const Container = styled.div`
   display: flex;
@@ -20,12 +22,13 @@ const Container = styled.div`
   flex:1;
   flex-direction: row;
 `;
+
 const RoundedRectangle = styled.div`
   display: flex;
   flex: 1;
   height: ${ContainerHeight}px;
-  margin-left: 25px; 
-  margin-right: 25px;
+  margin-left: ${rectangleMargin}px; 
+  margin-right: ${rectangleMargin}px;
   flex-direction: row;
   align-items: center;
   justify-content:center;
@@ -33,16 +36,27 @@ const RoundedRectangle = styled.div`
   background-color: #301e60;
   ${innerShaddow[4]}
 `;
+
+  const Circle = styled(Slidable)`
+    height: ${circleDiameter}px;
+    width: ${circleDiameter}px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+  `;
+
 const ArrowsContainer = styled.div`
   flex:1;
   display: flex;
   justify-content: center;
 `;
+
 const ArrowsLeft = styled(SVGIcon)`
   transform: scaleX(-1);
   fill: #F15A24;
 
 `;
+
 const ArrowsRight = styled(SVGIcon)`
   fill: #22B573;
 
@@ -51,10 +65,10 @@ const ArrowsRight = styled(SVGIcon)`
 const Slidable = posed.div({
   draggable: 'x',
   notHere: {
-    x: -(windowSize/2-45)
+    x: -(windowSize/2-rectangleMargin-(circleDiameter/2)-3)
   },
   here: {
-    x: windowSize/2-45
+    x: windowSize/2-rectangleMargin-(circleDiameter/2) -3
   },
   notDecided: {
     x: 0
@@ -65,18 +79,11 @@ const Slidable = posed.div({
   },
   dragBounds: 
   {
-    right: windowSize/2-45,
-    left: -(windowSize/2-45)
+    right: windowSize/2-rectangleMargin-(circleDiameter/2)- 3 ,
+    left: -(windowSize/2-rectangleMargin-(circleDiameter/2)) -3
   }
 });
 
-const Circle = styled(Slidable)`
-  height: ${ContainerHeight - 6}px;
-  width: ${ContainerHeight - 6}px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  display: inline-block;
-`;
 
 const AttendingButton = (props) => {
 
@@ -87,15 +94,16 @@ const AttendingButton = (props) => {
     const positionString = e.path[0].style.transform
     const circlePosition = Number(positionString.match(/(-?)(\d+)/)[0])
 
-    if(circlePosition >= ((windowSize/2-45)*0.5)) {
+    if(circlePosition >= ((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
       changePose('here');
     } 
-    else if (circlePosition <= -((windowSize/2-45)*0.5)) {
+    else if (circlePosition <= -((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
       changePose('notHere');
     }
     else{
       changePose('notDecided');
     }
+    console.log(circlePosition)
     changePosition(circlePosition)
   });
 
