@@ -16,6 +16,28 @@ const windowSize = window.innerWidth;
 const circleDiameter = ContainerHeight - 6;
 const rectangleMargin = 25;
 
+const Slidable = posed.div({
+  draggable: 'x',
+  notHere: {
+    x: -(windowSize/2-rectangleMargin-(circleDiameter/2)-3)
+  },
+  here: {
+    x: windowSize/2-rectangleMargin-(circleDiameter/2) -3
+  },
+  notDecided: {
+    x: 0
+  },
+  dragEnd: {
+    transition: ({ from, to, velocity }) => 
+      spring({ from, to, velocity, stiffness: 750, damping: 50 })
+  },
+  dragBounds: 
+  {
+    right: windowSize/2-rectangleMargin-(circleDiameter/2)- 3 ,
+    left: -(windowSize/2-rectangleMargin-(circleDiameter/2)) -3
+  }
+});
+
 const Container = styled.div`
   display: flex;
   align-items:center;
@@ -62,27 +84,6 @@ const ArrowsRight = styled(SVGIcon)`
 
 `;
 
-const Slidable = posed.div({
-  draggable: 'x',
-  notHere: {
-    x: -(windowSize/2-rectangleMargin-(circleDiameter/2)-3)
-  },
-  here: {
-    x: windowSize/2-rectangleMargin-(circleDiameter/2) -3
-  },
-  notDecided: {
-    x: 0
-  },
-  dragEnd: {
-    transition: ({ from, to, velocity }) => 
-      spring({ from, to, velocity, stiffness: 750, damping: 50 })
-  },
-  dragBounds: 
-  {
-    right: windowSize/2-rectangleMargin-(circleDiameter/2)- 3 ,
-    left: -(windowSize/2-rectangleMargin-(circleDiameter/2)) -3
-  }
-});
 
 
 const AttendingButton = (props) => {
@@ -92,8 +93,8 @@ const AttendingButton = (props) => {
   
   const onDragEnd = useCallback((e) => {
     const positionString = e.path[0].style.transform
+    console.log(e.path[0].style)
     const circlePosition = Number(positionString.match(/(-?)(\d+)/)[0])
-
     if(circlePosition >= ((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
       changePose('here');
     } 
@@ -103,7 +104,6 @@ const AttendingButton = (props) => {
     else{
       changePose('notDecided');
     }
-    console.log(circlePosition)
     changePosition(circlePosition)
   });
 
