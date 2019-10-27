@@ -11,7 +11,7 @@ import {
 import posed from 'react-pose';
 import  {spring} from "popmotion";
 
-const ContainerHeight = 70;
+const ContainerHeight = 40;
 const windowSize = window.innerWidth;
 const circleDiameter = ContainerHeight - 6;
 const rectangleMargin = 25;
