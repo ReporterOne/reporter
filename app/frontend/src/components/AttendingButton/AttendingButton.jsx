@@ -59,32 +59,37 @@ const RoundedRectangle = styled.div`
   ${innerShaddow[4]}
 `;
 
-  const Circle = styled(Slidable)`
-    height: ${circleDiameter}px;
-    width: ${circleDiameter}px;
-    background-color: #ffffff;
-    border-radius: 50%;
-    display: inline-block;
-  `;
+const Circle = styled(Slidable)`
+  height: ${circleDiameter}px;
+  width: ${circleDiameter}px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+`;
 
 const ArrowsContainer = styled.div`
   flex:1;
+  height: ${ContainerHeight}px;
+  align-items: center;
   display: flex;
   justify-content: center;
 `;
 
 const ArrowsLeft = styled(SVGIcon)`
+  flex:1;
+  height: 60%;
   transform: scaleX(-1);
   fill: #F15A24;
 
 `;
 
 const ArrowsRight = styled(SVGIcon)`
+  flex:1;
   fill: #22B573;
+  /* margin: 4px 0px; */
+  height: 60%;
 
 `;
-
-
 
 const AttendingButton = (props) => {
 
