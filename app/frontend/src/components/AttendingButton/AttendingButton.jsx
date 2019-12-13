@@ -5,7 +5,8 @@ import Arrows from '~/assets/Arrows.svg';
 
 import {
   SVGIcon,
-  innerShaddow
+  innerShaddow,
+  theme,
 } from '~/components/common';
 
 import posed from 'react-pose';
@@ -18,13 +19,13 @@ const rectangleMargin = 25;
 
 const PosedRRoundedRectangle = posed.div({
   notHere: {
-    backgroundColor:"#F15A24"
+    backgroundColor: theme["notApproved"]
   },
   here: {
-    backgroundColor:"#22B573"
+    backgroundColor: theme["approved"]
   },
   notDecided: {
-    backgroundColor:"#4725a5"
+    backgroundColor: theme["main"]
   },
 });
 

@@ -6,10 +6,12 @@ import SVG from 'react-inlinesvg';
 
 
 export const theme = {
+  cards: 'white',
+  drawerSpeed: 0.2,
   main: '#4725a5',
   drawer: '#353535',
-  cards: 'white',
-  drawerSpeed: 0.2
+  approved: '#22B573',
+  notApproved: '#F15A24',
 }
 
 export const GlobalStyle = createGlobalStyle`
