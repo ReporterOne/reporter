@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
 import Dashboard from '@/Dashboard';
+import Operator from '@/Operator';
 import Commander from '@/Commander';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
@@ -11,6 +12,7 @@ import Avatar from '~/components/Avatar/Avatar.jsx';
 import Option from '~/components/Menu/MenuOption.jsx';
 import dashboardIconUrl from '~/assets/dashboard.svg';
 import commanderIconUrl from '~/assets/whistle.svg';
+import operatorIconUrl from '~/assets/signature.svg';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -68,6 +70,9 @@ const App = (props) => {
                     <Option path="/commander">
                       <SVGIcon src={commanderIconUrl} size={20} />
                     </Option>
+                    <Option path="/operator">
+                      <SVGIcon src={operatorIconUrl} size={20} />
+                    </Option>
                     <Spacer />
                     <Separator />
                     <Container>
@@ -76,6 +81,9 @@ const App = (props) => {
                 </DrawerMenu>
                 <DrawerContent>
                   <Switch>
+                    <Route path="/operator">
+                      <Operator />
+                    </Route>
                     <Route path="/commander">
                       <Commander />
                     </Route>
