@@ -11,18 +11,30 @@ import {
 import posed from 'react-pose';
 import  {spring} from "popmotion";
 
-const ContainerHeight = 40;
+const ContainerHeight = 50;
 const windowSize = window.innerWidth;
 const circleDiameter = ContainerHeight - 6;
 const rectangleMargin = 25;
 
-const Slidable = posed.div({
+const PosedRRoundedRectangle = posed.div({
+  notHere: {
+    backgroundColor:"#F15A24"
+  },
+  here: {
+    backgroundColor:"#22B573"
+  },
+  notDecided: {
+    backgroundColor:"#4725a5"
+  },
+});
+
+const PosedCircle = posed.div({
   draggable: 'x',
   notHere: {
     x: -(windowSize/2-rectangleMargin-(circleDiameter/2)-3)
   },
   here: {
-    x: windowSize/2-rectangleMargin-(circleDiameter/2) -3
+    x: windowSize/2-rectangleMargin-(circleDiameter/2) -3,
   },
   notDecided: {
     x: 0
@@ -38,6 +50,11 @@ const Slidable = posed.div({
   }
 });
 
+const PosedArrowsContainer = posed.div({
+  decided: {scale: 0},
+  notDecided: {scale: 1}
+});
+
 const Container = styled.div`
   display: flex;
   align-items:center;
@@ -45,7 +62,7 @@ const Container = styled.div`
   flex-direction: row;
 `;
 
-const RoundedRectangle = styled.div`
+const RoundedRectangle = styled(PosedRRoundedRectangle)`
   display: flex;
   flex: 1;
   height: ${ContainerHeight}px;
@@ -55,11 +72,10 @@ const RoundedRectangle = styled.div`
   align-items: center;
   justify-content:center;
   border-radius: ${windowSize}px;
-  background-color: #301e60;
   ${innerShaddow[4]}
 `;
 
-const Circle = styled(Slidable)`
+const Circle = styled(PosedCircle)`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
@@ -67,7 +83,7 @@ const Circle = styled(Slidable)`
   display: inline-block;
 `;
 
-const ArrowsContainer = styled.div`
+const ArrowsContainer = styled(PosedArrowsContainer)`
   flex:1;
   height: ${ContainerHeight}px;
   align-items: center;
@@ -86,42 +102,65 @@ const ArrowsLeft = styled(SVGIcon)`
 const ArrowsRight = styled(SVGIcon)`
   flex:1;
   fill: #22B573;
-  /* margin: 4px 0px; */
   height: 60%;
 
+`;
+const AttendenceValue = styled.span`
+  position: absolute;
+  color: white;
+  display: flex;
+  font-weight: normal;
+  font-size: 20px;
+  flex:1;
 `;
 
 const AttendingButton = (props) => {
 
   const [pose, changePose] = useState('notDecided');
   const [position, changePosition] = useState(0);
-  
+  const [attendenceStatus, changeAttendenceStatus] = useState('');
+  const [decided, changeDecision] = useState('notDecided');
   const onDragEnd = useCallback((e) => {
     const positionString = e.path[0].style.transform
-    console.log(e.path[0].style)
-    const circlePosition = Number(positionString.match(/(-?)(\d+)/)[0])
-    if(circlePosition >= ((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
-      changePose('here');
-    } 
-    else if (circlePosition <= -((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
-      changePose('notHere');
+    if (positionString != 'none'){
+      const circlePosition = Number(positionString.match(/(-?)(\d+)/)[0])
+      if(circlePosition >= ((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
+        changePose('here');
+        changeAttendenceStatus("Attending");
+        changeDecision('decided');
+      } 
+      else if (circlePosition <= -((windowSize/2-rectangleMargin-(circleDiameter/2))*0.5)) {
+        changePose('notHere');
+        changeAttendenceStatus("Missing");
+        changeDecision('decided');
+      }
+      else{
+        changePose('notDecided');
+        changeAttendenceStatus('');
+        changeDecision('notDecided');
+      }
+      changePosition(circlePosition)
     }
-    else{
-      changePose('notDecided');
-    }
-    changePosition(circlePosition)
   });
 
   return (
     <Container>
-      <RoundedRectangle>
-        <ArrowsContainer>
+      <RoundedRectangle poseKey={position} pose={pose}>
+
+        <ArrowsContainer poseKey={position} pose={decided}>
           <ArrowsLeft src={Arrows}/>
         </ArrowsContainer>
+
         <Circle onDragEnd={onDragEnd} poseKey={position} pose={pose}/>
-        <ArrowsContainer>
+
+        <AttendenceValue>
+          {attendenceStatus}
+        </AttendenceValue>
+
+        <ArrowsContainer poseKey={position} pose={decided}>
           <ArrowsRight src={Arrows}/>
         </ArrowsContainer>
+
       </RoundedRectangle>
     </Container>
         
