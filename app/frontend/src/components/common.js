@@ -7,12 +7,16 @@ import SVG from 'react-inlinesvg';
 import posed, { PoseGroup } from 'react-pose';
 
 export const theme = {
+  cards: 'white',
+  drawerSpeed: 0.2,
   main: '#4725a5',
   buttons: {
     normal: '#888888',
     selected: '#633ad6',
   },
   drawer: '#353535',
+  approved: '#22B573',
+  notApproved: '#F15A24',
   cards: 'white',
   drawerSpeed: 0.3,
   avatarSpeed: 0.3,
