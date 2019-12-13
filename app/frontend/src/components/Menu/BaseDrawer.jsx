@@ -13,35 +13,57 @@ const openDrawer = 0;
 const Body = styled(Container)`
   will-change: transform;
   &:not(.react-draggable-dragging) {
-    transition: transform ${props => props.theme.drawerSpeed}s linear;
+    transition: transform ${props => props.theme.drawerSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 
 
-export const Drawer = (props) => {
+export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onDragStart = undefined, onToggle = undefined}) => {
   const [drawer, changeDrawer] = useState({
     isOpen: false,
     pose: 'close',
     translateX: closedDrawer,
+    drawerWidth: drawerWidth,
     position: { x: 0, y: 0 }
   });
 
   const toggleDrawer = useCallback(() => {
-    changeDrawer({
+    const newDrawer = {
+      ...drawer,
       isOpen: !drawer.isOpen,
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
       position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
-    })
+    };
+    changeDrawer(newDrawer);
+    if (onToggle) {
+      onToggle({drawer: newDrawer});
+    }
+  });
+
+  const onStart = useCallback((e, data) => {
+    if (onDragStart) {
+      onDragStart({event: e, data, drawer});
+    }
   });
 
   const onStop = useCallback((e, data) => {
     const movePercent = Math.round(data.x * 100 / drawerWidth);
     const isOpen = drawer.isOpen ? movePercent > 70 : movePercent > 30;
-    changeDrawer({
+    const newDrawer = {
       ...drawer, isOpen: isOpen,
       position: { x: isOpen ? drawerWidth : 0, y: 0 }
-    })
+    };
+    if (onDragEnd) {
+      onDragEnd({event: e, data, drawer: newDrawer});
+    }
+    changeDrawer(newDrawer);
   });
+
+  const onDragCallback = useCallback((event, data) => {
+    if (onDrag) {
+      onDrag({event, data, drawer});
+    }
+  }, [onDrag]);
 
   return (
     <DrawerContext.Provider value={{ isOpen: drawer.isOpen, drawerWidth: drawerWidth, toggleDrawer: toggleDrawer }}>
@@ -52,10 +74,12 @@ export const Drawer = (props) => {
         position={drawer.position}
         positionOffset={{ x: closedDrawer, y: 0 }}
         onStop={onStop}
+        onStart={onStart}
+        onDrag={onDragCallback}
         bounds={{ left: 0, right: drawerWidth }}
       >
         <Body row stretched>
-          {props.children}
+          {children}
         </Body>
       </Draggable>
     </DrawerContext.Provider>

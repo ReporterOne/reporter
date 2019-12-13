@@ -6,7 +6,6 @@ import Overlay from './Overlay.jsx';
 import { DrawerContext } from './BaseDrawer.jsx';
 
 
-
 const Content = styled(Container)`
   width: 100vw;
 `;

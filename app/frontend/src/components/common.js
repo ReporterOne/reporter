@@ -1,17 +1,26 @@
+import React from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle, css } from 'styled-components';
-import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
+import { Rubik } from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
-
+import posed, { PoseGroup } from 'react-pose';
 
 export const theme = {
   cards: 'white',
   drawerSpeed: 0.2,
   main: '#4725a5',
+  buttons: {
+    normal: '#888888',
+    selected: '#633ad6',
+  },
   drawer: '#353535',
   approved: '#22B573',
   notApproved: '#F15A24',
+  cards: 'white',
+  drawerSpeed: 0.3,
+  avatarSpeed: 0.3,
+  animationsSpeed: 0.4
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -21,7 +30,7 @@ export const GlobalStyle = createGlobalStyle`
       font-weight: normal;
       font-style: normal;
     }
-    @import url('https://fonts.googleapis.com/css?family=Assistant&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Assistant:200,300,400,600,700,800&display=swap&subset=hebrew');
     html, body, #root {
         width: 100%;
         height: 100%;
@@ -30,7 +39,7 @@ export const GlobalStyle = createGlobalStyle`
         display: flex;
         flex: 1;
         font-family: 'Assistant', sans-serif;
-        overflow-x: hidden;
+        overflow: hidden;
     }
 `;
 
@@ -40,8 +49,8 @@ export const Icon = styled.img`
 `;
 
 export const SVGIcon = styled(SVG)`
-  width: 30px;
-  height: 30px;
+  width: ${({size=30}) => size}px;
+  height: ${({size=30}) => size}px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -55,6 +64,10 @@ export const Container = styled.div`
   background-color: ${props => props.background || 'transparent'};
 `;
 
+export const CenteredContainer = styled(Container)`
+  margin: auto;
+`;
+
 export const innerShaddow = [
   undefined,
   css`box-shadow: inset 0 0px 3px rgba(0,0,0,0.12),inset  0 0px 2px rgba(0,0,0,0.24);`,
@@ -63,6 +76,7 @@ export const innerShaddow = [
   css`box-shadow: inset 0 0px 28px rgba(0,0,0,0.25),inset  0 0px 10px rgba(0,0,0,0.22);`,
   css`box-shadow: inset 0 0px 38px rgba(0,0,0,0.30),inset  0 0px 12px rgba(0,0,0,0.22);`
 ];
+
 
 export const shadows = [
   undefined,
@@ -82,3 +96,13 @@ export const RoundedContainer = styled(Container)`
   ${props => { const i = props.shadow || 1; return shadows[i]; }}
 `;
 
+const PosedFadedContainer = posed(Container)({
+  enter: { opacity: 1, delay: 100, beforeChildren: true },
+  exit: { opacity: 0 }
+});
+
+export const FadeInContainer = ({ poseKey, ...props }) => (
+  <PoseGroup>
+    <PosedFadedContainer key={poseKey} {...props} />
+  </PoseGroup>
+);

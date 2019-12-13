@@ -27,6 +27,6 @@ async def test_me():
     return {"test": 123, "test2": 1234}
 
 
-@app.get("/")
+@app.get("/.*")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})

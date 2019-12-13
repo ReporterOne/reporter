@@ -11,11 +11,14 @@ const src = path.resolve(frontend, 'src');
 module.exports = {
   output: {
     library: 'one_report_web',
-    filename: "static/bundle.js",
-    path: dist
+    filename: "static/[name].js",
+    path: dist,
+    publicPath: '/'
   },
   entry: {
-    'js/main': path.resolve(src, 'index.js')
+    main: path.resolve(src, 'index.js'),
+    avatars: path.resolve(src, 'assets', 'avatars', 'index.js'),
+    fonts: path.resolve(src, 'assets', 'fonts', 'index.js')
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -40,8 +43,16 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader'
+        test: /\.inline.svg$/,
+        loader: 'react-svg-loader'
+      },
+      {
+        test: /^(?!.*\.inline\.svg$).*\.svg$/,
+        loader: 'svg-url-loader',
+        options: {
+          limit: 10000,
+          name: '/static/[name].[ext]'
+        }
       },
       {
         test: /\.(jpe?g|png|gif)$/i,
