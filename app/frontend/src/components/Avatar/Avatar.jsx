@@ -90,7 +90,6 @@ const sized = {
 };
 export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
-
   return (
     <AvatarContainer>
       <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
