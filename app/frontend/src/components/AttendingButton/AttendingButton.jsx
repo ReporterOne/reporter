@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { AutoSizer } from 'react-virtualized';
 
 import styled from 'styled-components';
@@ -46,8 +46,8 @@ const PosedCircle = posed.div({
       spring({ from, to, velocity, stiffness: 750, damping: 50 })
   },
   dragBounds: ({ containerWidth }) => ({
-    right: containerWidth - circleDiameter,
-    left: 0
+    right: containerWidth - circleDiameter - 3,
+    left: 3
   })
 });
 
@@ -130,8 +130,6 @@ const AttendenceValue = styled.span`
 `;
 
 const AttendingButton = (props) => {
-
-  const ref = useRef(null);
   const [pose, changePose] = useState('notDecided');
   const [position, changePosition] = useState(0);
   const [attendenceStatus, changeAttendenceStatus] = useState('');
@@ -164,7 +162,7 @@ const AttendingButton = (props) => {
 
   return (
     <Container>
-      <RoundedRectangle ref={ref} poseKey={position} pose={pose}>
+      <RoundedRectangle poseKey={position} pose={pose}>
         <AutoSizer>
           {({ height, width }) => (
             <InnerContainer style={{ height, width }}>
@@ -188,11 +186,7 @@ const AttendingButton = (props) => {
           )}
         </AutoSizer>
       </RoundedRectangle>
-
-
     </Container>
-
-
   );
 }
 
