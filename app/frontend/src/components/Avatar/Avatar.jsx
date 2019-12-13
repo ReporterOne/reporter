@@ -88,7 +88,7 @@ const sized = {
     background_size: 68
   }
 };
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 50, manual = true, innerRef = undefined, ...props }) => {
+export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
 
   return (
@@ -106,10 +106,6 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
     </AvatarContainer>
   );
 }
-
-Avatar.propTypes = {
-  type: PropTypes.number,
-};
 
 
 export default Avatar;

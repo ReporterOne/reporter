@@ -2,20 +2,14 @@ import React, { useState, useCallback } from "react";
 import { subMonths, addMonths } from "date-fns";
 import { Header, Days, Cells } from './components';
 import styled from 'styled-components';
-import posed, { PoseGroup } from 'react-pose';
 import { Swipeable } from 'react-swipeable';
-import { Container } from '~/components/common';
+import { FadeInContainer } from '~/components/common';
 
 const StyledSwipeable = styled(Swipeable)`
     flex: 1;
     display: flex;
     flex-direction: column;
 `;
-
-const PosedContainer = posed(Container)({
-    enter: { opacity: 1, delay: 100, beforeChildren: true },
-    exit: { opacity: 0 }
-});
 
 const Calendar = (props) => {
     const date = new Date()
@@ -36,13 +30,11 @@ const Calendar = (props) => {
 
     return (
         <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}>
-            <PoseGroup>
-                <PosedContainer stretched key={currentDate}>
-                    <Header currentDate={currentDate} selectedDate={selectedDate} />
-                    <Days currentDate={currentDate} />
-                    <Cells currentDate={currentDate} onDateClick={onDateClick} />
-                </PosedContainer>
-            </PoseGroup>
+            <FadeInContainer stretched poseKey={currentDate}>
+                <Header currentDate={currentDate} selectedDate={selectedDate} />
+                <Days currentDate={currentDate} />
+                <Cells currentDate={currentDate} onDateClick={onDateClick} />
+            </FadeInContainer>
         </StyledSwipeable>
 
     );

@@ -12,7 +12,8 @@ module.exports = {
   output: {
     library: 'one_report_web',
     filename: "static/[name].js",
-    path: dist
+    path: dist,
+    publicPath: '/'
   },
   entry: {
     main: path.resolve(src, 'index.js'),
@@ -50,7 +51,7 @@ module.exports = {
         loader: 'svg-url-loader',
         options: {
           limit: 10000,
-          name: 'static/[name].[ext]'
+          name: '/static/[name].[ext]'
         }
       },
       {

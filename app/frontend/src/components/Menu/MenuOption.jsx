@@ -1,12 +1,13 @@
 
 import React, { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 
 
 const StyledOptionButton = styled(({ selected, ...props }) => (
-  <Button classes={{ containedPrimary: "primary" }} {...props} />
+  <Button classes={{ containedPrimary: "primary", label: "label" }} {...props} />
 ))`
   border-radius: 50%;
   width: 45px;
@@ -15,10 +16,25 @@ const StyledOptionButton = styled(({ selected, ...props }) => (
   position: relative;
   padding: 0;
   min-width: unset;
-  background-color: ${({ selected, theme }) => selected? theme.buttons.selected : theme.buttons.normal};
+  background-color: ${({ theme }) => theme.buttons.normal};
   &&:hover {
-    background-color: ${({ selected, theme }) => selected? theme.buttons.selected : theme.buttons.normal};
+    background-color: ${({ theme }) => theme.buttons.normal};
   }
+
+  & .label {
+    fill: lightgray;
+  }
+
+  &&.selected {
+    background-color: ${({ theme }) => theme.buttons.selected};
+  }
+`;
+
+const StyledLink = styled(NavLink)`
+    text-decoration: none;
+    &:focus, &:hover, &:visited, &:link, &:active {
+        text-decoration: none;
+    }
 `;
 
 const OptionWrapper = styled.div`
@@ -27,11 +43,11 @@ const OptionWrapper = styled.div`
 `;
 
 
-export const Option = ({selected=false}) => {
+export const Option = ({ path, selected = false, ...props }) => {
   return (
     <OptionWrapper>
-      <StyledOptionButton color="primary" variant="contained" selected={selected}>
-      </StyledOptionButton>
+        <StyledOptionButton color="primary" variant="contained" selected={selected}  activeClassName="selected" exact
+                            component={StyledLink} to={path} {...props}/>
     </OptionWrapper>
   );
 }
