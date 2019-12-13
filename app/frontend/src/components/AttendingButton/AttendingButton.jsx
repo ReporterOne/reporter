@@ -14,9 +14,10 @@ import posed from 'react-pose';
 import { spring } from "popmotion";
 
 const ContainerHeight = 50;
-const windowSize = window.innerWidth;
-const circleDiameter = ContainerHeight - 6;
-const rectangleMargin = 25;
+const rectangleMargin = 15;
+const outlinePadding = 3;
+const circleDiameter = ContainerHeight - outlinePadding * 2;
+
 
 const PosedRRoundedRectangle = posed.div({
   notHere: {
@@ -33,10 +34,10 @@ const PosedRRoundedRectangle = posed.div({
 const PosedCircle = posed.div({
   draggable: 'x',
   notHere: {
-    x: ({ containerWidth }) => 3
+    x: ({ containerWidth }) => outlinePadding
   },
   here: {
-    x: ({ containerWidth }) => containerWidth - circleDiameter - 3
+    x: ({ containerWidth }) => containerWidth - circleDiameter - outlinePadding
   },
   notDecided: {
     x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
@@ -46,8 +47,8 @@ const PosedCircle = posed.div({
       spring({ from, to, velocity, stiffness: 750, damping: 50 })
   },
   dragBounds: ({ containerWidth }) => ({
-    right: containerWidth - circleDiameter - 3,
-    left: 3
+    right: containerWidth - circleDiameter - outlinePadding,
+    left: outlinePadding
   })
 });
 
@@ -71,7 +72,7 @@ const RoundedRectangle = styled(PosedRRoundedRectangle)`
   margin-left: ${rectangleMargin}px; 
   margin-right: ${rectangleMargin}px;
   flex-direction: row;
-  border-radius: ${windowSize}px;
+  border-radius: ${ContainerHeight / 2}px;
   ${innerShaddow[4]}
 `;
 
