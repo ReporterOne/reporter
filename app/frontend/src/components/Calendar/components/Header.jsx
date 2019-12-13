@@ -13,15 +13,15 @@ const Container = styled.div`
 `;
 const MonthName = styled.span`
   font-size: 2rem;
-  font-weight: lighter;
-  color: rgb(130, 130, 130);
+  font-weight: normal;
+  color: rgb(110, 110, 110);
   text-align: center;
 `;
 const YearNumber = styled.span`
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: rgb(160, 160, 160);
-  letter-spacing: 0.1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: rgb(190, 190, 190);
+  /* letter-spacing: 0.1rem; */
 `;
 
 const Header = (props) => {

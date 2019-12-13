@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 import styled from 'styled-components';
 import { Container } from '~/components/common';
-import { Swipeable } from 'react-swipeable';
 
 
 const OverlayFiller = styled(Container)`
@@ -20,11 +19,9 @@ const OverlayFiller = styled(Container)`
 `;
 
 
-export const Overlay = ({innerRef, onSwipedLeft, onSwiping, ...props}) => {
+export const Overlay = ({ innerRef, onSwipedLeft, onSwiping, ...props }) => {
   return (
-    <Swipeable onSwiping={onSwiping} onSwipedLeft={onSwipedLeft}>
-      <OverlayFiller ref={innerRef} {...props} onClick={props.onClick}></OverlayFiller>
-    </Swipeable>
+    <OverlayFiller ref={innerRef} {...props} onClick={props.onClick}></OverlayFiller>
   )
 }
 
@@ -32,8 +29,6 @@ export const Overlay = ({innerRef, onSwipedLeft, onSwiping, ...props}) => {
 Overlay.propTypes = {
   isOpen: PropTypes.bool,
   onClick: PropTypes.func,
-  onSwiping: PropTypes.func,
-  onSwipedLeft: PropTypes.func,
 }
 
 
