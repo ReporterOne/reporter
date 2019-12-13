@@ -1,9 +1,10 @@
+import React from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle, css } from 'styled-components';
 import { Rubik } from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
-
+import posed, { PoseGroup } from 'react-pose';
 
 export const theme = {
   main: '#4725a5',
@@ -14,7 +15,8 @@ export const theme = {
   drawer: '#353535',
   cards: 'white',
   drawerSpeed: 0.3,
-  avatarSpeed: 0.3
+  avatarSpeed: 0.3,
+  animationsSpeed: 0.4
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -33,7 +35,7 @@ export const GlobalStyle = createGlobalStyle`
         display: flex;
         flex: 1;
         font-family: 'Assistant', sans-serif;
-        overflow-x: hidden;
+        overflow: hidden;
     }
 `;
 
@@ -90,3 +92,13 @@ export const RoundedContainer = styled(Container)`
   ${props => { const i = props.shadow || 1; return shadows[i]; }}
 `;
 
+const PosedFadedContainer = posed(Container)({
+  enter: { opacity: 1, delay: 100, beforeChildren: true },
+  exit: { opacity: 0 }
+});
+
+export const FadeInContainer = ({ poseKey, ...props }) => (
+  <PoseGroup>
+    <PosedFadedContainer key={poseKey} {...props} />
+  </PoseGroup>
+);

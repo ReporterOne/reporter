@@ -107,9 +107,5 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
   );
 }
 
-Avatar.propTypes = {
-  type: PropTypes.number,
-};
-
 
 export default Avatar;
