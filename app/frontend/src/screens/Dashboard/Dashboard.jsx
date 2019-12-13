@@ -2,9 +2,9 @@ import React from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
 
-import { Container, RoundedContainer, CenteredContainer, theme } from '~/components/common';
+import { Container, RoundedContainer, theme } from '~/components/common';
 import Calender from '~/components/Calendar';
-import { fromStringWithSourceMap } from "source-list-map";
+import AttendingButton from '~/components/AttendingButton';
 
 
 const HeaderWelcome = styled.h2`
@@ -20,6 +20,7 @@ const HeaderName = styled(Textfit)`
   font-weight: 300;
   margin-left: 5%;
 `;
+        
 
 const WelcomeMessage = styled(Container)`
   padding: 0px 20px;
@@ -45,6 +46,7 @@ const Dashboard = (props) => {
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{name}</HeaderName>
         </WelcomeMessage>
+        <AttendingButton />
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
         <Calender />

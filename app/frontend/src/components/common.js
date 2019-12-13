@@ -62,6 +62,16 @@ export const CenteredContainer = styled(Container)`
   margin: auto;
 `;
 
+export const innerShaddow = [
+  undefined,
+  css`box-shadow: inset 0 0px 3px rgba(0,0,0,0.12),inset  0 0px 2px rgba(0,0,0,0.24);`,
+  css`box-shadow: inset 0 0px 6px rgba(0,0,0,0.16),inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 20px rgba(0,0,0,0.19),inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 28px rgba(0,0,0,0.25),inset  0 0px 10px rgba(0,0,0,0.22);`,
+  css`box-shadow: inset 0 0px 38px rgba(0,0,0,0.30),inset  0 0px 12px rgba(0,0,0,0.22);`
+];
+
+
 export const shadows = [
   undefined,
   css`box-shadow: 0 0px 3px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.24);`,

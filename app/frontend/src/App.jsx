@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import Menu from '~/components/Menu'
+import { GlobalStyle, Container, theme } from '~/components/common';
+import Dashboard from '@/Dashboard';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
-import { GlobalStyle, theme, Container } from '~/components/common';
-import { Dashboard } from '~/screens';
 import AppContext from './AppContext.jsx';
 import Avatar from './components/Avatar/Avatar.jsx';
 import Option from './components/Menu/MenuOption.jsx';
