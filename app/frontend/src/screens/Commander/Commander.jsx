@@ -48,6 +48,7 @@ const AvatarsWrapper = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
   align-items: center;
+  height: 100%;
 `;
 
 const AvatarsContainer = styled.div`
