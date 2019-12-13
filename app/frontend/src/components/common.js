@@ -7,6 +7,10 @@ import SVG from 'react-inlinesvg';
 
 export const theme = {
   main: '#4725a5',
+  buttons: {
+    normal: '#888888',
+    selected: '#633ad6',
+  },
   drawer: '#353535',
   cards: 'white',
   drawerSpeed: 0.3,

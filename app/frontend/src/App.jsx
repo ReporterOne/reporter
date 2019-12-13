@@ -7,10 +7,11 @@ import { GlobalStyle, theme, Container } from '~/components/common';
 import { Dashboard } from '~/screens';
 import AppContext from './AppContext.jsx';
 import Avatar from './components/Avatar/Avatar.jsx';
+import Option from './components/Menu/MenuOption.jsx';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
-  padding: 25px 0;
+  padding: 25px 0 10px 0;
 `;
 
 const Separator = styled.div`
@@ -18,6 +19,10 @@ const Separator = styled.div`
   width: 70%;
   background-color: #888888;
   margin: 15px 0;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
 `;
 
 const App = (props) => {
@@ -50,9 +55,18 @@ const App = (props) => {
             <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
               onDragEnd={onDrawerDragEnd}>
               <DrawerMenu>
-                <OptionsContainer>
+                <OptionsContainer stretched>
                   <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef}/>
                   <Separator />
+                  <Option selected />
+                  <Option />
+                  <Option />
+                  <Spacer />
+                  <Separator />
+                  <Container>
+                    <Option />
+                    <Option />
+                  </Container>
                 </OptionsContainer>
               </DrawerMenu>
               <DrawerContent>
