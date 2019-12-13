@@ -4,18 +4,19 @@ const common = require('./webpack.common.js');
 
 
 module.exports = merge(common, {
-    devtool: "eval-source-map",
-    mode: 'development',
-    devServer: {
-        contentBase: common.output.path,
-        watchContentBase: true,
-        host: "0.0.0.0",
-        disableHostCheck: true,
-        port: 8000,
-        hot: true,
-        proxy: [{
-            context: ["**", "!/static/**", "!*.js"],
-            target: 'http://0.0.0.0:8443'
-        }],
-    },
+  devtool: "eval-source-map",
+  mode: 'development',
+  devServer: {
+    contentBase: common.output.path,
+    watchContentBase: true,
+    host: "0.0.0.0",
+    disableHostCheck: true,
+    port: 8000,
+    historyApiFallback: true,
+    hot: true,
+    proxy: [{
+      context: ["/api/**"],
+      target: 'http://0.0.0.0:8443'
+    }],
+  },
 });

@@ -1,14 +1,14 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import Menu from '~/components/Menu'
 import { GlobalStyle, Container, theme } from '~/components/common';
 import Dashboard from '@/Dashboard';
+import Commander from '@/Commander';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
 import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
 import AppContext from './AppContext.jsx';
-import Avatar from './components/Avatar/Avatar.jsx';
-import Option from './components/Menu/MenuOption.jsx';
+import Avatar from '~/components/Avatar/Avatar.jsx';
+import Option from '~/components/Menu/MenuOption.jsx';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -73,6 +73,9 @@ const App = (props) => {
               <DrawerContent>
                 <Router>
                   <Switch>
+                    <Route path="/commander">
+                      <Commander />
+                    </Route>
                     <Route path="/">
                       <Dashboard />
                     </Route>
