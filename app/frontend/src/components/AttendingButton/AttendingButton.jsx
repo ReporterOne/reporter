@@ -19,13 +19,13 @@ const rectangleMargin = 25;
 
 const PosedRRoundedRectangle = posed.div({
   notHere: {
-    backgroundColor: theme["notApproved"]
+    backgroundColor: theme.notApproved
   },
   here: {
-    backgroundColor: theme["approved"]
+    backgroundColor: theme.approved
   },
   notDecided: {
-    backgroundColor: theme["main"]
+    backgroundColor: theme.main
   },
 });
 
