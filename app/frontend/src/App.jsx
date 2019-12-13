@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import { GlobalStyle, Container, theme } from '~/components/common';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
 import Dashboard from '@/Dashboard';
 import Commander from '@/Commander';
 import { StylesProvider } from '@material-ui/core/styles';
@@ -9,6 +9,8 @@ import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
 import AppContext from './AppContext.jsx';
 import Avatar from '~/components/Avatar/Avatar.jsx';
 import Option from '~/components/Menu/MenuOption.jsx';
+import dashboardIconUrl from '~/assets/dashboard.svg';
+import commanderIconUrl from '~/assets/whistle.svg';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -32,19 +34,19 @@ const App = (props) => {
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
-    if(avatar.manual !== true) changeAvatar({ ...avatar, manual: true });
-    if(avatarRef.current) {
+    if (avatar.manual !== true) changeAvatar({ ...avatar, manual: true });
+    if (avatarRef.current) {
       avatarRef.current.style.transform = `translateY(${100 - movePercent}%)`;
     }
   }, [avatar, avatarRef]);
 
   const onDrawerToggle = useCallback(({ drawer }) => {
-    changeAvatar({ ...avatar, appearing: drawer.isOpen? 100 : 0})
+    changeAvatar({ ...avatar, appearing: drawer.isOpen ? 100 : 0 })
   }, [avatar]);
 
 
-  const onDrawerDragEnd = useCallback(({drawer, event}) => {
-    changeAvatar({ ...avatar, manual: false, appearing: drawer.isOpen? 100 : 0})
+  const onDrawerDragEnd = useCallback(({ drawer, event }) => {
+    changeAvatar({ ...avatar, manual: false, appearing: drawer.isOpen ? 100 : 0 })
   }, [avatar]);
 
   return (
@@ -53,25 +55,26 @@ const App = (props) => {
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <AppContext.Provider value={{}}>
-            <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-              onDragEnd={onDrawerDragEnd}>
-              <DrawerMenu>
-                <OptionsContainer stretched>
-                  <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef}/>
-                  <Separator />
-                  <Option selected />
-                  <Option />
-                  <Option />
-                  <Spacer />
-                  <Separator />
-                  <Container>
-                    <Option />
-                    <Option />
-                  </Container>
-                </OptionsContainer>
-              </DrawerMenu>
-              <DrawerContent>
-                <Router>
+            <Router>
+              <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
+                onDragEnd={onDrawerDragEnd}>
+                <DrawerMenu>
+                  <OptionsContainer stretched>
+                    <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} />
+                    <Separator />
+                    <Option selected path="/">
+                      <SVGIcon src={dashboardIconUrl} size={20} />
+                    </Option>
+                    <Option path="/commander">
+                      <SVGIcon src={commanderIconUrl} size={20} />
+                    </Option>
+                    <Spacer />
+                    <Separator />
+                    <Container>
+                    </Container>
+                  </OptionsContainer>
+                </DrawerMenu>
+                <DrawerContent>
                   <Switch>
                     <Route path="/commander">
                       <Commander />
@@ -80,9 +83,9 @@ const App = (props) => {
                       <Dashboard />
                     </Route>
                   </Switch>
-                </Router>
-              </DrawerContent>
-            </Drawer>
+                </DrawerContent>
+              </Drawer>
+            </Router>
           </AppContext.Provider>
         </ThemeProvider>
       </StylesProvider>

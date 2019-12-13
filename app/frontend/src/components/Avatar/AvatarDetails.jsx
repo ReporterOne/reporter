@@ -9,6 +9,7 @@ const AvatarWrapper = styled(Container)`
   opacity: ${({faded}) => faded? 0.5 : 1};
   will-change: opacity;
   transition: opacity ${({theme}) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+  align-items: center;
 `;
 
 const Name = styled(Container)`

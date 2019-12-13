@@ -8,7 +8,7 @@ import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 
 const Header = styled(Container)`
-  padding: 0 0 15px 0;
+  padding: 0 0 25px 0;
   height: 60px;
   flex: unset;
   justify-content: center;
@@ -54,6 +54,7 @@ const AvatarsWrapper = styled.div`
 const AvatarsContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding: 0 10px;
 `;
 
 const users = [

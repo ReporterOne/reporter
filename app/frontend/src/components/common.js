@@ -45,8 +45,8 @@ export const Icon = styled.img`
 `;
 
 export const SVGIcon = styled(SVG)`
-  width: 30px;
-  height: 30px;
+  width: ${({size=30}) => size}px;
+  height: ${({size=30}) => size}px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
