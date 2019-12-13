@@ -33,27 +33,21 @@ const PosedRRoundedRectangle = posed.div({
 const PosedCircle = posed.div({
   draggable: 'x',
   notHere: {
-    x: ({ containerWidth }) => {
-      console.log(containerWidth);
-      return -(containerWidth / 2 - (circleDiameter / 2) - 3)
-    }
+    x: ({ containerWidth }) => 3
   },
   here: {
-    x: ({ containerWidth }) => {
-      console.log(containerWidth);
-      return containerWidth / 2 - (circleDiameter / 2) - 3
-    }
+    x: ({ containerWidth }) => containerWidth - circleDiameter - 3
   },
   notDecided: {
-    x: 0
+    x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
   },
   dragEnd: {
     transition: ({ from, to, velocity }) =>
       spring({ from, to, velocity, stiffness: 750, damping: 50 })
   },
   dragBounds: ({ containerWidth }) => ({
-    right: containerWidth / 2,
-    left: -containerWidth / 2
+    right: containerWidth - circleDiameter,
+    left: 0
   })
 });
 
@@ -70,20 +64,30 @@ const Container = styled.div`
 `;
 
 const RoundedRectangle = styled(PosedRRoundedRectangle)`
+  position: relative;
   display: flex;
   flex: 1;
   height: ${ContainerHeight}px;
   margin-left: ${rectangleMargin}px; 
   margin-right: ${rectangleMargin}px;
   flex-direction: row;
-  align-items: center;
   border-radius: ${windowSize}px;
   ${innerShaddow[4]}
 `;
 
 const InnerContainer = styled.div`
   display: flex;
-  flex: d
+  align-items: center;
+`;
+
+const InnerComponents = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
 `;
 
 const Circle = styled(PosedCircle)`
@@ -92,6 +96,7 @@ const Circle = styled(PosedCircle)`
   background-color: #ffffff;
   border-radius: 50%;
   display: inline-block;
+  z-index: 1;
 `;
 
 const ArrowsContainer = styled(PosedArrowsContainer)`
@@ -117,7 +122,6 @@ const ArrowsRight = styled(SVGIcon)`
 
 `;
 const AttendenceValue = styled.span`
-  position: absolute;
   color: white;
   display: flex;
   font-weight: normal;
@@ -133,27 +137,29 @@ const AttendingButton = (props) => {
   const [attendenceStatus, changeAttendenceStatus] = useState('');
   const [decided, changeDecision] = useState('notDecided');
 
-  const onDragEnd = useCallback((e) => {
-    const positionString = e.path[0].style.transform
-    if (positionString != 'none') {
-      const circlePosition = Number(positionString.match(/(-?)(\d+)/)[0])
-      if (circlePosition >= ((windowSize / 2 - rectangleMargin - (circleDiameter / 2)) * 0.5)) {
-        changePose('here');
-        changeAttendenceStatus("Attending");
-        changeDecision('decided');
-      }
-      else if (circlePosition <= -((windowSize / 2 - rectangleMargin - (circleDiameter / 2)) * 0.5)) {
-        changePose('notHere');
-        changeAttendenceStatus("Missing");
-        changeDecision('decided');
-      }
-      else {
-        changePose('notDecided');
-        changeAttendenceStatus('');
-        changeDecision('notDecided');
-      }
-      changePosition(circlePosition)
+  const onDragEnd = useCallback(width => e => {
+    let circlePosition = 0;
+    try {
+      const positionString = e.path[0].style.transform
+      circlePosition = Number(positionString.match(/(-?)(\d+)/)[0]);
     }
+    catch (error) { }
+    if (circlePosition >= ((width - circleDiameter) * 0.5) + 70) {
+      changePose('here');
+      changeAttendenceStatus("Attending");
+      changeDecision('decided');
+    }
+    else if (circlePosition <= ((width - circleDiameter) * 0.5) - 70) {
+      changePose('notHere');
+      changeAttendenceStatus("Missing");
+      changeDecision('decided');
+    }
+    else {
+      changePose('notDecided');
+      changeAttendenceStatus('');
+      changeDecision('notDecided');
+    }
+    changePosition(circlePosition)
   });
 
   return (
@@ -161,21 +167,24 @@ const AttendingButton = (props) => {
       <RoundedRectangle ref={ref} poseKey={position} pose={pose}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ height, width, display: 'flex' }} className="testME">
-              <ArrowsContainer poseKey={position} pose={decided}>
-                <ArrowsLeft src={Arrows} />
-              </ArrowsContainer>
-
-              <Circle onDragEnd={onDragEnd} poseKey={position} containerWidth={width} pose={pose} />
-
-              <AttendenceValue>
-                {attendenceStatus}
-              </AttendenceValue>
-
-              <ArrowsContainer poseKey={position} pose={decided}>
-                <ArrowsRight src={Arrows} />
-              </ArrowsContainer>
-            </div>
+            <InnerContainer style={{ height, width }}>
+              <InnerComponents style={{ height, width }}>
+                <Spacer />
+                <ArrowsContainer poseKey={position} pose={decided}>
+                  <ArrowsLeft src={Arrows} />
+                </ArrowsContainer>
+                <Spacer />
+                <AttendenceValue>
+                  {attendenceStatus}
+                </AttendenceValue>
+                <Spacer />
+                <ArrowsContainer poseKey={position} pose={decided}>
+                  <ArrowsRight src={Arrows} />
+                </ArrowsContainer>
+                <Spacer />
+              </InnerComponents>
+              <Circle key={width} onDragEnd={onDragEnd(width)} poseKey={position} containerWidth={width} pose={pose} />
+            </InnerContainer>
           )}
         </AutoSizer>
       </RoundedRectangle>
