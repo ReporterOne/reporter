@@ -102,8 +102,9 @@ const users = [
   },
 ]
 
-export const Commander = (props) => {
+export const Commander = React.memo((props) => {
   const [selectedSoldier, changeSelectedSoldier] = useState(null);
+  const [status, changeStatus] = useState("notDecided");
 
   return (
     <Container stretched>
@@ -111,7 +112,7 @@ export const Commander = (props) => {
         <FadeInContainer poseKey={selectedSoldier === null}>
           {
             selectedSoldier ?
-              <AttendingButton />
+              <AttendingButton key={selectedSoldier} pose={status} changePose={changeStatus}/>
               :
               <WelcomeMessage>
                 <HeaderWelcome>Hello,</HeaderWelcome>
@@ -141,6 +142,6 @@ export const Commander = (props) => {
       </SubjectDrawer>
     </Container>
   );
-}
+});
 
 export default Commander;

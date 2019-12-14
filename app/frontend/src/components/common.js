@@ -8,7 +8,6 @@ import posed, { PoseGroup } from 'react-pose';
 
 export const theme = {
   cards: 'white',
-  drawerSpeed: 0.2,
   main: '#4725a5',
   buttons: {
     normal: '#888888',
@@ -19,6 +18,7 @@ export const theme = {
   notApproved: '#F15A24',
   cards: 'white',
   drawerSpeed: 0.3,
+  handleSpeed: 0.3,
   avatarSpeed: 0.3,
   animationsSpeed: 0.4
 }
