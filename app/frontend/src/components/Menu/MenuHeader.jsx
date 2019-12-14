@@ -1,14 +1,37 @@
 import React from 'react';
-import {Container, StyledIconButton, SVGIcon } from '~/components/common';
+import styled from 'styled-components';
+import { Switch, Route } from 'react-router-dom'
+import { Container, StyledIconButton, SVGIcon } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 
 
-export const MenuHeader = React.memo((props) => {
+const TitleWrapper = styled(Container)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PageTitle = styled.h3`
+  color: white;
+  font-weight: 600;
+`;
+
+
+export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
   return (
     <Container row>
-      <StyledIconButton onClick={props.onMenuClick}>
-        <SVGIcon src={iconUrl}/>
+      <StyledIconButton onClick={onMenuClick} style={{ zIndex: 1 }}>
+        <SVGIcon src={iconUrl} />
       </StyledIconButton>
+      <TitleWrapper>
+        <PageTitle>
+          {titleComponent()}
+        </PageTitle>
+      </TitleWrapper>
     </Container>
   );
 });

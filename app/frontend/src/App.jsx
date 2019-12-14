@@ -12,6 +12,7 @@ import AppContext from './AppContext.jsx';
 
 const App = (props) => {
   const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
+  const [pageTitle, changePageTitle] = useState("");
   const avatarRef = useRef(null);
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
@@ -36,14 +37,28 @@ const App = (props) => {
       <StylesProvider injectFirst>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
-          <AppContext.Provider value={{}}>
+          <AppContext.Provider value={{
+            pageTitle: ""
+          }}>
             <Router>
               <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
                 onDragEnd={onDrawerDragEnd}>
                 <DrawerMenu>
                   <Menu avatar={avatar} avatarRef={avatarRef} />
                 </DrawerMenu>
-                <DrawerContent>
+                <DrawerContent
+                  titleComponent={() => (
+                    <Switch>
+                      <Route path="/operator">
+                        Operator Space
+                      </Route>
+                      <Route path="/commander">
+                        Commander Space
+                      </Route>
+                      <Route path="/">
+                      </Route>
+                    </Switch>
+                  )}>
                   <Switch>
                     <Route path="/operator">
                       <Operator />

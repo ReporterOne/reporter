@@ -22,6 +22,7 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
   const [drawer, changeDrawer] = useState({
     isOpen: false,
     pose: 'close',
+    pageTitle: '',
     translateX: closedDrawer,
     drawerWidth: drawerWidth,
     position: { x: 0, y: 0 }
