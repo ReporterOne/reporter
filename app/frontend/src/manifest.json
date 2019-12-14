@@ -1,7 +1,7 @@
 {
   "short_name": "One Report App",
   "name": "One Report Applicaion",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#4725a5"

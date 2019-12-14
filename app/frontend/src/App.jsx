@@ -36,7 +36,7 @@ const App = (props) => {
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
-    if (avatar.manual !== true) changeAvatar({ ...avatar, manual: true });
+    if (avatar.manual !== true) changeAvatar({ ...avatar, manual: true, appearing: NaN });
     if (avatarRef.current) {
       avatarRef.current.style.transform = `translateY(${100 - movePercent}%)`;
     }
