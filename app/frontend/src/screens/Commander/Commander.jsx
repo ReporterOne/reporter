@@ -62,37 +62,43 @@ const users = [
     name: "Ariel Domb",
     avatar: {
       kind: 12
-    }
+    },
+    status: "here"
   },
   {
     name: "Elran Shefer",
     avatar: {
       kind: 13
-    }
+    },
+    status: "not_answered"
   },
   {
     name: "Michael Tugendhaft",
     avatar: {
       kind: 14
-    }
+    },
+    status: "not_here"
   },
   {
     name: "Osher De Paz",
     avatar: {
       kind: 15
-    }
+    },
+    status: "not_here"
   },
   {
     name: "Nimrod Erez",
     avatar: {
       kind: 17
-    }
+    },
+    status: "here"
   },
   {
     name: "Ido Azulay",
     avatar: {
       kind: 18
-    }
+    },
+    status: "here"
   },
 ]
 
@@ -126,7 +132,9 @@ export const Commander = (props) => {
                 onClick={() => { changeSelectedSoldier( selectedSoldier !== user ? user : null) }}
                 name={user.name}
                 isFaded={selectedSoldier && user !== selectedSoldier}
-                kind={user.avatar.kind} />
+                kind={user.avatar.kind} 
+                status={user.status}
+                />
             ))}
           </AvatarsContainer>
         </AvatarsWrapper>

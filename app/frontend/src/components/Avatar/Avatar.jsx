@@ -58,6 +58,24 @@ const BackgroundBottomHalf = styled(Background)`
 `;
 
 
+const statusColors = {
+  here: "#22b573",
+  not_here: "#f15a24",
+  not_answered: "#a0a0a0"
+}
+
+
+
+const Status = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: ${({offset = 0}) => offset}px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: ${({status}) => status ? statusColors[status] : "transperant"};
+`;
+
 
 const avatarsAvailable = [
   Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
@@ -69,26 +87,31 @@ const avatarsAvailable = [
 const sized = {
   normal: {
     avatarSize: 52,
-    background_size: 48
+    background_size: 48,
+    statusOffset: 0
   },
   small: {
     avatarSize: 42,
-    background_size: 38
+    background_size: 38,
+    statusOffset: 0
   },
   smaller: {
     avatarSize: 32,
-    background_size: 28
+    background_size: 28,
+    statusOffset: 0
   },
   big: {
     avatarSize: 62,
-    background_size: 58
+    background_size: 58,
+    statusOffset: 5
   },
   bigger: {
     avatarSize: 72,
-    background_size: 68
+    background_size: 68,
+    statusOffset: 7
   }
 };
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, ...props }) => {
+export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, status = undefined, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
 
   return (
@@ -103,6 +126,7 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
             transform: `translateY(${(100 - appearing)}%)`,
           }} />
       </BackgroundBottomHalf>
+      <Status status={status} offset={style.statusOffset} />
     </AvatarContainer>
   );
 }
