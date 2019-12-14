@@ -37,9 +37,7 @@ const App = (props) => {
       <StylesProvider injectFirst>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
-          <AppContext.Provider value={{
-            pageTitle: ""
-          }}>
+          <AppContext.Provider value={{}}>
             <Router>
               <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
                 onDragEnd={onDrawerDragEnd}>
