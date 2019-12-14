@@ -8,8 +8,8 @@ import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 
 const Header = styled(Container)`
-  padding: 0 0 25px 0;
-  height: 60px;
+  padding: 0 0 30px 0;
+  height: 80px;
   flex: unset;
   justify-content: center;
 `;
