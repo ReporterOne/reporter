@@ -1,106 +1,52 @@
 import React, { useState } from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
+import { users } from '~/utils';
 
-import { Container, RoundedContainer, theme, FadeInContainer } from '~/components/common';
-import Calender from '~/components/Calendar';
-import AttendingButton from '~/components/AttendingButton';
+import { Container } from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
+import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
 
-const Header = styled(Container)`
-  padding: 0 0 25px 0;
-  height: 60px;
-  flex: unset;
-  justify-content: center;
+
+const Missing = styled(Container)`
+  padding: 15px;  
 `;
 
-const WelcomeMessage = styled(Container)`
-  padding: 0px 50px;
-  margin: auto;
+const TheRest = styled.div`
+  padding: 15px;
+  /* flex-flow: row wrap;
+  justify-content: space-between; */
+display: grid; /* 1 */
+  grid-template-columns: repeat(auto-fill, 70px); /* 2 */
+  justify-content: space-between; /* 4 */
+  /* &::after {
+    content: "";
+    flex: auto;
+  } */
 `;
-
-const HeaderWelcome = styled.h2`
-  margin: 0;
-  margin-left: -12%;
-  color: white;
-  font-weight: 600;
-  font-size: 1.4rem;
-`;
-
-const HeaderName = styled.h2`
-  margin: 0;
-  color: white;
-  font-weight: 300;
-  font-size: 2rem;
-`;
-
-const SubjectDrawer = styled(Container)`
-  height: 120px;
-  flex: unset;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.drawer};
-  overflow: hidden;
-  position: relative;
-`;
-
-const AvatarsWrapper = styled.div`
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  align-items: center;
-  height: 100%;
-`;
-
-const AvatarsContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 0 10px;
-`;
-
-const users = [
-  {
-    name: "Ariel Domb",
-    avatar: {
-      kind: 12
-    }
-  },
-  {
-    name: "Elran Shefer",
-    avatar: {
-      kind: 13
-    }
-  },
-  {
-    name: "Michael Tugendhaft",
-    avatar: {
-      kind: 14
-    }
-  },
-  {
-    name: "Osher De Paz",
-    avatar: {
-      kind: 15
-    }
-  },
-  {
-    name: "Nimrod Erez",
-    avatar: {
-      kind: 17
-    }
-  },
-  {
-    name: "Ido Azulay",
-    avatar: {
-      kind: 18
-    }
-  },
-]
 
 export const Operator = (props) => {
 
   return (
     <Container stretched>
-
+      <Missing>
+        {
+          users.filter(user => user.status === "not_here").map(user => (
+            <AvatarExpanded kind={user.avatar.kind} name={user.name} details={user.reason} status={user.status} />
+          ))
+        }
+      </Missing>
+      <TheRest row>
+        {
+          users.filter(user => user.status !== "not_here").sort((user1, user2) => {
+            if (user1.status === user2.status) return 0;
+            if (user1.status === "here" && user2.status === "not_answered") return 1;
+            if (user2.status === "here" && user1.status === "not_answered") return -1;
+          }).map(user => (
+            <AvatarDetails kind={user.avatar.kind} name={user.name} status={user.status} />
+          ))
+        }
+      </TheRest>
     </Container>
   );
 }

@@ -6,6 +6,7 @@ import { Container, RoundedContainer, theme, FadeInContainer } from '~/component
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
+import {users} from '~/utils';
 
 const Header = styled(Container)`
   padding: 0 0 30px 0;
@@ -44,6 +45,7 @@ const SubjectDrawer = styled(Container)`
 `;
 
 const AvatarsWrapper = styled.div`
+  z-index: 1;
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;
@@ -57,50 +59,6 @@ const AvatarsContainer = styled.div`
   padding: 0 10px;
 `;
 
-const users = [
-  {
-    name: "Ariel Domb",
-    avatar: {
-      kind: 12
-    },
-    status: "here"
-  },
-  {
-    name: "Elran Shefer",
-    avatar: {
-      kind: 13
-    },
-    status: "not_answered"
-  },
-  {
-    name: "Michael Tugendhaft",
-    avatar: {
-      kind: 14
-    },
-    status: "not_here"
-  },
-  {
-    name: "Osher De Paz",
-    avatar: {
-      kind: 15
-    },
-    status: "not_here"
-  },
-  {
-    name: "Nimrod Erez",
-    avatar: {
-      kind: 17
-    },
-    status: "here"
-  },
-  {
-    name: "Ido Azulay",
-    avatar: {
-      kind: 18
-    },
-    status: "here"
-  },
-]
 
 export const Commander = React.memo((props) => {
   const [selectedSoldier, changeSelectedSoldier] = useState(null);
