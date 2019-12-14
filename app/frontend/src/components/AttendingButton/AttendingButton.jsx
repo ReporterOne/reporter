@@ -3,6 +3,7 @@ import { AutoSizer } from 'react-virtualized';
 
 import styled from 'styled-components';
 import Arrows from '~/assets/Arrows.svg';
+import Draggable from 'react-draggable';
 
 import {
   SVGIcon,
@@ -33,6 +34,8 @@ const PosedRRoundedRectangle = posed.div({
 
 const PosedCircle = posed.div({
   draggable: 'x',
+  enter: {},
+  exit: {},
   notHere: {
     x: ({ containerWidth }) => outlinePadding
   },
@@ -42,10 +45,13 @@ const PosedCircle = posed.div({
   notDecided: {
     x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
   },
-  dragBounds: ({ containerWidth }) => ({
-    right: containerWidth - circleDiameter - outlinePadding,
-    left: outlinePadding
-  })
+  dragBounds: ({ containerWidth }) => {
+    console.log("bounds: ", containerWidth)
+    return ({
+      right: containerWidth - circleDiameter - outlinePadding,
+      left: outlinePadding
+    })
+  }
 });
 
 const PosedArrowsContainer = posed.div({
@@ -61,13 +67,10 @@ const Container = styled.div`
 `;
 
 const RoundedRectangle = styled(PosedRRoundedRectangle)`
-  position: relative;
+  align-items: center;
+  position: absolute;
   display: flex;
   flex: 1;
-  height: ${ContainerHeight}px;
-  margin-left: ${rectangleMargin}px; 
-  margin-right: ${rectangleMargin}px;
-  flex-direction: row;
   border-radius: ${ContainerHeight / 2}px;
   ${innerShaddow[4]}
 `;
@@ -77,23 +80,30 @@ const InnerContainer = styled.div`
   align-items: center;
 `;
 
-const InnerComponents = styled.div`
+const OuterContainer = styled.div`
   display: flex;
-  align-items: center;
-  position: absolute;
+  position: relative;
+  flex: 1;
+  height: ${ContainerHeight}px;
+  margin-left: ${rectangleMargin}px; 
+  margin-right: ${rectangleMargin}px;
 `;
 
 const Spacer = styled.div`
   flex: 1;
 `;
 
-const Circle = styled(PosedCircle)`
+const Circle = styled.div`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
   border-radius: 50%;
   display: inline-block;
   z-index: 1;
+  will-change: transform;
+  &:not(.react-draggable-dragging) {
+    transition: transform ${props => props.theme.handleSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 `;
 
 const ArrowsContainer = styled(PosedArrowsContainer)`
@@ -126,63 +136,87 @@ const AttendenceValue = styled.span`
   flex:1;
 `;
 
-const AttendingButton = (props) => {
-  const [pose, changePose] = useState('notDecided');
-  const [position, changePosition] = useState(0);
-  const [attendenceStatus, changeAttendenceStatus] = useState('');
-  const [decided, changeDecision] = useState('notDecided');
+const statePositions = {
+  notDecided: (containerWidth) => containerWidth * 0.5 - circleDiameter * 0.5,
+  here: (containerWidth) => containerWidth - circleDiameter - outlinePadding,
+  notHere: (containerWidth) => outlinePadding
+}
 
-  const onDragEnd = useCallback(width => e => {
-    let circlePosition = 0;
-    try {
-      const positionString = e.path[0].style.transform
-      circlePosition = Number(positionString.match(/(-?)(\d+)/)[0]);
-    }
-    catch (error) { }
-    if (circlePosition >= ((width - circleDiameter) * 0.5) + 70) {
-      changePose('here');
-      changeAttendenceStatus("Attending");
-      changeDecision('decided');
-    }
-    else if (circlePosition <= ((width - circleDiameter) * 0.5) - 70) {
-      changePose('notHere');
-      changeAttendenceStatus("Missing");
-      changeDecision('decided');
-    }
-    else {
-      changePose('notDecided');
-      changeAttendenceStatus('');
-      changeDecision('notDecided');
-    }
-    changePosition(circlePosition)
+const Handle = ({containerWidth, state="notDecided", changeState}) => {
+  const [handle, changeHandle] = useState({
+    position: { x: statePositions[state](containerWidth), y: 0 },
+    state: state
   });
+
+  const onStop = useCallback((e, data) => {
+    const circlePosition = data.x;
+    let state = "notDecided";
+    if (circlePosition >= ((containerWidth - circleDiameter) * 0.5) + 70) {
+      state = 'here';
+    }
+    else if (circlePosition <= ((containerWidth - circleDiameter) * 0.5) - 70) {
+      state = 'notHere';
+    }
+    const newHandle = {
+      ...handle, state,
+      position: { x: statePositions[state](containerWidth), y: 0 }
+    };
+
+    changeHandle(newHandle);
+    changeState(state);
+  }, [changeHandle, handle, containerWidth]);
+  return (
+      <Draggable
+        axis='x'
+        // handle='.overlay'
+        position={handle.position}
+        onStop={onStop}
+        // onStart={onStart}
+        // onDrag={onDragCallback}
+        bounds={{ left: outlinePadding, right: containerWidth - circleDiameter - outlinePadding }}
+      >
+        <Circle />
+      </Draggable>
+  )
+}
+
+const attendenceStatus = {
+  here: "Attending",
+  notHere: "Missing",
+  notDecided: ""
+}
+
+const AttendingButton = (props) => {
+  const [pose, changePose] = useState("notDecided");
 
   return (
     <Container>
-      <RoundedRectangle poseKey={position} pose={pose}>
+      <OuterContainer>
         <AutoSizer>
           {({ height, width }) => (
-            <InnerContainer style={{ height, width }}>
-              <InnerComponents style={{ height, width }}>
-                <Spacer />
-                <ArrowsContainer poseKey={position} pose={decided}>
-                  <ArrowsLeft src={Arrows} />
-                </ArrowsContainer>
-                <Spacer />
-                <AttendenceValue>
-                  {attendenceStatus}
-                </AttendenceValue>
-                <Spacer />
-                <ArrowsContainer poseKey={position} pose={decided}>
-                  <ArrowsRight src={Arrows} />
-                </ArrowsContainer>
-                <Spacer />
-              </InnerComponents>
-              <Circle key={width} onDragEnd={onDragEnd(width)} poseKey={position} containerWidth={width} pose={pose} />
-            </InnerContainer>
-          )}
+              <InnerContainer style={{ height, width }}>
+                <RoundedRectangle pose={pose} style={{ height, width }}>
+                  <Spacer />
+                  <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
+                    <ArrowsLeft src={Arrows} />
+                  </ArrowsContainer>
+                  <Spacer />
+                  <AttendenceValue>
+                    {attendenceStatus[pose]}
+                  </AttendenceValue>
+                  <Spacer />
+                  <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
+                    <ArrowsRight src={Arrows} />
+                  </ArrowsContainer>
+                  <Spacer />
+                </RoundedRectangle>
+                {/* <Circle key={width} onDragEnd={e => onDragEnd(e, width)} poseKey={usage} containerWidth={width} pose={pose}/> */}
+                <Handle key={width} containerWidth={width} changeState={changePose} />
+              </InnerContainer>
+            )
+          }
         </AutoSizer>
-      </RoundedRectangle>
+      </OuterContainer>
     </Container>
   );
 }

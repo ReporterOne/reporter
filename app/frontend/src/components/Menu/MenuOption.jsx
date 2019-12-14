@@ -44,14 +44,14 @@ const OptionWrapper = styled.div`
 `;
 
 
-export const Option = ({ path, selected = false, ...props }) => {
+export const Option = React.memo(({ path, ...props }) => {
   const { isOpen, toggleDrawer } = useContext(DrawerContext);
   return (
     <OptionWrapper>
-      <StyledOptionButton color="primary" variant="contained" selected={selected} activeClassName="selected" exact
+      <StyledOptionButton color="primary" variant="contained" activeClassName="selected" exact
         component={StyledLink} to={path} onClick={() => isOpen ? toggleDrawer() : null} {...props} />
     </OptionWrapper>
   );
-}
+});
 
 export default Option;

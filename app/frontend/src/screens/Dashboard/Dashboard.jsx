@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
 
@@ -20,7 +20,7 @@ const HeaderName = styled(Textfit)`
   font-weight: 300;
   margin-left: 5%;
 `;
-        
+
 
 const WelcomeMessage = styled(Container)`
   padding: 0px 20px;
@@ -36,8 +36,9 @@ const names = [
   "Adi Tugy"
 ];
 
-const Dashboard = (props) => {
+const Dashboard = React.memo((props) => {
   const name = names[4];
+  const [status, changeStatus] = useState("notDecided");
 
   return (
     <Container stretched>
@@ -46,13 +47,13 @@ const Dashboard = (props) => {
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{name}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton />
+        <AttendingButton pose={status} changePose={changeStatus} />
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
         <Calender />
       </RoundedContainer>
     </Container>
   );
-}
+});
 
 export default Dashboard;

@@ -38,13 +38,13 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
     if (onToggle) {
       onToggle({drawer: newDrawer});
     }
-  });
+  }, [drawer, changeDrawer, onToggle]);
 
   const onStart = useCallback((e, data) => {
     if (onDragStart) {
       onDragStart({event: e, data, drawer});
     }
-  });
+  }, [onDragStart]);
 
   const onStop = useCallback((e, data) => {
     const movePercent = Math.round(data.x * 100 / drawerWidth);
@@ -57,7 +57,7 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
       onDragEnd({event: e, data, drawer: newDrawer});
     }
     changeDrawer(newDrawer);
-  });
+  }, [onDragEnd, changeDrawer, drawer]);
 
   const onDragCallback = useCallback((event, data) => {
     if (onDrag) {

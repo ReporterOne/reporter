@@ -3,7 +3,7 @@ import {Container, StyledIconButton, SVGIcon } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 
 
-export const MenuHeader = (props) => {
+export const MenuHeader = React.memo((props) => {
   return (
     <Container row>
       <StyledIconButton onClick={props.onMenuClick}>
@@ -11,6 +11,6 @@ export const MenuHeader = (props) => {
       </StyledIconButton>
     </Container>
   );
-}
+});
 
 export default MenuHeader;
