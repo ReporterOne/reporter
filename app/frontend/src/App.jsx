@@ -3,30 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
 import Dashboard from '@/Dashboard';
 import Commander from '@/Commander';
+import Menu from '@/Menu.jsx';
 import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
 import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
 import AppContext from './AppContext.jsx';
-import Avatar from '~/components/Avatar/Avatar.jsx';
-import Option from '~/components/Menu/MenuOption.jsx';
-import dashboardIconUrl from '~/assets/dashboard.svg';
-import commanderIconUrl from '~/assets/whistle.svg';
-
-const OptionsContainer = styled(Container)`
-  align-items: center;
-  padding: 25px 0 10px 0;
-`;
-
-const Separator = styled.div`
-  height: 2px;
-  width: 70%;
-  background-color: #888888;
-  margin: 15px 0;
-`;
-
-const Spacer = styled.div`
-  flex: 1;
-`;
 
 const App = (props) => {
   const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
@@ -59,20 +40,7 @@ const App = (props) => {
               <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
                 onDragEnd={onDrawerDragEnd}>
                 <DrawerMenu>
-                  <OptionsContainer stretched>
-                    <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} />
-                    <Separator />
-                    <Option selected path="/">
-                      <SVGIcon src={dashboardIconUrl} size={20} />
-                    </Option>
-                    <Option path="/commander">
-                      <SVGIcon src={commanderIconUrl} size={20} />
-                    </Option>
-                    <Spacer />
-                    <Separator />
-                    <Container>
-                    </Container>
-                  </OptionsContainer>
+                  <Menu avatar={avatar} avatarRef={avatarRef} />
                 </DrawerMenu>
                 <DrawerContent>
                   <Switch>
