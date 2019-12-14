@@ -7,6 +7,9 @@ import { Container } from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
 
+const PageContainer = styled(Container)`
+  overflow-y:auto;
+`;
 
 const Missing = styled(Container)`
   padding: 15px;  
@@ -28,7 +31,7 @@ display: grid; /* 1 */
 export const Operator = (props) => {
 
   return (
-    <Container stretched>
+    <PageContainer stretched>
       <Missing>
         {
           users.filter(user => user.status === "not_here").map(user => (
@@ -47,7 +50,7 @@ export const Operator = (props) => {
           ))
         }
       </TheRest>
-    </Container>
+    </PageContainer>
   );
 }
 

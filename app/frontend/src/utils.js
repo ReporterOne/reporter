@@ -31,6 +31,62 @@ export const users = [
     reason: "חולה/ת נפש"
   },
   {
+    name: "Argaman Mordoh",
+    avatar: {
+      kind: 20
+    },
+    status: "not_here",
+    reason: 'חו"ל'
+  },
+  {
+    name: "Dorin Cohen",
+    avatar: {
+      kind: 21
+    },
+    status: "not_here",
+    reason: "חופשת לידה"
+  },
+  {
+    name: "Rony Kozakish",
+    avatar: {
+      kind: 22
+    },
+    status: "not_here",
+    reason: "משוחרר"
+  },
+  {
+    name: "Omer Eldan",
+    avatar: {
+      kind: 23
+    },
+    status: "not_here",
+    reason: "חולה"
+  },
+  {
+    name: "Lior Aharonovich",
+    avatar: {
+      kind: 24
+    },
+    status: "not_here",
+    reason: "חולה"
+  },
+  {
+    name: "Nadav Vahav",
+    avatar: {
+      kind: 25
+    },
+    status: "not_here",
+    reason: "חולה"
+  },
+  {
+    name: "Moshe Hanavi",
+    avatar: {
+      kind: 26
+    },
+    status: "not_here",
+    reason: "חולה/ת נפש"
+  },
+  {
     name: "Nimrod Erez",
     avatar: {
       kind: 17
