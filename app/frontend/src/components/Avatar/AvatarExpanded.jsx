@@ -4,15 +4,22 @@ import Avatar from './Avatar.jsx';
 import posed from 'react-pose';
 
 import { Container } from '~/components/common';
+import AvatarDetails from './AvatarDetails.jsx';
 
 const AvatarWrapper = styled(Container)`
   margin: 0 5px;
   display: flex;
-  opacity: ${({faded}) => faded? 0.5 : 1};
+  opacity: ${({ faded }) => faded ? 0.5 : 1};
   will-change: opacity;
-  transition: opacity ${({theme}) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity ${({ theme }) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   align-items: center;
+  /* justify-content: center; */
+`;
+
+const Wrapper = styled.div`
   position: relative;
+  margin: auto;
+  width: 100%;
 `;
 
 const Background = styled(Container)`
@@ -26,14 +33,27 @@ const Background = styled(Container)`
   z-index: -1;
   position: absolute;
 `;
+const AvatarContainer = styled.div`
+  position: absolute;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  box-sizing: border-box;
+`;
 
 const Details = styled.div`
+  /* fitting to big avatar! */
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  border-top-left-radius: 26px;
+  border-bottom-left-radius: 26px;
+  min-width: 25px;
   background-color: white;
-  height: calc(100% - 11px - 4px);
-  margin: 9px 0 2px 0;
-  padding: 2px 0; 
+  height: 54px;
+  margin: 6px 5px 2px 5px;
+  padding: 2px 0;
+  padding-left: 64px;
   overflow: hidden;
   white-space: nowrap;
 `;
@@ -51,32 +71,35 @@ const Reason = styled.div`
   display: flex;
 `;
 
-const PosedDetails = posed(Details)({
+const PosedWrapper = posed(Wrapper)({
   enter: {
     width: "100%",
-    delay: ({innerDelay}) => innerDelay * 100
+    delay: ({ innerDelay }) => innerDelay * 100
   },
   exit: {
     width: "0%",
-    delay: ({innerDelay}) => innerDelay * 100
+    delay: ({ innerDelay }) => innerDelay * 100
   }
 });
 
 
-export const AvatarExpanded = ({name, details, delay=0, ...props}) => {
+export const AvatarExpanded = ({ name, details, delay = 0, ...props }) => {
   return (
-    <AvatarWrapper row>
-      <Avatar type="big" {...props} />
-      <Background stretched>
-      </Background>
-      <PosedDetails row innerDelay={delay}>
-        <Container stretched>
-          <Name>{name}</Name>
-          <Reason>{details}</Reason>
-        </Container>
-      </PosedDetails>
+    <AvatarWrapper>
+      <PosedWrapper innerDelay={delay}>
+        {/* <Background stretched>
+      </Background> */}
+        <AvatarContainer>
+          <Avatar type="big" {...props} />
+        </AvatarContainer>
+        <Details row>
+          <Container stretched>
+            <Name>{name}</Name>
+            <Reason>{details}</Reason>
+          </Container>
+        </Details>
+      </PosedWrapper>
     </AvatarWrapper>
-
   );
 }
 

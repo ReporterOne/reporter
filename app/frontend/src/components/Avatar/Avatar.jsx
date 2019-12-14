@@ -13,6 +13,7 @@ import {
 
 const AvatarContainer = styled.div`
   position: relative;
+  display: inline-block;
 `;
 
 const AvatarImage = styled(Icon)`
