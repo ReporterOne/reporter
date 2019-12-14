@@ -42,10 +42,10 @@ const PosedCircle = posed.div({
   notDecided: {
     x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
   },
-  dragEnd: {
-    transition: ({ from, to, velocity }) =>
-      spring({ from, to, velocity, stiffness: 750, damping: 50 })
-  },
+  // dragEnd: {
+  //   transition: ({ from, to, velocity }) =>
+  //     spring({ from, to, velocity, stiffness: 750, damping: 50 })
+  // },
   dragBounds: ({ containerWidth }) => ({
     right: containerWidth - circleDiameter - outlinePadding,
     left: outlinePadding
