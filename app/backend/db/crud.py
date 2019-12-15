@@ -1,10 +1,12 @@
 import os
+import json
 from contextlib import contextmanager
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
 from db import models
+from db.models.date_datas import Reason
 
 
 USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
@@ -32,14 +34,41 @@ def transaction():
     finally:
         s.close()
 
-
 def recreate_database():
     with transaction() as s:
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(engine)
-        mador = models.Mador(name='pie')
-        mador_settings = models.MadorSettings(
-            mador=mador, key='default_reminder_time', value='08:00', type='time')
 
-        s.add_all([mador, mador_settings])
+        # Create Madors:
+        pie = models.Mador(name='Pie')
+        pie_settings = models.MadorSettings(
+            mador=pie, key='default_reminder_time', value='09:00', type='time')
+
+        homeland = models.Mador(name='HomeLand')
+        homeland_settings = models.MadorSettings(
+            mador=homeland, key='default_reminder_time', value='09:00', type='time')
+
+        s.add_all([pie, pie_settings, homeland, homeland_settings])
+        
+
+        # Creat Permissions:
+        admin_permission = models.Permission(type="admin")
+        reporter_permission = models.Permission(type="reporter")
+        commander_permission = models.Permission(type="commander")
+        user_permission = models.Permission(type="user")
+
+        s.add_all([admin_permission, reporter_permission, 
+                   commander_permission, user_permission])
+
+        # Create Reasons:
+        with open("./app/backend/utils/reasons.json", 'r') as f:
+            reasons = json.loads(f.read())
+
+        s.add_all([Reason(reason=reason) for reason in reasons.values()])
+
+        # Create Users:
+        # TODO
+
+        # Commit changes to db:
         s.commit()
+
