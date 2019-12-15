@@ -1,62 +1,108 @@
+import React from 'react';
 import styled from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
-import Rubik from '~/assets/fonts/Rubik/Rubik-Black.ttf';
+import { createGlobalStyle, css } from 'styled-components';
+import { Rubik } from '~/assets/fonts/';
+import IconButton from '@material-ui/core/IconButton';
+import SVG from 'react-inlinesvg';
+import posed, { PoseGroup } from 'react-pose';
 
-
-const theme = {
-  main: "#4725a5",
-  cards: "white"
+export const theme = {
+  cards: 'white',
+  main: '#4725a5',
+  buttons: {
+    normal: '#888888',
+    selected: '#633ad6',
+  },
+  drawer: '#353535',
+  approved: '#22B573',
+  notApproved: '#F15A24',
+  cards: 'white',
+  drawerSpeed: 0.3,
+  handleSpeed: 0.3,
+  avatarSpeed: 0.3,
+  animationsSpeed: 0.4
 }
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
     @font-face {
       font-family: 'Rubik', sans-serif;
       src: url(${Rubik}) format("truetype");
       font-weight: normal;
       font-style: normal;
     }
-    @import url('https://fonts.googleapis.com/css?family=Assistant&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Assistant:200,300,400,600,700,800&display=swap&subset=hebrew');
     html, body, #root {
         width: 100%;
         height: 100%;
         margin: 0;
         padding: 0;
         display: flex;
-        flex-direction: column;
         flex: 1;
         font-family: 'Assistant', sans-serif;
+        overflow: hidden;
     }
 `;
 
-const Icon = styled.img`
-  width: 25px;
-  height: 25px;
+export const Icon = styled.img`
+  width: 30px;
+  height: 30px;
 `;
 
-const Container = styled.div`
-  display: flex;
+export const SVGIcon = styled(SVG)`
+  width: ${({size=30}) => size}px;
+  height: ${({size=30}) => size}px;
+`;
+
+export const StyledIconButton = styled(IconButton)`
+`;
+
+export const Container = styled.div`
+  position: relative;
+  display: ${props => (props.block ? 'block' : 'flex')};
   flex: ${props => (props.flex || (props.stretched ? 1 : 0))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
 `;
 
-const shadows = [
+export const CenteredContainer = styled(Container)`
+  margin: auto;
+`;
+
+export const innerShaddow = [
   undefined,
-  "0 0px 3px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.24)",
-  "0 0px 6px rgba(0,0,0,0.16), 0 0px 6px rgba(0,0,0,0.23)",
-  "0 0px 20px rgba(0,0,0,0.19), 0 0px 6px rgba(0,0,0,0.23)",
-  "0 0px 28px rgba(0,0,0,0.25), 0 0px 10px rgba(0,0,0,0.22)",
-  "0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22)"
+  css`box-shadow: inset 0 0px 3px rgba(0,0,0,0.12),inset  0 0px 2px rgba(0,0,0,0.24);`,
+  css`box-shadow: inset 0 0px 6px rgba(0,0,0,0.16),inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 20px rgba(0,0,0,0.19),inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 28px rgba(0,0,0,0.25),inset  0 0px 10px rgba(0,0,0,0.22);`,
+  css`box-shadow: inset 0 0px 38px rgba(0,0,0,0.30),inset  0 0px 12px rgba(0,0,0,0.22);`
 ];
 
-const DEFAULT_RADIUS = 30;
 
-const RoundedContainer = styled(Container)`
+export const shadows = [
+  undefined,
+  css`box-shadow: 0 0px 3px rgba(0,0,0,0.12), 0 0px 2px rgba(0,0,0,0.24);`,
+  css`box-shadow: 0 0px 6px rgba(0,0,0,0.16), 0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: 0 0px 20px rgba(0,0,0,0.19), 0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: 0 0px 28px rgba(0,0,0,0.25), 0 0px 10px rgba(0,0,0,0.22);`,
+  css`box-shadow: 0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);`
+];
+
+export const DEFAULT_RADIUS = 30;
+
+export const RoundedContainer = styled(Container)`
   border-top-left-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   border-top-right-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   padding: ${props => props.padding || '20px 15px'};
-  box-shadow: ${props => { const i = props.shadow || 1; return shadows[i]; }}  
+  ${props => { const i = props.shadow || 1; return shadows[i]; }}
 `;
 
+const PosedFadedContainer = posed(Container)({
+  enter: { opacity: 1, delay: 100, beforeChildren: true },
+  exit: { opacity: 0 }
+});
 
-export {GlobalStyle, Container, RoundedContainer, theme, Icon};
+export const FadeInContainer = ({ poseKey, ...props }) => (
+  <PoseGroup>
+    <PosedFadedContainer key={poseKey} {...props} />
+  </PoseGroup>
+);

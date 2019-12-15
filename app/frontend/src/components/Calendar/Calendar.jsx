@@ -1,47 +1,42 @@
-import React, { useState } from "react";
-import {
-
-    subMonths,
-    addMonths,
-
-} from "date-fns";
-import {
-    Header,
-    Days,
-    Cells 
-} from './components';
+import React, { useState, useCallback } from "react";
+import { subMonths, addMonths } from "date-fns";
+import { Header, Days, Cells } from './components';
 import styled from 'styled-components';
 import { Swipeable } from 'react-swipeable';
+import { FadeInContainer } from '~/components/common';
 
-
+const StyledSwipeable = styled(Swipeable)`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+`;
 
 const Calendar = (props) => {
-    const Container = styled.div`
-        flex:1;
-        background: white;
-        display:flex;
-        flex-direction:column;
-    `;
     const date = new Date()
     const [currentDate, setCurrentDate] = useState(date);
     const [selectedDate, setSelectedDate] = useState(date);
-    const nextMonth = () => {
+
+    const nextMonth = useCallback((e) => {
         setCurrentDate(addMonths(currentDate, 1));
-    };
-    const prevMonth = () => {
+    });
+
+    const prevMonth = useCallback((e) => {
         setCurrentDate(subMonths(currentDate, 1));
-    };
-    const onDateClick = day => {
+    });
+
+    const onDateClick = useCallback(day => {
         setSelectedDate(day);
-    }
+    });
 
     return (
-        <Swipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} nodeName={Container} >
-            <Header currentDate={currentDate} selectedDate={selectedDate} />
-            <Days currentDate={currentDate} />
-            <Cells currentDate={currentDate} onDateClick={onDateClick}/>
-        </Swipeable>
-        
+        <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}>
+            <FadeInContainer stretched poseKey={currentDate}>
+                <Header currentDate={currentDate} selectedDate={selectedDate} />
+                <Days currentDate={currentDate} />
+                <Cells currentDate={currentDate} onDateClick={onDateClick} />
+            </FadeInContainer>
+        </StyledSwipeable>
+
     );
 };
 export default Calendar;

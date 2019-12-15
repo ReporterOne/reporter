@@ -17,7 +17,17 @@ app.mount("/static", StaticFiles(directory=str(base_dir / "static")), name="stat
 templates = Jinja2Templates(directory=str(base_dir / "templates"))
 
 
+<<<<<<< HEAD
 @app.get("/")
+=======
+@app.get("/api/test_me", response_model=TestModel)
+async def test_me():
+    """Serve a test method."""
+    return {"test": 123, "test2": 1234}
+
+
+@app.get("/.*")
+>>>>>>> master
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
