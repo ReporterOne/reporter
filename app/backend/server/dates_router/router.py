@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/api/v1/dates_status", response_model=DatesResponce)
 async def get_dates_status(start: date, end: date = None, user_id: List[int] = Query([])):
     # TODO: handle if some iser_id was not found and raise an error maybe.
+    # TODO: improve responce model
     response = []
     with transaction() as session:
         for day in daterange(start, end):
