@@ -49,26 +49,36 @@ def recreate_database():
             mador=homeland, key='default_reminder_time', value='09:00', type='time')
 
         s.add_all([pie, pie_settings, homeland, homeland_settings])
+        s.commit()
         
 
         # Creat Permissions:
         admin_permission = models.Permission(type="admin")
-        reporter_permission = models.Permission(type="reporter")
+        operator_permission = models.Permission(type="reporter")
         commander_permission = models.Permission(type="commander")
         user_permission = models.Permission(type="user")
 
-        s.add_all([admin_permission, reporter_permission, 
+        s.add_all([admin_permission, operator_permission, 
                    commander_permission, user_permission])
+        s.commit()
 
         # Create Reasons:
         with open("./app/backend/utils/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
         s.add_all([Reason(reason=reason) for reason in reasons.values()])
+        s.commit()
 
         # Create Users:
-        # TODO
+        users = [
+            models.User(english_name='Michael Tugy', username='tugmica', password='Aa12345678', 
+                        permissions=[user_permission, commander_permission, admin_permission]),
+            models.User(english_name='Elran Shefer', username='shobe', password='Bb12345678', 
+                        permissions=[user_permission, commander_permission]),
+            models.User(english_name='Ariel Domb', username='damov', password='Cc12345678',
+                        permissions=[user_permission, operator_permission])
+            ]
 
-        # Commit changes to db:
+        s.add_all(users)
         s.commit()
 
