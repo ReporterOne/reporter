@@ -1,8 +1,8 @@
 """baseline
 
-Revision ID: 332204163c3d
+Revision ID: ee917bbcbe55
 Revises: 
-Create Date: 2019-12-20 17:12:44.830965
+Create Date: 2019-12-20 17:24:18.598278
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '332204163c3d'
+revision = 'ee917bbcbe55'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -70,19 +70,16 @@ def upgrade():
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('mador_name', sa.String(), nullable=True),
-    sa.Column('operates_mador_name', sa.String(), nullable=True),
     sa.Column('manages_mador_name', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['commander_id'], ['users.id'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['mador_name'], ['madors.name'], ondelete='SET NULL'),
     sa.ForeignKeyConstraint(['manages_mador_name'], ['madors.name'], ondelete='SET NULL'),
-    sa.ForeignKeyConstraint(['operates_mador_name'], ['madors.name'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
     sa.UniqueConstraint('manages_mador_name')
     )
     op.create_index(op.f('ix_users_commander_id'), 'users', ['commander_id'], unique=False)
     op.create_index(op.f('ix_users_mador_name'), 'users', ['mador_name'], unique=False)
-    op.create_index(op.f('ix_users_operates_mador_name'), 'users', ['operates_mador_name'], unique=False)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('date_datas',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -99,6 +96,14 @@ def upgrade():
     op.create_index(op.f('ix_date_datas_date'), 'date_datas', ['date'], unique=False)
     op.create_index(op.f('ix_date_datas_reason'), 'date_datas', ['reason'], unique=False)
     op.create_index(op.f('ix_date_datas_user_id'), 'date_datas', ['user_id'], unique=False)
+    op.create_table('operators_map',
+    sa.Column('mador_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['mador_id'], ['madors.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE')
+    )
+    op.create_index(op.f('ix_operators_map_mador_id'), 'operators_map', ['mador_id'], unique=False)
+    op.create_index(op.f('ix_operators_map_user_id'), 'operators_map', ['user_id'], unique=False)
     op.create_table('permissions_map',
     sa.Column('permission_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -115,12 +120,14 @@ def downgrade():
     op.drop_index(op.f('ix_permissions_map_user_id'), table_name='permissions_map')
     op.drop_index(op.f('ix_permissions_map_permission_id'), table_name='permissions_map')
     op.drop_table('permissions_map')
+    op.drop_index(op.f('ix_operators_map_user_id'), table_name='operators_map')
+    op.drop_index(op.f('ix_operators_map_mador_id'), table_name='operators_map')
+    op.drop_table('operators_map')
     op.drop_index(op.f('ix_date_datas_user_id'), table_name='date_datas')
     op.drop_index(op.f('ix_date_datas_reason'), table_name='date_datas')
     op.drop_index(op.f('ix_date_datas_date'), table_name='date_datas')
     op.drop_table('date_datas')
     op.drop_index(op.f('ix_users_username'), table_name='users')
-    op.drop_index(op.f('ix_users_operates_mador_name'), table_name='users')
     op.drop_index(op.f('ix_users_mador_name'), table_name='users')
     op.drop_index(op.f('ix_users_commander_id'), table_name='users')
     op.drop_table('users')
