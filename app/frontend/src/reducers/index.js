@@ -1,0 +1,1 @@
+export {exampleReducer} from './example';

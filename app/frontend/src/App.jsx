@@ -1,7 +1,11 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Provider } from 'react-redux';
+import store from './store';
+
 import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
 import Dashboard from '@/Dashboard';
+import Operator from '@/Operator';
 import Commander from '@/Commander';
 import Menu from '@/Menu.jsx';
 import { StylesProvider } from '@material-ui/core/styles';
@@ -11,6 +15,7 @@ import AppContext from './AppContext.jsx';
 
 const App = (props) => {
   const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
+  const [pageTitle, changePageTitle] = useState("");
   const avatarRef = useRef(null);
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
@@ -31,7 +36,7 @@ const App = (props) => {
   }, [avatar]);
 
   return (
-    <>
+    <Provider store={store}>
       <StylesProvider injectFirst>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
@@ -42,8 +47,23 @@ const App = (props) => {
                 <DrawerMenu>
                   <Menu avatar={avatar} avatarRef={avatarRef} />
                 </DrawerMenu>
-                <DrawerContent>
+                <DrawerContent
+                  titleComponent={() => (
+                    <Switch>
+                      <Route path="/operator">
+                        Operator Space
+                      </Route>
+                      <Route path="/commander">
+                        Commander Space
+                      </Route>
+                      <Route path="/">
+                      </Route>
+                    </Switch>
+                  )}>
                   <Switch>
+                    <Route path="/operator">
+                      <Operator />
+                    </Route>
                     <Route path="/commander">
                       <Commander />
                     </Route>
@@ -57,7 +77,7 @@ const App = (props) => {
           </AppContext.Provider>
         </ThemeProvider>
       </StylesProvider>
-    </>
+    </Provider>
   );
 }
 
