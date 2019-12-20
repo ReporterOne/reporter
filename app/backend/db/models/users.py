@@ -21,6 +21,7 @@ class User(Base):
     """Permissions table for the application."""
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, unique=True)
+    icon_path = Column(String)
     commander_id = Column(Integer, ForeignKey('users.id', ondelete='SET NULL'), index=True)
     soldiers = relationship('User', backref=backref('commander', remote_side=[id]))
     reminder_time = Column(TIME)
