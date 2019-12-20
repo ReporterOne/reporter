@@ -1,5 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Provider } from 'react-redux';
+import store from './store';
+
 import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
 import Dashboard from '@/Dashboard';
 import Operator from '@/Operator';
@@ -33,7 +36,7 @@ const App = (props) => {
   }, [avatar]);
 
   return (
-    <>
+    <Provider store={store}>
       <StylesProvider injectFirst>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
@@ -74,7 +77,7 @@ const App = (props) => {
           </AppContext.Provider>
         </ThemeProvider>
       </StylesProvider>
-    </>
+    </Provider>
   );
 }
 
