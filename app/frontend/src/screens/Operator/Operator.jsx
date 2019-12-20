@@ -18,15 +18,9 @@ const Missing = styled(Container)`
 
 const TheRest = styled.div`
   padding: 15px;
-  /* flex-flow: row wrap;
-  justify-content: space-between; */
-display: grid; /* 1 */
-  grid-template-columns: repeat(auto-fill, 70px); /* 2 */
-  justify-content: space-between; /* 4 */
-  /* &::after {
-    content: "";
-    flex: auto;
-  } */
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, 70px); 
+  justify-content: space-between; 
 `;
 
 const AnimatedReason = posed(Container)({

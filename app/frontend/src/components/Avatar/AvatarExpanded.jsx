@@ -13,7 +13,6 @@ const AvatarWrapper = styled(Container)`
   will-change: opacity;
   transition: opacity ${({ theme }) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   align-items: center;
-  /* justify-content: center; */
 `;
 
 const Wrapper = styled.div`
