@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { createGlobalStyle, css } from 'styled-components';
-import { Rubik } from '~/assets/fonts/';
+import {createGlobalStyle, css} from 'styled-components';
+import {Rubik} from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
-import posed, { PoseGroup } from 'react-pose';
+import posed, {PoseGroup} from 'react-pose';
 
 export const theme = {
   cards: 'white',
@@ -16,7 +16,6 @@ export const theme = {
   drawer: '#353535',
   approved: '#22B573',
   notApproved: '#F15A24',
-  cards: 'white',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,
@@ -41,6 +40,18 @@ export const GlobalStyle = createGlobalStyle`
         font-family: 'Assistant', sans-serif;
         overflow: hidden;
     }
+    @media screen and (orientation: landscape) {
+      html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+      }
+    }
 `;
 
 export const Icon = styled.img`
@@ -49,8 +60,8 @@ export const Icon = styled.img`
 `;
 
 export const SVGIcon = styled(SVG)`
-  width: ${({size=30}) => size}px;
-  height: ${({size=30}) => size}px;
+  width: ${({size = 30}) => size}px;
+  height: ${({size = 30}) => size}px;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -93,15 +104,18 @@ export const RoundedContainer = styled(Container)`
   border-top-left-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   border-top-right-radius: ${props => props.radius || DEFAULT_RADIUS}px;
   padding: ${props => props.padding || '20px 15px'};
-  ${props => { const i = props.shadow || 1; return shadows[i]; }}
+  ${props => {
+  const i = props.shadow || 1;
+  return shadows[i];
+}}
 `;
 
 const PosedFadedContainer = posed(Container)({
-  enter: { opacity: 1, delay: 100, beforeChildren: true },
-  exit: { opacity: 0 }
+  enter: {opacity: 1, delay: 100, beforeChildren: true},
+  exit: {opacity: 0}
 });
 
-export const FadeInContainer = ({ poseKey, ...props }) => (
+export const FadeInContainer = ({poseKey, ...props}) => (
   <PoseGroup>
     <PosedFadedContainer key={poseKey} {...props} />
   </PoseGroup>

@@ -1,6 +1,6 @@
 {
   "short_name": "One Report App",
-  "name": "One Report Applicaion",
+  "name": "One Report Application",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
