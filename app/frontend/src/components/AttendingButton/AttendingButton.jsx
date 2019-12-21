@@ -12,9 +12,8 @@ import {
 } from '~/components/common';
 
 import posed from 'react-pose';
-import { spring } from "popmotion";
 
-const ContainerHeight = 50;
+const ContainerHeight = 60;
 const rectangleMargin = 15;
 const outlinePadding = 3;
 const circleDiameter = ContainerHeight - outlinePadding * 2;

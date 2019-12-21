@@ -100,5 +100,3 @@ def recreate_database():
 
         s.add_all(users)
         s.commit()
-
-
