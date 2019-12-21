@@ -1,22 +1,26 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
-import {Container, theme } from '~/components/common';
+import {Container, theme} from '~/components/common';
 import MenuHeader from './MenuHeader.jsx';
 import Overlay from './Overlay.jsx';
-import { DrawerContext } from './BaseDrawer.jsx';
+import {DrawerContext} from './BaseDrawer.jsx';
 
 
 const Content = styled(Container)`
   width: 100vw;
+  @media screen and (orientation: landscape) {
+      width: 100vh;
+  }
 `;
 
 export const DrawerContent = (props) => {
-  const { isOpen, toggleDrawer } = useContext(DrawerContext);
+  const {isOpen, toggleDrawer} = useContext(DrawerContext);
 
   return (
     <Content stretched background={theme.main} flex="none">
-      <Overlay isOpen={isOpen} onClick={toggleDrawer} />
-      <MenuHeader onMenuClick={toggleDrawer} titleComponent={props.titleComponent} />
+      <Overlay isOpen={isOpen} onClick={toggleDrawer}/>
+      <MenuHeader onMenuClick={toggleDrawer}
+                  titleComponent={props.titleComponent}/>
       {props.children}
     </Content>
   );
