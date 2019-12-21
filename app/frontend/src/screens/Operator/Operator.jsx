@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import styled from 'styled-components';
+import lodash from 'lodash';
 import posed, {PoseGroup} from 'react-pose';
 import {users} from '~/utils';
 
@@ -11,8 +12,8 @@ import {motion, useAnimation} from "framer-motion";
 
 
 const CALENDAR_HEIGHT = 460;
-const DRAWER_HEIGHT = 700;
 const HANDLE_HEIGHT = 60;
+const DRAWER_BOTTOM_PADDING = 200;
 
 
 const PageContainer = styled(Container)`
@@ -34,8 +35,8 @@ const OpeningCalendar = styled(MotionDiv)`
   border-top-right-radius: 30px;
   background-color: white;
   width: 100%;
-  height: ${DRAWER_HEIGHT}px;
-  bottom: -${DRAWER_HEIGHT - CALENDAR_HEIGHT - HANDLE_HEIGHT}px;
+  height: ${DRAWER_BOTTOM_PADDING + HANDLE_HEIGHT + CALENDAR_HEIGHT}px;
+  bottom: -${DRAWER_BOTTOM_PADDING}px;
   box-sizing: border-box;
   will-change: height;
   transition: 0.3s height;
