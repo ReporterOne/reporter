@@ -12,14 +12,14 @@ import {motion, useAnimation} from "framer-motion";
 
 const CALENDAR_HEIGHT = 460;
 const DRAWER_HEIGHT = 700;
-const HANDLE_HEIGHT = 45;
+const HANDLE_HEIGHT = 60;
 
 
 const PageContainer = styled(Container)`
 `;
 
 const ContentContainer = styled(Container)`
-  padding-bottom: 50px;
+  padding-bottom: ${HANDLE_HEIGHT}px;
 `;
 
 const MotionDiv = ({...props}) => (
