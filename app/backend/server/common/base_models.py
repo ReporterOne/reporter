@@ -16,23 +16,16 @@ class StatusTypes(str, Enum):
     not_important = "not_important"
 
 
-class GetDate(BaseModel):
-    date: date
-    reason: str = None
-    type: StatusTypes
-    users_id: int
-
-
-class DatesResponce(BaseModel):
-    dates_list: List[GetDate]
-
-
-class PostDates(BaseModel):
+class Dates(BaseModel):
     start_date: date
     end_date: date = None
     reason: str = None
     type: StatusTypes = None
     users_id: List[int] = []
+
+
+class DatesResponce(BaseModel):
+    dates_list: List[Dates]
 
 
 class User(BaseModel):

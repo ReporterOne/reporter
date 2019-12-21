@@ -12,6 +12,10 @@ class Mador(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
 
+    def assign_mador_for_users(self, users):
+        for user in users:
+            user.mador = self
+
 
 class User(Base):
     """Permissions table for the application."""

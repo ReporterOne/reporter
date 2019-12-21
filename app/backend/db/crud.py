@@ -1,12 +1,12 @@
 import os
 import json
+import names
 from contextlib import contextmanager
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
 from db import models
-from db.models.date_datas import Reason
 
 
 USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
@@ -36,6 +36,7 @@ def transaction():
 
 def recreate_database():
     with transaction() as s:
+        # Start DB From Scratch
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(engine)
 
@@ -66,19 +67,38 @@ def recreate_database():
         with open("./app/backend/utils/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
-        s.add_all([Reason(reason=reason) for reason in reasons.values()])
+        s.add_all([models.date_datas.Reason(reason=reason) for reason in reasons.values()])
         s.commit()
 
         # Create Users:
-        users = [
-            models.User(english_name='Michael Tugy', username='tugmica', password='Aa12345678', 
-                        permissions=[user_permission, commander_permission, admin_permission]),
-            models.User(english_name='Elran Shefer', username='shobe', password='Bb12345678', 
-                        permissions=[user_permission, commander_permission]),
-            models.User(english_name='Ariel Domb', username='damov', password='Cc12345678',
-                        permissions=[user_permission, operator_permission])
-            ]
+        elran = models.User(english_name='Elran Shefer', username='shobe', password='shobe12345678', 
+                            permissions=[user_permission, commander_permission, admin_permission]),
+        tugy = models.User(english_name='Michael Tugy', username='tugmica', password='tuguy12345678', 
+                           permissions=[user_permission, commander_permission]),
+        domb = models.User(english_name='Ariel Domb', username='damov', password='damovCc12345678',
+                           permissions=[user_permission, operator_permission])
+        ido = models.User(english_name='Ido Azolay', username='ado', password='Ido12345678',
+                           permissions=[user_permission, operator_permission])
+
+        # Create Randome Users:
+        num_of_users = 20
+        users = []
+        for _ in range(num_of_users):
+            full_name = names.get_full_name()
+            users.append(models.User(english_name=full_name, username=full_name.split()[0], password="Password1!"))
+
+        users += [elran, tugy, ido, domb]
+
+        elran.soldiers = [tugy, users[0], users[1], users[2]]
+        tugy.soldiers = [ido] + [users[i] for i in range(3, 11)]
+        users[0].soldiers = [users[i] for i in range(11, 14)]
+        users[1].soldiers = [users[i] for i in range(14, 17)]
+        users[2].soldiers = [users[i] for i in range(17, 20)]
+
+        pie.assign_mador_for_users(users)
+        domb.mador = homeland
 
         s.add_all(users)
         s.commit()
+
 
