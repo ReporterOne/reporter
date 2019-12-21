@@ -6,22 +6,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
 import posed, {PoseGroup} from 'react-pose';
 
-export const theme = {
-  cards: 'white',
-  main: '#4725a5',
-  buttons: {
-    normal: '#888888',
-    selected: '#633ad6',
-  },
-  drawer: '#353535',
-  approved: '#22B573',
-  notApproved: '#F15A24',
-  drawerSpeed: 0.3,
-  handleSpeed: 0.3,
-  avatarSpeed: 0.3,
-  animationsSpeed: 0.4
-}
-
 export const GlobalStyle = createGlobalStyle`
     @font-face {
       font-family: 'Rubik', sans-serif;
@@ -69,8 +53,9 @@ export const StyledIconButton = styled(IconButton)`
 
 export const Container = styled.div`
   position: relative;
+  overflow-y: ${({scrollable}) => scrollable? 'auto' : 'visible'};
   display: ${props => (props.block ? 'block' : 'flex')};
-  flex: ${props => (props.flex || (props.stretched ? 1 : 0))};
+  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 1 auto"))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
 `;
@@ -120,3 +105,22 @@ export const FadeInContainer = ({poseKey, ...props}) => (
     <PosedFadedContainer key={poseKey} {...props} />
   </PoseGroup>
 );
+
+
+export const theme = {
+  cards: 'white',
+  main: '#4725a5',
+  shadows: shadows,
+  innerShadows: innerShaddow,
+  buttons: {
+    normal: '#888888',
+    selected: '#633ad6',
+  },
+  drawer: '#353535',
+  approved: '#22B573',
+  notApproved: '#F15A24',
+  drawerSpeed: 0.3,
+  handleSpeed: 0.3,
+  avatarSpeed: 0.3,
+  animationsSpeed: 0.4
+}
