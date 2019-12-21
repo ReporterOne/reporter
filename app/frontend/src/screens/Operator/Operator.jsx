@@ -23,11 +23,7 @@ const ContentContainer = styled(Container)`
   padding-bottom: ${HANDLE_HEIGHT}px;
 `;
 
-const MotionDiv = ({...props}) => (
-  <motion.div {...props}/>
-);
-
-const OpeningCalendar = styled(MotionDiv)`
+const OpeningCalendar = styled(motion.div)`
   position: absolute;
   display: flex;
   flex-direction: column;
