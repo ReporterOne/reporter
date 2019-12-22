@@ -7,7 +7,7 @@ from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-from .dates_router import router
+from .routers import dates_router
 
 
 app = FastAPI(debug=True)  # pylint: disable=invalid-name
@@ -23,6 +23,6 @@ async def index(request: Request):
 
 
 app.include_router(
-    router.router,
+    dates_router.router,
     tags=["Get Dates"]
 )
