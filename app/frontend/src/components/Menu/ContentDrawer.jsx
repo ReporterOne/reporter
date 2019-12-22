@@ -24,6 +24,6 @@ export const DrawerContent = (props) => {
       {props.children}
     </Content>
   );
-}
+};
 
 export default DrawerContent;
