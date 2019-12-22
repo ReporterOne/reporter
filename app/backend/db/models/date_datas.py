@@ -30,6 +30,13 @@ class DateData(Base):
     reported_by_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), index=True)
     reported_by = relationship('User', backref='reports_history')
 
+    def __eq__(self, other):
+        return (self.date_details == other.date_details
+            and self.user_id == other.user_id
+            and self.state == other.state
+            and self.reason_id == other.reason_id
+            and self.reported_by_id == other.reported_by_id)
+
 
 class RepetativeData(Base):
     __tablename__ = 'repetative_datas'

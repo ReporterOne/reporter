@@ -1,102 +1,54 @@
-import os
-import json
-import names
-from contextlib import contextmanager
+from sqlalchemy.orm import Session
+from datetime import date, time
+from typing import List
 
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from .models import User, DateData
+from utils.datetime_utils import daterange
+from db import schemas
 
-from db import models
+# User:
 
+def get_user(db: Session, user_id: int) -> User:
+    return db.query(User).filter(User.id == user_id).one()
 
-USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
-PASSWORD = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
-HOST = os.environ.get('ONE_REPORT_HOST', 'localhost')
-DB = os.environ.get('ONE_REPORT_DB', 'one_report')
-PORT = os.environ.get('ONE_REPORT_PORT', '5432')
+def get_subjects(db: Session, commander_id: int) -> List[User]:
+    commander = get_user(db, commander_id)
+    return commander.soldiers
 
-DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
+def get_reminder(db: Session, user_id:int) -> time:
+    user = get_user(db, user_id)
+    return user.reminder_time
 
-engine = create_engine(DATABASE_URI)
-Session = sessionmaker(bind=engine)
+def was_reminded(db: Session, user_id: int) -> bool:
+    user = get_user(db, user_id)
+    return user.last_reminded_date == date.today()
 
+# Date Data:
 
-@contextmanager
-def transaction():
-    s = Session()
-    try:
-        yield s
+def get_dates_data(db: Session, user_id: int, 
+                   start_date: date, end_date: date = None) -> List[DateData]:
+    return db.query(DateData).filter(DateData.user_id == user_id, 
+                                     start_date <= DateData.date <= end_date).all()
 
-    except:
-        s.rollback()
-        raise
-
-    finally:
-        s.close()
-
-def recreate_database():
-    with transaction() as s:
-        # Start DB From Scratch
-        models.Base.metadata.drop_all(engine)
-        models.Base.metadata.create_all(engine)
-
-        # Create Madors:
-        pie = models.Mador(name='Pie')
-        pie_settings = models.MadorSettings(
-            mador=pie, key='default_reminder_time', value='09:00', type='time')
-
-        homeland = models.Mador(name='HomeLand')
-        homeland_settings = models.MadorSettings(
-            mador=homeland, key='default_reminder_time', value='09:00', type='time')
-
-        s.add_all([pie, pie_settings, homeland, homeland_settings])
-        s.commit()
+def get_reduced_dates_data(db: Session, user_id: int, 
+                           start_date: date, end_date: date = None) -> List[schemas.DateData]:
+    """Return list of DateData after adding follow same dates into range."""
+    dates_data = get_dates_data(db, user_id, start_date, end_date)
+    responce = []
+    for i in range(len(dates_data)):
+        if i > 0 and dates_data[-1] == dates_data:
+            responce[-1].end_date = dates_data[i].date
         
+        else:
+            responce.append(schemas.DateData(user=dates_data[i].user,
+                                             start_date=dates_data[i].date, 
+                                             state=dates_data[i].state,
+                                             reported_by=dates_data[i].reported_by,
+                                             reason=dates_data[i].reason,
+                                             date_details=dates_data[i].date_details))
+    return responce
 
-        # Creat Permissions:
-        admin_permission = models.Permission(type="admin")
-        operator_permission = models.Permission(type="reporter")
-        commander_permission = models.Permission(type="commander")
-        user_permission = models.Permission(type="user")
-
-        s.add_all([admin_permission, operator_permission, 
-                   commander_permission, user_permission])
-        s.commit()
-
-        # Create Reasons:
-        with open("./app/backend/utils/reasons.json", 'r') as f:
-            reasons = json.loads(f.read())
-
-        s.add_all([models.date_datas.Reason(reason=reason) for reason in reasons.values()])
-        s.commit()
-
-        # Create Users:
-        elran = models.User(english_name='Elran Shefer', username='shobe', password='shobe12345678', 
-                            permissions=[user_permission, commander_permission, admin_permission]),
-        tugy = models.User(english_name='Michael Tugy', username='tugmica', password='tuguy12345678', 
-                           permissions=[user_permission, commander_permission]),
-        domb = models.User(english_name='Ariel Domb', username='damov', password='damovCc12345678',
-                           permissions=[user_permission, operator_permission])
-        ido = models.User(english_name='Ido Azolay', username='ado', password='Ido12345678',
-                           permissions=[user_permission, operator_permission])
-
-        # Create Randome Users:
-        num_of_users = 20
-        users = []
-        for _ in range(num_of_users):
-            full_name = names.get_full_name()
-            users.append(models.User(english_name=full_name, username=full_name.split()[0], password="Password1!"))
-
-        users += [elran, tugy, ido, domb]
-
-        elran.soldiers = [tugy, users[0], users[1], users[2]]
-        tugy.soldiers = [ido] + [users[i] for i in range(3, 11)]
-        users[0].soldiers = [users[i] for i in range(11, 14)]
-        users[1].soldiers = [users[i] for i in range(14, 17)]
-        users[2].soldiers = [users[i] for i in range(17, 20)]
-
-        pie.assign_mador_for_users(users)
-        domb.mador = homeland
-
-        s.add_all(users)
-        s.commit()
+def get_multiple_users_redused_dates_data(db: Session, users_id: List[int],
+                                          start_date: date, end_date: date = None) -> schemas.MultipleUsersDatesResponce:
+    return [schemas.DateResponce(user_id=user_id, data=get_reduced_dates_data(db, user_id, start_date, end_date)) 
+            for user_id in users_id]
