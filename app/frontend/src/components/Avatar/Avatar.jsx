@@ -53,9 +53,8 @@ const BackgroundTopHalf = styled(Background)`
 `;
 const BackgroundBottomHalf = styled(Background)`
   /* clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%); */
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
   padding-top: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size))}px;
+  ${props =>  props.notRounded ? roundedBottumHalf['notRounded'] : roundedBottumHalf['rounded']}
 `;
 
 
@@ -112,11 +111,15 @@ const sized = {
     statusOffset: 7
   }
 };
+const roundedBottumHalf = {
+  rounded: "border-bottom-left-radius: 50%;border-bottom-right-radius: 50%;",
+  notRounded: "border-bottom-left-radius: 50%;"
+}
 export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, status = undefined, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
   return (
     <AvatarContainer>
-      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
+      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size} notRounded={props.notRounded}>
         <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize} />
         <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
           ref={innerRef}

@@ -43,7 +43,7 @@ export const Operator = (props) => {
           {
             users.filter(user => user.status === "not_here").map((user, index) => (
               <AnimatedReason index={animationIndex++} key={index}>
-                <AvatarExpanded kind={user.avatar.kind} name={user.name} delay={animationIndex} details={user.reason} status={user.status} />
+                <AvatarExpanded kind={user.avatar.kind} name={user.name} delay={animationIndex} details={user.reason} status={user.status} notRounded={true} />
               </AnimatedReason>
             ))
           }
