@@ -47,6 +47,7 @@ export const Icon = styled.img`
 export const SVGIcon = styled(SVG)`
   width: ${({size = 30}) => size}px;
   height: ${({size = 30}) => size}px;
+  margin: auto;
 `;
 
 export const StyledIconButton = styled(IconButton)`

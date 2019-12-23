@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import Avatar from './Avatar.jsx';
 import posed from 'react-pose';
 
-import { Container } from '~/components/common';
+import { Container, shadows } from '~/components/common';
 import AvatarDetails from './AvatarDetails.jsx';
 
 const AvatarWrapper = styled(Container)`
   margin: 0 5px;
-  display: flex;
+  display: inline-flex;
   opacity: ${({ faded }) => faded ? 0.5 : 1};
   will-change: opacity;
   transition: opacity ${({ theme }) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
@@ -43,10 +43,10 @@ const AvatarContainer = styled.div`
 
 const Details = styled.div`
   /* fitting to big avatar! */
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 26px;
-  border-bottom-left-radius: 26px;
+  border-top-right-radius: ${({rounded}) => rounded? 30 : 5}px;
+  border-bottom-right-radius: ${({rounded}) => rounded? 30 : 5}px;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
   min-width: 25px;
   background-color: white;
   height: 54px;
@@ -54,12 +54,21 @@ const Details = styled.div`
   padding: 2px 0;
   padding-left: 64px;
   overflow: hidden;
-  white-space: nowrap;
+  white-space: ${({inline}) => inline ? "pre-wrap" : "nowrap"};
+  width: ${({inline}) => inline ? "100px" : "auto"};
+  display: flex;
+  flex-direction: column;
 `;
+
+const Content = styled(Container)`
+  justify-content: center;
+`;
+
 
 const Name = styled(Container)`
   color: gray;
   font-weight: 600;
+  padding-right: 10px;
 `;
 
 const Reason = styled.div`
@@ -82,20 +91,20 @@ const PosedWrapper = posed(Wrapper)({
 });
 
 
-export const AvatarExpanded = ({ name, details, delay = 0, ...props }) => {
+export const AvatarExpanded = ({ name, details, onClick, onAvatarTouchStart, delay = 0, rounded = false, inline = false, ...props }) => {
   return (
-    <AvatarWrapper>
+    <AvatarWrapper onClick={onClick}>
       <PosedWrapper innerDelay={delay}>
         {/* <Background stretched>
       </Background> */}
-        <AvatarContainer>
-          <Avatar type="big" {...props} />
+        <AvatarContainer onTouchStart={onAvatarTouchStart}>
+          <Avatar squared type="big" {...props} />
         </AvatarContainer>
-        <Details row>
-          <Container stretched>
+        <Details row rounded={rounded} inline={inline}>
+          <Content stretched>
             <Name>{name}</Name>
             <Reason>{details}</Reason>
-          </Container>
+          </Content>
         </Details>
       </PosedWrapper>
     </AvatarWrapper>

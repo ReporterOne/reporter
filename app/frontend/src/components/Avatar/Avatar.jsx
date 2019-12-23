@@ -54,7 +54,7 @@ const BackgroundTopHalf = styled(Background)`
 const BackgroundBottomHalf = styled(Background)`
   /* clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%); */
   border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
+  border-bottom-right-radius: ${({squared}) => squared ? 0 : "50%"};
   padding-top: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size))}px;
 `;
 
@@ -115,7 +115,7 @@ const sized = {
 
 const JUMPING_AMOUNT = 10;
 
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false, innerRef = undefined, status = undefined, jumping=false, ...props }) => {
+export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false, innerRef = undefined, status = undefined, jumping=false, squared = false, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
   const [isJumping, setIsJumping] = useState(false);
 
@@ -131,7 +131,7 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
 
   return (
     <AvatarContainer>
-      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
+      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size} squared={squared}>
         <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize} />
         <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
           ref={innerRef}

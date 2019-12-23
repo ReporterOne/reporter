@@ -6,6 +6,7 @@ export const NOT_HERE = "not_here";
 
 export const users = [
   {
+    id: 1,
     name: "Ariel Domb",
     avatar: {
       kind: 12
@@ -13,6 +14,7 @@ export const users = [
     status: "here"
   },
   {
+    id: 2,
     name: "Elran Shefer",
     avatar: {
       kind: 13
@@ -20,6 +22,7 @@ export const users = [
     status: "not_answered"
   },
   {
+    id: 3,
     name: "Michael Tugendhaft",
     avatar: {
       kind: 14
@@ -28,6 +31,7 @@ export const users = [
     reason: "חולה"
   },
   {
+    id: 4,
     name: "Osher De Paz",
     avatar: {
       kind: 15
@@ -36,6 +40,7 @@ export const users = [
     reason: "חולה/ת נפש"
   },
   {
+    id: 5,
     name: "Argaman Mordoh",
     avatar: {
       kind: 20
@@ -44,6 +49,7 @@ export const users = [
     reason: 'חו"ל'
   },
   {
+    id: 6,
     name: "Dorin Cohen",
     avatar: {
       kind: 21
@@ -52,6 +58,7 @@ export const users = [
     reason: "חופשת לידה"
   },
   {
+    id: 7,
     name: "Rony Kozakish",
     avatar: {
       kind: 22
@@ -60,6 +67,7 @@ export const users = [
     reason: "משוחרר"
   },
   {
+    id: 8,
     name: "Omer Eldan",
     avatar: {
       kind: 23
@@ -68,6 +76,7 @@ export const users = [
     reason: "חולה"
   },
   {
+    id: 9,
     name: "Lior Aharonovich",
     avatar: {
       kind: 24
@@ -76,6 +85,7 @@ export const users = [
     reason: "חולה"
   },
   {
+    id: 10,
     name: "Nadav Vahav",
     avatar: {
       kind: 25
@@ -84,6 +94,7 @@ export const users = [
     reason: "חולה"
   },
   {
+    id: 11,
     name: "Moshe Hanavi",
     avatar: {
       kind: 26
@@ -92,6 +103,7 @@ export const users = [
     reason: "חולה/ת נפש"
   },
   {
+    id: 12,
     name: "Nimrod Erez",
     avatar: {
       kind: 17
@@ -99,6 +111,7 @@ export const users = [
     status: "here"
   },
   {
+    id: 13,
     name: "Ido Azulay",
     avatar: {
       kind: 18
@@ -106,6 +119,7 @@ export const users = [
     status: "here"
   },
   {
+    id: 14,
     name: "Asaf Shavit",
     avatar: {
       kind: 19
@@ -113,6 +127,7 @@ export const users = [
     status: "not_answered"
   },
   {
+    id: 15,
     name: "Asaf Shavit",
     avatar: {
       kind: 19
@@ -120,9 +135,10 @@ export const users = [
     status: "not_answered"
   },
   {
-    name: "Asaf Shavit",
+    id: 16,
+    name: "Orel Asulin",
     avatar: {
-      kind: 19
+      kind: 20
     },
     status: "not_answered"
   },

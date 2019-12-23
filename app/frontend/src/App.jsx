@@ -8,8 +8,9 @@ import Menu from '@/Menu';
 import Login from "@/Login";
 import Operator from '@/Operator';
 import Dashboard from '@/Dashboard';
-
+import Hierarchy from "@/Hierarchy";
 import Commander from '@/Commander';
+
 import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from "~/components/Menu/PrivateRoute";
@@ -75,6 +76,7 @@ const ProvidedApp = (props) => {
           )}>
           <Switch>
             <Route path="/login" component={Login}/>
+            <PrivateRoute path="/hierarchy" component={Hierarchy}/>
             <PrivateRoute path="/operator" component={Operator}/>
             <PrivateRoute path="/commander" component={Commander}/>
             <PrivateRoute path="/" component={Dashboard}/>
