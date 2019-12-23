@@ -49,7 +49,11 @@ export const Option = React.memo(({ path, ...props }) => {
   return (
     <OptionWrapper>
       <StyledOptionButton color="primary" variant="contained" activeClassName="selected" exact
-        component={StyledLink} to={path} onClick={() => isOpen ? toggleDrawer() : null} {...props} />
+        component={StyledLink} to={path} onClick={() => {
+          if(isOpen) {
+            toggleDrawer();
+          }
+      }} {...props} />
     </OptionWrapper>
   );
 });
