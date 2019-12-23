@@ -1,14 +1,13 @@
 import React, {useCallback, useState} from "react";
 import styled from 'styled-components';
-import lodash from 'lodash';
 import posed, {PoseGroup} from 'react-pose';
-import {users} from '~/utils';
+import {HERE, NOT_ANSWERED, NOT_HERE, users} from '~/utils';
 
-import {Container, RoundedContainer} from '~/components/common';
+import { Container } from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
 import Calender from "~/components/Calendar";
-import {motion, useAnimation} from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 
 
 const CALENDAR_HEIGHT = 460;
@@ -90,7 +89,7 @@ export const Operator = (props) => {
         <Missing>
           <PoseGroup animateOnMount={true}>
             {
-              users.filter(user => user.status === "not_here").map((user, index) => (
+              users.filter(user => user.status === NOT_HERE).map((user, index) => (
                 <AnimatedReason index={animationIndex++} key={index}>
                   <AvatarExpanded kind={user.avatar.kind} name={user.name}
                                   delay={animationIndex} details={user.reason}
@@ -103,10 +102,10 @@ export const Operator = (props) => {
         <TheRest row>
           <PoseGroup animateOnMount={true}>
             {
-              users.filter(user => user.status !== "not_here").sort((user1, user2) => {
+              users.filter(user => user.status !== NOT_HERE).sort((user1, user2) => {
                 if (user1.status === user2.status) return 0;
-                if (user1.status === "here" && user2.status === "not_answered") return 1;
-                if (user2.status === "here" && user1.status === "not_answered") return -1;
+                if (user1.status === HERE && user2.status === NOT_ANSWERED) return 1;
+                if (user2.status === HERE && user1.status === NOT_ANSWERED) return -1;
               }).map((user, index) => (
                 <AnimatedReason index={animationIndex++} key={index}>
                   <AvatarDetails key={index} kind={user.avatar.kind}
