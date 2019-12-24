@@ -13,6 +13,7 @@ import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
 import {AutoSizer} from "react-virtualized";
 import Avatar from "~/components/Avatar/Avatar.jsx";
+import HorizontalScroll from "~/components/Scroll/HorizontalScroll.jsx";
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -37,12 +38,18 @@ const ManagerShrink = styled(Container)`
 
 const Teams = styled(Container)`
   //overflow: auto;
+  overflow: hidden;
+  display: inline-flex;
+  padding: 0 60px;
+  height: 100%;
 `;
 
 const TeamLeader = styled(Container)`
   position: relative;
   justify-content: center;
   align-items: center;
+  height: 56px;
+  padding-top: 5px;
 `;
 
 const TeamLeaderShrink = styled(Container)`
@@ -55,8 +62,14 @@ const Team = styled(Container)`
   margin: 0 auto;
 `;
 
+const MembersWrapper = styled(Container)`
+`;
+
+
 const TeamMembers = styled(Container)`
   align-items: center;
+  padding-top: 2px;
+  padding-bottom: 60px;
   //overflow: auto;
   //&::-webkit-scrollbar {
   //  display: none;
@@ -67,6 +80,7 @@ const Member = styled(Container)`
   position: relative;
   justify-content: center;
   align-items: center;
+  height: 50px;
 `;
 
 const MemberShrink = styled(Container)`
@@ -82,20 +96,21 @@ const HierarchyLine = styled.div`
 
 const AddNotch = styled.div`
   width: 4px;
-  height: 18px;
+  height: 68px;
   position: absolute;
   bottom: 0;
   //transform: translateY(px);
   background-color: white;
   z-index: 0;
+  border-radius: ${({last}) => last ? 2 : 0}px;
 `;
 
 const TopNotch = styled.div`
   width: 4px;
-  height: ${({index}) => index === 0 ? 618 : 18}px;
+  height: ${({index}) => index === 0 ? 618 : 118}px;
   position: absolute;
   top: 0;
-  transform: ${({index}) => index === 0 ? "translateY(-600px)" : null};
+  transform: ${({index}) => index === 0 ? "translateY(-600px)" : "translateY(-100px)"};
   background-color: white;
   z-index: 0;
 `;
@@ -138,8 +153,21 @@ const DraggableCanvas = styled(Container)`
   top: 0;
   left: 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 100;
 `;
+
+const AppendSubject = styled(motion.div)`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: green;
+  bottom: 0;
+  border-radius: 50%;
+  z-index: 15;
+  transform: translateY(50%);
+`;
+
+const THRESHOLD = 60;
 
 
 const Build = ({hierarchy}) => {
@@ -147,9 +175,15 @@ const Build = ({hierarchy}) => {
   const canvas = useRef(null);
   const teams = useMemo(() => lodash.get(hierarchy, "childs", []), [hierarchy]);
   const leader = useMemo(() => lodash.find(users, {id: hierarchy.leader}), [hierarchy]);
+  const scrollX = useMotionValue(0);
+  const [scrollXBounds, changeScrollXBounds] = useState(null);
 
-  const [initialPos, changeInitialPos] = useState({x: 0, y: 0});
-  const [dragging, changeDragging] = useState({element: null});
+
+  const [initialPos, changeInitialPos] = useState({
+    x: undefined,
+    y: undefined
+  });
+  const [dragging, changeDragging] = useState({element: null, id: undefined});
 
   useEffect(() => {
     const currentPos = canvas.current.getBoundingClientRect();
@@ -164,10 +198,41 @@ const Build = ({hierarchy}) => {
       const y = e.touches[0].pageY - initialPos.y;
       draggedElement.current.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%) )`;
     }
-  }, [dragging, draggedElement]);
+  }, [dragging, draggedElement, initialPos]);
+
+
+  const onMove = useCallback((e) => {
+    setDraggedPos(e);
+    const x = e.touches[0].pageX;
+    const y = e.touches[0].pageY;
+    if (draggedElement.current) {
+      const currentX = scrollX.get();
+      if (x < THRESHOLD && currentX < scrollXBounds.right) {
+        scrollX.set(currentX + 5);
+      } else if (x > initialPos.width - THRESHOLD && currentX > scrollXBounds.left) {
+        scrollX.set(currentX - 5);
+      }
+      const element = document.elementFromPoint(x, y);
+      if (element && element.classList.contains(AppendSubject.styledComponentId)) {
+        console.log(element, dragging.id);
+      }
+    }
+  }, [dragging, draggedElement, setDraggedPos, scrollXBounds]);
+
+  const onTouchStart = useCallback((e, user) => {
+    setDraggedPos(e);
+    changeDragging({
+      ...dragging,
+      id: user.id,
+      element: () => <Avatar
+        kind={user.avatar.kind}/>
+    })
+  }, [setDraggedPos, changeDragging, dragging]);
+
   return (
     <>
-      <HierarchyHolder stretched onTouchMove={(e) => setDraggedPos(e)}
+      <HierarchyHolder stretched
+                       onTouchMove={onMove}
                        onTouchEnd={() => changeDragging({
                          ...dragging,
                          element: null
@@ -176,23 +241,20 @@ const Build = ({hierarchy}) => {
           <ManagerShrink>
             <AvatarExpanded kind={leader.avatar.kind}
                             name={leader.name} rounded
-                            onAvatarTouchStart={(e) => {
-                              setDraggedPos(e);
-                              changeDragging({
-                                ...dragging,
-                                element: () => <Avatar
-                                  kind={leader.avatar.kind}/>
-                              })
-                            }}
+                            onAvatarTouchStart={(e) => onTouchStart(e, leader)}
                             inline/>
           </ManagerShrink>
           <AddNotch/>
+          <AppendSubject initial={{opacity: 0}}
+                         animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
+                         data-id={leader.id}/>
         </MainManager>
         <HierarchyLine/>
         <Container stretched>
-          <StyledScroll width="100%" height="100%" contentHeight="100%"
-                        direction="horizontal"
-                        dragEnabled={dragging.element === null}>
+          <HorizontalScroll drag={dragging.element ? false : 'x'}
+                            contentHeight="100%"
+                            updateBounds={changeScrollXBounds}
+                            style={{height: "100%", x: scrollX}}>
             <Teams stretched row onScroll={(e) => {
               if (dragging.element) e.preventDefault();
             }}>
@@ -205,20 +267,16 @@ const Build = ({hierarchy}) => {
                     <TeamLeaderShrink>
                       <AvatarExpanded kind={teamLeader.avatar.kind}
                                       name={teamLeader.name} rounded
-                                      onAvatarTouchStart={(e) => {
-                                        setDraggedPos(e);
-                                        changeDragging({
-                                          ...dragging,
-                                          element: () => <Avatar
-                                            kind={teamLeader.avatar.kind}/>
-                                        })
-                                      }}
+                                      onAvatarTouchStart={(e) => onTouchStart(e, teamLeader)}
                                       inline/>
                     </TeamLeaderShrink>
-                    <AddNotch/>
+                    <AppendSubject initial={{opacity: 0}}
+                                   animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
+                                   data-id={teamLeader.id}/>
                   </TeamLeader>
-                  <Container stretched>
+                  <MembersWrapper stretched>
                     <StyledScroll height="100%"
+                                  width="100%"
                                   dragEnabled={dragging.element === null}>
                       <TeamMembers stretched>
                         {members.map((member, index) => {
@@ -227,29 +285,25 @@ const Build = ({hierarchy}) => {
                             <Member key={user.id}>
                               <TopNotch index={index}/>
                               <MemberShrink>
-                                <AvatarExpanded kind={user.avatar.kind}
-                                                name={user.name}
-                                                onAvatarTouchStart={(e) => {
-                                                  setDraggedPos(e);
-                                                  changeDragging({
-                                                    ...dragging,
-                                                    element: () => <Avatar
-                                                      kind={user.avatar.kind}/>
-                                                  });
-                                                }}
-                                                rounded inline/>
+                                <StyledMotion initial={{opacity: 1}}
+                                              animate={{opacity: dragging.element && dragging.id === user.id ? 0 : 1}}>
+                                  <AvatarExpanded kind={user.avatar.kind}
+                                                  name={user.name}
+                                                  onAvatarTouchStart={(e) => onTouchStart(e, user)}
+                                                  rounded inline/>
+                                </StyledMotion>
                               </MemberShrink>
-                              <AddNotch/>
+                              <AddNotch last={members.length === index + 1}/>
                             </Member>
                           )
                         })}
                       </TeamMembers>
                     </StyledScroll>
-                  </Container>
+                  </MembersWrapper>
                 </Team>
               })}
             </Teams>
-          </StyledScroll>
+          </HorizontalScroll>
         </Container>
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>

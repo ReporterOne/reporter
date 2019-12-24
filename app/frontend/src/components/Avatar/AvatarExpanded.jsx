@@ -50,7 +50,7 @@ const Details = styled.div`
   min-width: 25px;
   background-color: white;
   height: 54px;
-  margin: 6px 5px 2px 5px;
+  margin: 6px 5px 0px 5px;
   padding: 2px 0;
   padding-left: 64px;
   overflow: hidden;
