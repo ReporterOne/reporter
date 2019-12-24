@@ -61,6 +61,9 @@ const ProvidedApp = (props) => {
         <DrawerContent
           titleComponent={() => (
             <Switch>
+              <Route path="/hierarchy">
+                Hierarchy
+              </Route>
               <Route path="login">
                 Login Page
               </Route>

@@ -169,6 +169,39 @@ const Replace = styled(motion.div)`
   left: 7px;
 `;
 
+const SubjectDrawer = styled(Container)`
+  height: 120px;
+  flex: unset;
+  justify-content: center;
+  background-color: ${({theme}) => theme.drawer};
+  overflow: hidden;
+  position: relative;
+`;
+
+const AvatarsWrapper = styled.div`
+  z-index: 1;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: center;
+  height: 100%;
+`;
+
+const AvatarsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
+`;
+
+const DroppableDrawer = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: purple;
+  z-index: 1;
+  opacity: 0.5;
+`;
+
 const THRESHOLD = 60;
 
 
@@ -207,7 +240,7 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
     setDraggedPos(e);
     const x = e.changedTouches[0].pageX;
     const y = e.changedTouches[0].pageY;
-    if (draggedElement.current) {
+    if (draggedElement.current && dragging.element) {
       const currentX = scrollX.get();
       if (x < THRESHOLD && currentX < scrollXBounds.right) {
         scrollX.set(currentX + 5);
@@ -229,6 +262,9 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
       if (element && element.classList.contains(Replace.styledComponentId)) {
         console.log("replacing", dragging.id, "with", element.dataset.id);
         replaceUser(dragging.id, parseInt(element.dataset.id));
+      }
+      if (element && element.classList.contains(DroppableDrawer.styledComponentId)) {
+        console.log("unsetting", dragging.id);
       }
       changeDragging({
         ...dragging,
@@ -332,6 +368,25 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
             </Teams>
           </Scroll>
         </Container>
+        {/*Drawer*/}
+        <SubjectDrawer>
+          {
+            dragging.element ?
+              <DroppableDrawer/>
+              :
+              <AvatarsWrapper>
+                <AvatarsContainer>
+                  {users.map((user, index) => (
+                    <AvatarDetails
+                      key={index}
+                      name={user.name}
+                      kind={user.avatar.kind}
+                    />
+                  ))}
+                </AvatarsContainer>
+              </AvatarsWrapper>
+          }
+        </SubjectDrawer>
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>
         <div ref={draggedElement}
@@ -419,7 +474,8 @@ export const Hierarchy = (props) => {
 
   return (
     <PageContainer stretched>
-      <Build hierarchy={currentHierarchy} replaceUser={replaceUser} addUser={addUser}/>
+      <Build hierarchy={currentHierarchy} replaceUser={replaceUser}
+             addUser={addUser}/>
     </PageContainer>
   );
 };
