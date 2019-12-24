@@ -370,21 +370,19 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
         </Container>
         {/*Drawer*/}
         <SubjectDrawer>
+          <AvatarsWrapper>
+            <AvatarsContainer>
+              {users.map((user, index) => (
+                <AvatarDetails
+                  key={index}
+                  name={user.name}
+                  kind={user.avatar.kind}
+                />
+              ))}
+            </AvatarsContainer>
+          </AvatarsWrapper>
           {
-            dragging.element ?
-              <DroppableDrawer/>
-              :
-              <AvatarsWrapper>
-                <AvatarsContainer>
-                  {users.map((user, index) => (
-                    <AvatarDetails
-                      key={index}
-                      name={user.name}
-                      kind={user.avatar.kind}
-                    />
-                  ))}
-                </AvatarsContainer>
-              </AvatarsWrapper>
+            dragging.element && <DroppableDrawer/>
           }
         </SubjectDrawer>
       </HierarchyHolder>
