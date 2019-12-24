@@ -1,15 +1,20 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import {Container} from "~/components/common";
 
 
-export const HorizontalScroll = ({children, contentHeight, contentWidth, updateBounds, ...props}) => {
+export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...props}) => {
   const teamsRef = useRef(null);
   const containerRef = useRef(null);
   const [observer, changeObserver] = useState(null);
   const [size, changeSize] = useState({width: 0, height: 0});
   const [containerSize, changeContainerSize] = useState({width: 0, height: 0});
-
+  const dragBounds = useMemo(() => ({
+    left: Math.min(-(size.left + size.right) + containerSize.width, 0),
+    right: 0,
+    top: Math.min(-(size.top + size.bottom) + containerSize.height, 0),
+    bottom: 0
+  }), [size, containerSize])
   useEffect(() => {
     changeContainerSize(containerRef.current.getBoundingClientRect());
     const resizeObserve = new ResizeObserver(entries => {
@@ -18,29 +23,21 @@ export const HorizontalScroll = ({children, contentHeight, contentWidth, updateB
     });
     resizeObserve.observe(teamsRef.current);
     changeObserver(resizeObserve);
+
+    return () => {
+      resizeObserve.disconnect()
+    }
   }, []);
 
   useEffect(() => {
     if (updateBounds) {
-      updateBounds(
-        {
-          left: -(size.left + size.right) + containerSize.width,
-          right: 0,
-          top: -(size.top + size.bottom) + containerSize.height,
-          bottom: 0
-        }
-      );
+      updateBounds(dragBounds);
     }
-  }, [size, containerSize]);
+  }, [dragBounds]);
 
   return (
     <motion.div ref={containerRef}
-                dragConstraints={{
-                  left: -(size.left + size.right) + containerSize.width,
-                  right: 0,
-                  top: -(size.top + size.bottom) + containerSize.height,
-                  bottom: 0
-                }} {...props}>
+                dragConstraints={dragBounds} {...props}>
       <div ref={teamsRef} style={{
         display: 'inline-flex',
         height: contentHeight,
@@ -52,4 +49,4 @@ export const HorizontalScroll = ({children, contentHeight, contentWidth, updateB
   )
 };
 
-export default HorizontalScroll;
+export default Scroll;

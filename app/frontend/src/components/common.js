@@ -61,6 +61,7 @@ export const Container = styled.div`
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
   min-width: 0;
+  min-height: 0;
 `;
 
 export const CenteredContainer = styled(Container)`

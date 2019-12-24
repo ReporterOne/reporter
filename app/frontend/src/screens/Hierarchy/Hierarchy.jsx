@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import styled from 'styled-components';
 import lodash from 'lodash';
 
-import {Scroll} from "framer";
 import {AnimatePresence, motion, useMotionValue} from 'framer-motion';
 
 import {TransformWrapper, TransformComponent} from "react-zoom-pan-pinch";
@@ -13,7 +12,7 @@ import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
 import {AutoSizer} from "react-virtualized";
 import Avatar from "~/components/Avatar/Avatar.jsx";
-import HorizontalScroll from "~/components/Scroll/HorizontalScroll.jsx";
+import Scroll from "~/components/Scroll/Scroll.jsx";
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -63,6 +62,7 @@ const Team = styled(Container)`
 `;
 
 const MembersWrapper = styled(Container)`
+  overflow: hidden;
 `;
 
 
@@ -70,6 +70,7 @@ const TeamMembers = styled(Container)`
   align-items: center;
   padding-top: 2px;
   padding-bottom: 60px;
+  display: inline-flex;
   //overflow: auto;
   //&::-webkit-scrollbar {
   //  display: none;
@@ -129,16 +130,6 @@ const hierarchy = {
   ]
 };
 
-const StyledScroll = styled(Scroll)`
-  && > div > div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-`;
-
 const StyledMotion = styled(({flexDir, ...props}) => <motion.div {...props}/>)`
   display: inline-flex;
   flex-direction: ${({flexDir = "column"}) => flexDir};
@@ -167,10 +158,21 @@ const AppendSubject = styled(motion.div)`
   transform: translateY(50%);
 `;
 
+
+const Replace = styled(motion.div)`
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  background-color: orange;
+  bottom: 0;
+  border-radius: 50%; 
+  left: 7px;
+`;
+
 const THRESHOLD = 60;
 
 
-const Build = ({hierarchy}) => {
+const Build = ({hierarchy, replaceUser, addUser}) => {
   const draggedElement = useRef(null);
   const canvas = useRef(null);
   const teams = useMemo(() => lodash.get(hierarchy, "childs", []), [hierarchy]);
@@ -194,8 +196,8 @@ const Build = ({hierarchy}) => {
 
   const setDraggedPos = useCallback((e) => {
     if (draggedElement.current) {
-      const x = e.touches[0].pageX - initialPos.x;
-      const y = e.touches[0].pageY - initialPos.y;
+      const x = e.changedTouches[0].pageX - initialPos.x;
+      const y = e.changedTouches[0].pageY - initialPos.y;
       draggedElement.current.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%) )`;
     }
   }, [dragging, draggedElement, initialPos]);
@@ -203,8 +205,8 @@ const Build = ({hierarchy}) => {
 
   const onMove = useCallback((e) => {
     setDraggedPos(e);
-    const x = e.touches[0].pageX;
-    const y = e.touches[0].pageY;
+    const x = e.changedTouches[0].pageX;
+    const y = e.changedTouches[0].pageY;
     if (draggedElement.current) {
       const currentX = scrollX.get();
       if (x < THRESHOLD && currentX < scrollXBounds.right) {
@@ -212,12 +214,28 @@ const Build = ({hierarchy}) => {
       } else if (x > initialPos.width - THRESHOLD && currentX > scrollXBounds.left) {
         scrollX.set(currentX - 5);
       }
-      const element = document.elementFromPoint(x, y);
-      if (element && element.classList.contains(AppendSubject.styledComponentId)) {
-        console.log(element, dragging.id);
-      }
     }
   }, [dragging, draggedElement, setDraggedPos, scrollXBounds]);
+
+  const onMoveEnd = useCallback((e) => {
+    if (dragging.element) {
+      const x = e.changedTouches[0].pageX;
+      const y = e.changedTouches[0].pageY;
+      const element = document.elementFromPoint(x, y);
+      if (element && element.classList.contains(AppendSubject.styledComponentId)) {
+        console.log("adding", dragging.id, "to", element.dataset.id);
+        addUser(dragging.id, parseInt(element.dataset.id));
+      }
+      if (element && element.classList.contains(Replace.styledComponentId)) {
+        console.log("replacing", dragging.id, "with", element.dataset.id);
+        replaceUser(dragging.id, parseInt(element.dataset.id));
+      }
+      changeDragging({
+        ...dragging,
+        element: null
+      });
+    }
+  }, [dragging, changeDragging, replaceUser, addUser]);
 
   const onTouchStart = useCallback((e, user) => {
     setDraggedPos(e);
@@ -233,16 +251,15 @@ const Build = ({hierarchy}) => {
     <>
       <HierarchyHolder stretched
                        onTouchMove={onMove}
-                       onTouchEnd={() => changeDragging({
-                         ...dragging,
-                         element: null
-                       })}>
+                       onTouchEnd={onMoveEnd}>
         <MainManager>
           <ManagerShrink>
             <AvatarExpanded kind={leader.avatar.kind}
                             name={leader.name} rounded
-                            onAvatarTouchStart={(e) => onTouchStart(e, leader)}
                             inline/>
+            <Replace data-id={leader.id} initial={{opacity: 0}}
+                     animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
+                     onTouchStart={(e) => onTouchStart(e, leader)}/>
           </ManagerShrink>
           <AddNotch/>
           <AppendSubject initial={{opacity: 0}}
@@ -251,13 +268,11 @@ const Build = ({hierarchy}) => {
         </MainManager>
         <HierarchyLine/>
         <Container stretched>
-          <HorizontalScroll drag={dragging.element ? false : 'x'}
-                            contentHeight="100%"
-                            updateBounds={changeScrollXBounds}
-                            style={{height: "100%", x: scrollX}}>
-            <Teams stretched row onScroll={(e) => {
-              if (dragging.element) e.preventDefault();
-            }}>
+          <Scroll drag={dragging.element ? false : 'x'}
+                  contentHeight="100%"
+                  updateBounds={changeScrollXBounds}
+                  style={{height: "100%", x: scrollX}}>
+            <Teams stretched row>
               {teams.map(team => {
                 const members = lodash.get(team, "childs", []);
                 const teamLeader = lodash.find(users, {id: team.leader});
@@ -267,43 +282,55 @@ const Build = ({hierarchy}) => {
                     <TeamLeaderShrink>
                       <AvatarExpanded kind={teamLeader.avatar.kind}
                                       name={teamLeader.name} rounded
-                                      onAvatarTouchStart={(e) => onTouchStart(e, teamLeader)}
                                       inline/>
+                      <Replace data-id={teamLeader.id} initial={{opacity: 0}}
+                               animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
+                               onTouchStart={(e) => onTouchStart(e, teamLeader)}/>
                     </TeamLeaderShrink>
                     <AppendSubject initial={{opacity: 0}}
                                    animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
                                    data-id={teamLeader.id}/>
                   </TeamLeader>
                   <MembersWrapper stretched>
-                    <StyledScroll height="100%"
-                                  width="100%"
-                                  dragEnabled={dragging.element === null}>
+                    <Scroll drag={dragging.element ? false : 'y'}
+                            style={{height: "100%"}}>
                       <TeamMembers stretched>
-                        {members.map((member, index) => {
-                          const user = lodash.find(users, {id: member.leader});
-                          return (
-                            <Member key={user.id}>
-                              <TopNotch index={index}/>
-                              <MemberShrink>
-                                <StyledMotion initial={{opacity: 1}}
-                                              animate={{opacity: dragging.element && dragging.id === user.id ? 0 : 1}}>
-                                  <AvatarExpanded kind={user.avatar.kind}
-                                                  name={user.name}
-                                                  onAvatarTouchStart={(e) => onTouchStart(e, user)}
-                                                  rounded inline/>
-                                </StyledMotion>
-                              </MemberShrink>
-                              <AddNotch last={members.length === index + 1}/>
-                            </Member>
-                          )
-                        })}
+                        <AnimatePresence>
+                          {members.map((member, index) => {
+                            const user = lodash.find(users, {id: member.leader});
+                            return (
+                              <StyledMotion key={user.id} exit={{opacity: 0}}
+                                            initial={{opacity: 0}}
+                                            animate={{opacity: 1}}
+                                            positionTransition>
+                                <Member key={user.id}>
+                                  <TopNotch index={index}/>
+                                  <MemberShrink>
+                                    <StyledMotion initial={{opacity: 1}}
+                                                  animate={{opacity: dragging.element && dragging.id === user.id ? 0 : 1}}>
+                                      <AvatarExpanded kind={user.avatar.kind}
+                                                      name={user.name}
+                                                      rounded inline/>
+                                      <Replace data-id={user.id}
+                                               initial={{opacity: 0}}
+                                               animate={{opacity: dragging.element && dragging.id !== user.id ? 1 : 0}}
+                                               onTouchStart={(e) => onTouchStart(e, user)}/>
+                                    </StyledMotion>
+                                  </MemberShrink>
+                                  <AddNotch
+                                    last={members.length === index + 1}/>
+                                </Member>
+                              </StyledMotion>
+                            )
+                          })}
+                        </AnimatePresence>
                       </TeamMembers>
-                    </StyledScroll>
+                    </Scroll>
                   </MembersWrapper>
                 </Team>
               })}
             </Teams>
-          </HorizontalScroll>
+          </Scroll>
         </Container>
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>
@@ -329,11 +356,70 @@ const Build = ({hierarchy}) => {
   )
 };
 
+const getTreeOf = (id, tree, prev) => {
+  if (tree.leader === id) return [tree, prev];
+  const childs = lodash.get(tree, "childs", []);
+  for (const child of childs) {
+    const retVal = getTreeOf(id, child, tree);
+    if (retVal) return retVal;
+  }
+};
+
 export const Hierarchy = (props) => {
+  const [currentHierarchy, changeCurrentHierarchy] = useState(hierarchy);
+
+  const replaceUser = useCallback((id1, id2) => {
+    const newHierarchy = lodash.cloneDeep(currentHierarchy);
+    const replaceFromTree = getTreeOf(id1, newHierarchy, null);
+    const replaceToTree = getTreeOf(id2, newHierarchy, null);
+
+    if (!replaceFromTree)
+      throw `Invalid ids given! couldn't find id ${id1} in hierarchy tree`;
+
+    if (!replaceToTree)
+      throw `Invalid ids given! couldn't find id ${id2} in hierarchy tree`;
+
+    const [fromTree, fromTreeParent] = replaceFromTree;
+    const [toTree, toTreeParent] = replaceToTree;
+
+    fromTree.leader = id2;
+    toTree.leader = id1;
+
+    changeCurrentHierarchy(newHierarchy);
+    console.log(newHierarchy);
+  }, [currentHierarchy, changeCurrentHierarchy]);
+
+  const addUser = useCallback((id1, id2) => {
+    const newHierarchy = lodash.cloneDeep(currentHierarchy);
+    const addFromTree = getTreeOf(id1, newHierarchy, null);
+    const addToTree = getTreeOf(id2, newHierarchy, null);
+
+    if (!addFromTree)
+      throw `Invalid ids given! couldn't find id ${id1} in hierarchy tree`;
+
+    if (!addToTree)
+      throw `Invalid ids given! couldn't find id ${id2} in hierarchy tree`;
+
+    const [fromTree, fromTreeParent] = addFromTree;
+    const [toTree, toTreeParent] = addToTree;
+
+    // add all childs of current to parent
+    fromTreeParent.childs.push(...(fromTree.childs || []));
+    // delete childs of current
+    fromTree.childs = [];
+    // remove from parent
+    lodash.pull(fromTreeParent.childs, fromTree);
+
+    toTree.childs = lodash.get(toTree, "childs", []);
+    toTree.childs.push(fromTree);
+
+    changeCurrentHierarchy(newHierarchy);
+    console.log(newHierarchy);
+  }, [currentHierarchy, changeCurrentHierarchy]);
 
   return (
     <PageContainer stretched>
-      <Build hierarchy={hierarchy}/>
+      <Build hierarchy={currentHierarchy} replaceUser={replaceUser} addUser={addUser}/>
     </PageContainer>
   );
 };
