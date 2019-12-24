@@ -49,9 +49,7 @@ def recreate_database():
         homeland_settings = models.MadorSettings(
             mador=homeland, key='default_reminder_time', value='09:00', type='time')
 
-        s.add_all([pie, pie_settings, homeland, homeland_settings])
-        s.commit()
-        
+        s.add_all([pie, pie_settings, homeland, homeland_settings])        
 
         # Creat Permissions:
         admin_permission = models.Permission(type="admin")
@@ -67,14 +65,13 @@ def recreate_database():
         with open("./app/backend/utils/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
-        s.add_all([models.date_datas.Reason(reason=reason) for reason in reasons.values()])
-        s.commit()
+        s.add_all([models.date_datas.Reason(name=reason) for reason in reasons.values()])
 
         # Create Users:
         elran = models.User(english_name='Elran Shefer', username='shobe', password='shobe12345678', 
-                            permissions=[user_permission, commander_permission, admin_permission]),
+                            permissions=[user_permission, commander_permission, admin_permission])
         tugy = models.User(english_name='Michael Tugy', username='tugmica', password='tuguy12345678', 
-                           permissions=[user_permission, commander_permission]),
+                           permissions=[user_permission, commander_permission])
         domb = models.User(english_name='Ariel Domb', username='damov', password='damovCc12345678',
                            permissions=[user_permission, operator_permission])
         ido = models.User(english_name='Ido Azolay', username='ado', password='Ido12345678',
@@ -85,7 +82,7 @@ def recreate_database():
         users = []
         for _ in range(num_of_users):
             full_name = names.get_full_name()
-            users.append(models.User(english_name=full_name, username=full_name.split()[0], password="Password1!"))
+            users.append(models.User(english_name=full_name, username=full_name.replace(" ", ""), password="Password1!"))
 
         users += [elran, tugy, ido, domb]
 

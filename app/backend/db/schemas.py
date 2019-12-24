@@ -1,6 +1,6 @@
 from enum import Enum 
 from typing import List, Dict, Any
-from datetime import date, time
+from datetime import date, time, datetime
 
 from pydantic import BaseModel
 
@@ -44,7 +44,6 @@ class StatusTypes(str, Enum):
 
 
 class DateDetails(BaseModel):
-    date: date
     type: StatusTypes = None
 
 
@@ -53,26 +52,35 @@ class AnswerStateTypes(str, Enum):
     not_here = "not_here"
 
 
-class DateData(BaseModel):
-    user: User 
+class DateDataBody(BaseModel):
+    user_id: int 
     start_date: date
-    end_date: date = None
+    end_date: date
     state: AnswerStateTypes
-    reported_by: User = None
     reason: str = None
+    reported_by_id: int
+    reported_time: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class DateDataResponse(BaseModel):
+    user_id: int 
+    date: date
+    state: AnswerStateTypes = None
+    reason: str = None
+    reported_by_id: int = None
+    reported_time: datetime = None
     date_details: DateDetails
 
     class Config:
         orm_mode = True
 
 
-class DateResponce(BaseModel):
+class DateResponse(BaseModel):
     user_id: int
-    data: List[DateData]
+    data: List[DateDataResponse]
 
     class Config:
         orm_mode = True
-
-
-class MultipleUsersDatesResponce(BaseModel):
-    data: List[DateResponce]

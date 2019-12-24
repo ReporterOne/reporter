@@ -3,7 +3,6 @@ from datetime import date, time
 from typing import List
 
 from .models import User, DateData
-from utils.datetime_utils import daterange
 from db import schemas
 
 # User:
@@ -27,28 +26,14 @@ def was_reminded(db: Session, user_id: int) -> bool:
 
 def get_dates_data(db: Session, user_id: int, 
                    start_date: date, end_date: date = None) -> List[DateData]:
-    return db.query(DateData).filter(DateData.user_id == user_id, 
-                                     start_date <= DateData.date <= end_date).all()
+    if end_date:
+        return db.query(DateData).filter(DateData.user_id == user_id, 
+                                        start_date <= DateData.date <= end_date).all()
+    else:
+        return db.query(DateData).filter(DateData.user_id == user_id, 
+                                        start_date == DateData.date).all()
 
-def get_reduced_dates_data(db: Session, user_id: int, 
-                           start_date: date, end_date: date = None) -> List[schemas.DateData]:
-    """Return list of DateData after adding follow same dates into range."""
-    dates_data = get_dates_data(db, user_id, start_date, end_date)
-    responce = []
-    for i in range(len(dates_data)):
-        if i > 0 and dates_data[-1] == dates_data:
-            responce[-1].end_date = dates_data[i].date
-        
-        else:
-            responce.append(schemas.DateData(user=dates_data[i].user,
-                                             start_date=dates_data[i].date, 
-                                             state=dates_data[i].state,
-                                             reported_by=dates_data[i].reported_by,
-                                             reason=dates_data[i].reason,
-                                             date_details=dates_data[i].date_details))
-    return responce
-
-def get_multiple_users_redused_dates_data(db: Session, users_id: List[int],
-                                          start_date: date, end_date: date = None) -> schemas.MultipleUsersDatesResponce:
-    return [schemas.DateResponce(user_id=user_id, data=get_reduced_dates_data(db, user_id, start_date, end_date)) 
+def get_multiple_users_dates_data(db: Session, users_id: List[int],
+                                          start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
+    return [{'user_id': user_id, 'data': get_dates_data(db, user_id, start_date, end_date)}
             for user_id in users_id]
