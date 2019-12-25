@@ -27,7 +27,8 @@ class User(BaseModel):
 
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
-    hierarchy: Dict[User, Any] = None
+    leader_id: int = None
+    childs: List[Any]  # list of Hierarchy.
 
 
 class HierarchyList(BaseModel):
@@ -44,6 +45,7 @@ class StatusTypes(str, Enum):
 
 
 class DateDetails(BaseModel):
+    date: date
     type: StatusTypes = None
 
 
@@ -67,7 +69,6 @@ class DateDataBody(BaseModel):
 
 class DateDataResponse(BaseModel):
     user_id: int 
-    date: date
     state: AnswerStateTypes = None
     reason: str = None
     reported_by_id: int = None

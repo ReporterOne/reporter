@@ -3,7 +3,6 @@ from datetime import date, time
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Query, Depends, HTTPException
 
-from db.models import *
 from db.database import transaction
 from db.crud import get_multiple_users_dates_data
 from db import schemas
