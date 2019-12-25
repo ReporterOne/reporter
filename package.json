@@ -48,9 +48,11 @@
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.0.4",
     "date-fns": "^2.5.1",
+    "formik": "^2.0.8",
     "framer-motion": "^1.7.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
+    "qs": "^6.9.1",
     "react": "^16.10.2",
     "react-burger-menu": "^2.6.5",
     "react-dom": "^16.10.2",
@@ -73,6 +75,7 @@
     "serialize-javascript": "^2.1.2",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.4.0",
-    "universal-cookie": "^4.0.2"
+    "universal-cookie": "^4.0.2",
+    "yup": "^0.28.0"
   }
 }
