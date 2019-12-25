@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from datetime import date, time
 from typing import List
 
-from .models import User, DateData
+from .models import User, DateData, Reason
 from db import schemas
 
 # User:
@@ -51,3 +51,9 @@ def get_multiple_users_dates_data(db: Session, users_id: List[int],
                                   start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
     return [{'user_id': user_id, 'data': get_dates_data(db, user_id, start_date, end_date)}
             for user_id in users_id]
+
+
+# Reasons:
+
+def get_reasons(db: Session):
+    return [reason.name for reason in db.query(Reason).all()]

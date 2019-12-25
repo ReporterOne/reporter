@@ -3,11 +3,11 @@ from datetime import date
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Query, Depends, Security
 
-from server.auth import get_current_user_secured
+from server.auth import get_current_user
 
+from db import crud
 from db import schemas
 from db.database import get_db
-from db.crud import get_multiple_users_dates_data
 
 router = APIRouter()
 
@@ -18,9 +18,18 @@ async def get_dates_status(
     end: date = None,
     users_id: List[int] = Query([]),
     db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user_secured)
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"])
 ):
-    return get_multiple_users_dates_data(db=db,
-                                         start_date=start,
-                                         end_date=end,
-                                         users_id=users_id)
+    return crud.get_multiple_users_dates_data(db=db,
+                                              start_date=start,
+                                              end_date=end,
+                                              users_id=users_id)
+
+
+@router.get("/dates_status/reasons", response_model=List[str])
+def get_reasons(
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+):
+    return crud.get_reasons(db)
