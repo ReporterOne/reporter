@@ -7,6 +7,7 @@ from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from . import auth
 from .api.v1 import api_v1
 
 
@@ -18,6 +19,14 @@ app.mount("/static", StaticFiles(directory=str(base_dir / "static")), name="stat
 app.mount("/api/v1", api_v1)
 
 templates = Jinja2Templates(directory=str(base_dir / "templates"))
+
+
+app.include_router(
+    auth.router,
+    tags=["Get Dates"],
+    prefix="/api"
+)
+
 
 @app.get("/.*")
 async def index(request: Request):

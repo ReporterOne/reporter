@@ -1,8 +1,8 @@
 import os
 import json
-import names
 from contextlib import contextmanager
 
+from faker import Faker
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
@@ -19,6 +19,18 @@ DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)
+
+
+def get_db():
+    db = Session()
+    try:
+        yield db
+
+    except:
+        db.rollback()
+
+    finally:
+        db.close()
 
 
 @contextmanager
@@ -80,8 +92,9 @@ def recreate_database():
         # Create Randome Users:
         num_of_users = 20
         users = []
+        fake = Faker(['en_US'])
         for _ in range(num_of_users):
-            full_name = names.get_full_name()
+            full_name = fake.name()
             users.append(models.User(english_name=full_name, username=full_name.replace(" ", ""), password="Password1!"))
 
         users += [elran, tugy, ido, domb]

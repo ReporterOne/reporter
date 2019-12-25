@@ -18,6 +18,10 @@ pylint = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
 alembic = "*"
+faker = "*"
+passlib = {extras = ["bcrypt"],version = "*"}
+pyjwt = "*"
+python-multipart = "*"
 
 [requires]
 python_version = "3.7"
