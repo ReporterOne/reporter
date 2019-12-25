@@ -6,7 +6,7 @@ const initialState = {
 };
 
 export const exampleReducer = (state = initialState, action) => {
-  switch (ACTION1.type) {
+  switch (action.type) {
     case ACTION1:
       return {
         ...state,
@@ -15,4 +15,4 @@ export const exampleReducer = (state = initialState, action) => {
 
     default: return state;
   }
-}
+};
