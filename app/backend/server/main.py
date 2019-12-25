@@ -1,4 +1,5 @@
 """Main backend API serving."""
+import uvicorn
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -31,3 +32,7 @@ app.include_router(
 @app.get("/.*")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8433)
