@@ -3,6 +3,7 @@ import json
 from contextlib import contextmanager
 
 from faker import Faker
+from passlib.context import CryptContext
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
@@ -19,6 +20,7 @@ DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def get_db():
@@ -80,13 +82,17 @@ def recreate_database():
         s.add_all([models.date_datas.Reason(name=reason) for reason in reasons.values()])
 
         # Create Users:
-        elran = models.User(english_name='Elran Shefer', username='shobe', password='shobe12345678', 
+        elran = models.User(english_name='Elran Shefer', username='shobe',
+                            password=pwd_context.hash('shobe12345678'),
                             permissions=[user_permission, commander_permission, admin_permission])
-        tugy = models.User(english_name='Michael Tugy', username='tugmica', password='tuguy12345678', 
+        tugy = models.User(english_name='Michael Tugy', username='tugmica',
+                           password=pwd_context.hash('tuguy12345678'),
                            permissions=[user_permission, commander_permission])
-        domb = models.User(english_name='Ariel Domb', username='damov', password='damovCc12345678',
+        domb = models.User(english_name='Ariel Domb', username='damov',
+                           password=pwd_context.hash('damovCc12345678'),
                            permissions=[user_permission, operator_permission])
-        ido = models.User(english_name='Ido Azolay', username='ado', password='Ido12345678',
+        ido = models.User(english_name='Ido Azolay', username='ado',
+                          password=pwd_context.hash('Ido12345678'),
                            permissions=[user_permission, operator_permission])
 
         # Create Randome Users:

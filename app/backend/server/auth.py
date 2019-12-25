@@ -11,12 +11,11 @@ from fastapi.security import (
 )
 from jwt import PyJWTError
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from db.schemas import User
-from db.database import get_db
+from db.database import get_db, pwd_context
 from db.crud import get_user_by_username, create_user
 
 # TODO: remember in production to generate new hash using:
@@ -40,7 +39,6 @@ class TokenData(BaseModel):
     scopes: List[str] = []
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/api/login",
     scopes={
