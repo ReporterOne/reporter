@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory=str(base_dir / "templates"))
 
 app.include_router(
     auth.router,
-    tags=["Get Dates"],
+    tags=["Authentication"],
     prefix="/api"
 )
 
