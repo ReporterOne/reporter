@@ -14,9 +14,15 @@ module.exports = merge(common, {
     port: 8000,
     historyApiFallback: true,
     hot: true,
-    proxy: [{
-      context: ["/api/**"],
-      target: 'http://0.0.0.0:8443'
-    }],
+    proxy: [
+      {
+        context: ["/api/**"],
+        target: 'http://0.0.0.0:8443'
+      },
+      {
+        context: ["/docs", "/redoc", "/openapi.json"],
+        target: 'http://0.0.0.0:8443'
+      }
+    ],
   },
 });

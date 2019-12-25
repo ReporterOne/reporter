@@ -18,7 +18,7 @@ PORT = os.environ.get('ONE_REPORT_PORT', '5432')
 DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 
 def get_db():

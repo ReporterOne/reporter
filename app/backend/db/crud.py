@@ -6,6 +6,15 @@ from .models import User, DateData
 from db import schemas
 
 # User:
+def create_user(db: Session, username: str, password: str) -> User:
+    new_user = User(english_name=username,
+                    username=username,
+                    password=password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
 
 def get_user(db: Session, user_id: int) -> User:
     return db.query(User).filter(User.id == user_id).first()

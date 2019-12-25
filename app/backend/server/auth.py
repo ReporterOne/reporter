@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, Security, APIRouter
+from fastapi import Depends, FastAPI, HTTPException, Security, APIRouter, Form
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -17,7 +17,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 
 from db.schemas import User
 from db.database import get_db
-from db.crud import get_user_by_username
+from db.crud import get_user_by_username, create_user
 
 # TODO: remember in production to generate new hash using:
 #       openssl rand -hex 32
@@ -26,7 +26,6 @@ SECRET_KEY = os.environ.get(
     "a10519645263a665b3a10068a29b9e6171f32bad184d82a8aef0d790fe09d49a")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 router = APIRouter()
 
@@ -103,7 +102,7 @@ async def get_current_user(
     except (PyJWTError, ValidationError):
         raise credentials_exception
 
-    user = get_user(db, username=token_data.username)
+    user = get_user_by_username(db, username=token_data.username)
     if user is None:
         raise credentials_exception
     for scope in security_scopes.scopes:
@@ -138,3 +137,21 @@ async def login_for_access_token(
         expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/register", response_model=User)
+def register(
+    *,
+    username: str,
+    password: str,
+    db: Session = Depends(get_db)
+):
+    existing_user = get_user_by_username(db, username)
+    if existing_user:
+        raise HTTPException(status_code=400,
+                            detail="Username already taken!")
+
+    hashed_password = get_password_hash(password)
+    created_user = create_user(db, username, hashed_password)
+
+    return created_user
