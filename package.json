@@ -69,6 +69,7 @@
     "react-textfit": "^1.1.0",
     "react-virtualized": "^9.21.2",
     "redux": "^4.0.4",
+    "regenerator-runtime": "^0.13.3",
     "serialize-javascript": "^2.1.2",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.4.0",

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import store from './store';
 
 import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
@@ -12,11 +12,20 @@ import { StylesProvider } from '@material-ui/core/styles';
 import styled, { ThemeProvider } from 'styled-components';
 import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
 import AppContext from './AppContext.jsx';
+import DateStatusService from "~/services/date_datas";
+import {updateReasons} from "~/actions/general";
 
 const App = (props) => {
   const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
   const [pageTitle, changePageTitle] = useState("");
   const avatarRef = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      const reasons = await DateStatusService.getReasons();
+      updateReasons(reasons);
+    })()
+  }, []);
 
   const onDrawerDrag = useCallback(({ data, drawer }) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
