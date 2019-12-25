@@ -1,93 +1,108 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { Provider, useDispatch } from 'react-redux';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import {Provider, useDispatch} from 'react-redux';
 import store from './store';
 
-import { GlobalStyle, Container, theme, SVGIcon } from '~/components/common';
+import {GlobalStyle, Container, theme, SVGIcon} from '~/components/common';
 import Dashboard from '@/Dashboard';
 import Operator from '@/Operator';
 import Commander from '@/Commander';
 import Menu from '@/Menu.jsx';
-import { StylesProvider } from '@material-ui/core/styles';
-import styled, { ThemeProvider } from 'styled-components';
-import { DrawerMenu, Drawer, DrawerContent } from '~/components/Menu';
+import {StylesProvider} from '@material-ui/core/styles';
+import styled, {ThemeProvider} from 'styled-components';
+import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import AppContext from './AppContext.jsx';
 import DateStatusService from "~/services/date_datas";
 import {updateReasons} from "~/actions/general";
+import Login from "@/Login/";
+import PrivateRoute from "~/components/Menu/PrivateRoute.jsx";
 
-const App = (props) => {
-  const [avatar, changeAvatar] = useState({ manual: false, appearing: 0 });
+const ProvidedApp = (props) => {
+  const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const [pageTitle, changePageTitle] = useState("");
   const avatarRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
       const reasons = await DateStatusService.getReasons();
-      updateReasons(reasons);
+      dispatch(updateReasons(reasons));
     })()
   }, []);
 
-  const onDrawerDrag = useCallback(({ data, drawer }) => {
+  const onDrawerDrag = useCallback(({data, drawer}) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
-    if (avatar.manual !== true) changeAvatar({ ...avatar, manual: true, appearing: NaN });
+    if (avatar.manual !== true) changeAvatar({
+      ...avatar,
+      manual: true,
+      appearing: NaN
+    });
     if (avatarRef.current) {
       avatarRef.current.style.transform = `translateY(${100 - movePercent}%)`;
     }
   }, [avatar, avatarRef]);
 
-  const onDrawerToggle = useCallback(({ drawer }) => {
-    changeAvatar({ ...avatar, appearing: drawer.isOpen ? 100 : 0 })
+  const onDrawerToggle = useCallback(({drawer}) => {
+    changeAvatar({...avatar, appearing: drawer.isOpen ? 100 : 0})
   }, [avatar]);
 
 
-  const onDrawerDragEnd = useCallback(({ drawer, event }) => {
-    changeAvatar({ ...avatar, manual: false, appearing: drawer.isOpen ? 100 : 0 })
+  const onDrawerDragEnd = useCallback(({drawer, event}) => {
+    changeAvatar({
+      ...avatar,
+      manual: false,
+      appearing: drawer.isOpen ? 100 : 0
+    })
   }, [avatar]);
 
   return (
+    <Router>
+      <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
+              onDragEnd={onDrawerDragEnd}>
+        <DrawerMenu>
+          <Menu avatar={avatar} avatarRef={avatarRef}/>
+        </DrawerMenu>
+        <DrawerContent
+          titleComponent={() => (
+            <Switch>
+              <Route path="login">
+                Login Page
+              </Route>
+              <Route path="/operator">
+                Operator Space
+              </Route>
+              <Route path="/commander">
+                Commander Space
+              </Route>
+              <Route path="/">
+              </Route>
+            </Switch>
+          )}>
+          <Switch>
+            <Route path="/login" component={Login}/>
+            <PrivateRoute path="/operator" component={Operator}/>
+            <PrivateRoute path="/commander" component={Commander}/>
+            <PrivateRoute path="/" component={Dashboard}/>
+          </Switch>
+        </DrawerContent>
+      </Drawer>
+    </Router>
+  );
+};
+
+const App = (props) => {
+  return (
     <Provider store={store}>
       <StylesProvider injectFirst>
-        <GlobalStyle />
+        <GlobalStyle/>
         <ThemeProvider theme={theme}>
           <AppContext.Provider value={{}}>
-            <Router>
-              <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-                onDragEnd={onDrawerDragEnd}>
-                <DrawerMenu>
-                  <Menu avatar={avatar} avatarRef={avatarRef} />
-                </DrawerMenu>
-                <DrawerContent
-                  titleComponent={() => (
-                    <Switch>
-                      <Route path="/operator">
-                        Operator Space
-                      </Route>
-                      <Route path="/commander">
-                        Commander Space
-                      </Route>
-                      <Route path="/">
-                      </Route>
-                    </Switch>
-                  )}>
-                  <Switch>
-                    <Route path="/operator">
-                      <Operator />
-                    </Route>
-                    <Route path="/commander">
-                      <Commander />
-                    </Route>
-                    <Route path="/">
-                      <Dashboard />
-                    </Route>
-                  </Switch>
-                </DrawerContent>
-              </Drawer>
-            </Router>
+            <ProvidedApp/>
           </AppContext.Provider>
         </ThemeProvider>
       </StylesProvider>
     </Provider>
-  );
-}
+  )
+};
 
 export default App;
