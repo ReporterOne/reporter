@@ -1,0 +1,9 @@
+title: Mador
+type: object
+properties:
+  manager:
+    type: integer
+  name:
+    type: string
+required:
+  - name

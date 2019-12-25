@@ -1,10 +1,13 @@
-title: Date
+title: Dates
 type: object
+description: ''
 properties:
-  date:
+  start_date:
     type: string
-  user_id:
-    type: integer
+  user_ids:
+    type: array
+    items:
+      type: integer
   reason:
     type: string
   type:
@@ -13,5 +16,7 @@ properties:
       - required
       - not_required
       - not_important
+  end_date:
+    type: string
 required:
-  - date
+  - start_date

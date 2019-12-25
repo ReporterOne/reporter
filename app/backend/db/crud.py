@@ -1,45 +1,39 @@
-import os
-from contextlib import contextmanager
+from sqlalchemy.orm import Session
+from datetime import date, time
+from typing import List
 
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from .models import User, DateData
+from db import schemas
 
-from db import models
+# User:
 
+def get_user(db: Session, user_id: int) -> User:
+    return db.query(User).filter(User.id == user_id).one()
 
-USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
-PASSWORD = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
-HOST = os.environ.get('ONE_REPORT_HOST', 'localhost')
-DB = os.environ.get('ONE_REPORT_DB', 'one_report')
-PORT = os.environ.get('ONE_REPORT_PORT', '5432')
+def get_subjects(db: Session, commander_id: int) -> List[User]:
+    commander = get_user(db, commander_id)
+    return commander.soldiers
 
-DATABASE_URI = f'postgres+psycopg2://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
+def get_reminder(db: Session, user_id:int) -> time:
+    user = get_user(db, user_id)
+    return user.reminder_time
 
-engine = create_engine(DATABASE_URI)
-Session = sessionmaker(bind=engine)
+def was_reminded(db: Session, user_id: int) -> bool:
+    user = get_user(db, user_id)
+    return user.last_reminded_date == date.today()
 
+# Date Data:
 
-@contextmanager
-def transaction():
-    s = Session()
-    try:
-        yield s
+def get_dates_data(db: Session, user_id: int, 
+                   start_date: date, end_date: date = None) -> List[DateData]:
+    if end_date:
+        return db.query(DateData).filter(DateData.user_id == user_id, 
+                                        start_date <= DateData.date <= end_date).all()
+    else:
+        return db.query(DateData).filter(DateData.user_id == user_id, 
+                                        start_date == DateData.date).all()
 
-    except:
-        s.rollback()
-        raise
-
-    finally:
-        s.close()
-
-
-def recreate_database():
-    with transaction() as s:
-        models.Base.metadata.drop_all(engine)
-        models.Base.metadata.create_all(engine)
-        mador = models.Mador(name='pie')
-        mador_settings = models.MadorSettings(
-            mador=mador, key='default_reminder_time', value='08:00', type='time')
-
-        s.add_all([mador, mador_settings])
-        s.commit()
+def get_multiple_users_dates_data(db: Session, users_id: List[int],
+                                          start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
+    return [{'user_id': user_id, 'data': get_dates_data(db, user_id, start_date, end_date)}
+            for user_id in users_id]
