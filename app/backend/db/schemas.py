@@ -21,6 +21,9 @@ class User(BaseModel):
     mador: Mador = None
     operators_id: List[int] = None
 
+    username: str = None
+    password: str = None
+
     class Config:
         orm_mode = True
 
