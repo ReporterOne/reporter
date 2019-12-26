@@ -1,4 +1,5 @@
 import React, {useCallback} from 'react';
+import {useSelector} from "react-redux";
 import styled from 'styled-components';
 
 import List from '@material-ui/core/List';
@@ -7,8 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 
-import {useReasons} from "~/hooks/date_datas";
-
 
 const RTLListItemText = styled(ListItemText)`
   text-align: right;
@@ -16,7 +15,7 @@ const RTLListItemText = styled(ListItemText)`
 
 
 export const ReasonsDialog = ({onClose, selectedValue, open}) => {
-  const reasons = useReasons();
+  const reasons = useSelector(state => state.general.reasons);
   const handleClose = useCallback(() => onClose(selectedValue || reasons[0]), [onClose, selectedValue]);
   const handleListItemClick = useCallback((item) => onClose(item), [onClose]);
 

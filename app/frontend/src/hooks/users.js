@@ -1,12 +1,14 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
-import DateStatusService from "~/services/date_datas";
-import {updateReasons} from "~/actions/general";
+import UsersService from "~/services/users";
+
+import {updateCurrentUser} from "~/actions/users";
+
 import {logoutIfNoPermission} from "~/hooks/utils";
 
 
-export const fetchReasons = () => {
+export const fetchCurrentUser = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.general.login);
 
@@ -14,8 +16,8 @@ export const fetchReasons = () => {
     (async () => {
       if(isLoggedIn) {
         await logoutIfNoPermission(async () => {
-          const reasons = await DateStatusService.getReasons();
-          dispatch(updateReasons(reasons));
+          const currentUser = await UsersService.getCurrentUser();
+          dispatch(updateCurrentUser(currentUser));
         }, dispatch);
       }
     })()
