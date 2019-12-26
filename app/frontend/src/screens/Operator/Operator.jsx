@@ -4,8 +4,8 @@ import posed, {PoseGroup} from 'react-pose';
 import {HERE, NOT_ANSWERED, NOT_HERE, users} from '~/utils';
 
 import { Container } from '~/components/common';
-import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
-import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
+import AvatarDetails from '~/components/Avatar/AvatarDetails';
+import AvatarExpanded from "~/components/Avatar/AvatarExpanded";
 import Calender from "~/components/Calendar";
 import { motion, useAnimation } from "framer-motion";
 

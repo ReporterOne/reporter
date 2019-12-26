@@ -1,20 +1,22 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import {Provider} from 'react-redux';
-import store from './store';
-
-import {GlobalStyle, theme} from '~/components/common';
-import Dashboard from '@/Dashboard';
-import Operator from '@/Operator';
-import Commander from '@/Commander';
-import Login from "@/Login";
-import Menu from '@/Menu.jsx';
-import {StylesProvider} from '@material-ui/core/styles';
 import {ThemeProvider} from 'styled-components';
+import {StylesProvider} from '@material-ui/core/styles';
+
+import Menu from '@/Menu';
+import Login from "@/Login";
+import Operator from '@/Operator';
+import Dashboard from '@/Dashboard';
+
+import Commander from '@/Commander';
+import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
-import AppContext from './AppContext.jsx';
-import PrivateRoute from "~/components/Menu/PrivateRoute.jsx";
+import PrivateRoute from "~/components/Menu/PrivateRoute";
+
+import AppContext from './AppContext';
 import {useReasons} from "~/hooks/date_datas";
+import store from './store';
 
 const ProvidedApp = (props) => {
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});

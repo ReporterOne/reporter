@@ -30,6 +30,7 @@ module.exports = {
     ])
   ],
   resolve: {
+    extensions: ['.js', '.jsx'],
     alias: {
       "~": path.resolve(src),
       "@": path.resolve(src, 'screens'),
