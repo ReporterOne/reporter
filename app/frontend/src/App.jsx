@@ -1,34 +1,26 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import {Provider, useDispatch} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import store from './store';
 
 import {GlobalStyle, Container, theme, SVGIcon} from '~/components/common';
 import Dashboard from '@/Dashboard';
 import Operator from '@/Operator';
 import Commander from '@/Commander';
+import Login from "@/Login";
 import Menu from '@/Menu.jsx';
 import {StylesProvider} from '@material-ui/core/styles';
 import styled, {ThemeProvider} from 'styled-components';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import AppContext from './AppContext.jsx';
-import DateStatusService from "~/services/date_datas";
-import {updateReasons} from "~/actions/general";
-import Login from "@/Login/";
 import PrivateRoute from "~/components/Menu/PrivateRoute.jsx";
+import {useReasons} from "~/hooks/date_datas";
 
 const ProvidedApp = (props) => {
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const [pageTitle, changePageTitle] = useState("");
   const avatarRef = useRef(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (async () => {
-      const reasons = await DateStatusService.getReasons();
-      dispatch(updateReasons(reasons));
-    })()
-  }, []);
+  const reasons = useReasons();
 
   const onDrawerDrag = useCallback(({data, drawer}) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;

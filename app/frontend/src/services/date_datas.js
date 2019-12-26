@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import AuthService from './auth';
+import AuthService, {PermissionsError} from './auth';
 
 const PREFIX = "/api/v1/dates_status";
 
@@ -16,9 +16,12 @@ class DateStatusService {
       );
       return response.data;
 
-    } catch (e) {
-      console.error("couldn't get reasons");
-      throw e;
+    } catch (error) {
+      if (error.response.status === 401) {
+        throw new PermissionsError(error.response.data.details);
+      }
+      console.warn("couldn't get reasons", error.response.status);
+      throw error;
     }
   }
 }

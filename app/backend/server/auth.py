@@ -10,6 +10,7 @@ from fastapi.security import (
     SecurityScopes,
 )
 from jwt import PyJWTError
+from jwt.exceptions import ExpiredSignatureError
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -97,6 +98,13 @@ async def get_current_user(
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
         token_data = TokenData(scopes=token_scopes, username=username)
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Token is expired",
+            headers={"WWW-Authenticate": authenticate_value},
+        )
+
     except (PyJWTError, ValidationError):
         raise credentials_exception
 

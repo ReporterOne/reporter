@@ -65,7 +65,7 @@ const AnimatedReason = posed(Container)({
   }
 });
 
-export const Operator = (props) => {
+export const Operator = React.memo((props) => {
   let animationIndex = 0;
   const controls = useAnimation();
   const [drag, changeDrag] = useState('y');
@@ -137,6 +137,6 @@ export const Operator = (props) => {
       </OpeningCalendar>
     </PageContainer>
   );
-}
+});
 
 export default Operator;
