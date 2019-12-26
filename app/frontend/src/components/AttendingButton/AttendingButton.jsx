@@ -190,8 +190,10 @@ const AttendingButton = ({missingReason, onChange}) => {
   const [pose, changePose] = useState("notDecided");
 
   const handleChange = useCallback((state) => {
-    onChange(state);
     changePose(state);
+    setTimeout(() => {
+      onChange(state);
+    }, theme.handleSpeed * 1000);
   }, [changePose, onChange]);
 
   return (
