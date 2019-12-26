@@ -31,28 +31,6 @@ const PosedRRoundedRectangle = posed.div({
   },
 });
 
-const PosedCircle = posed.div({
-  draggable: 'x',
-  enter: {},
-  exit: {},
-  notHere: {
-    x: ({ containerWidth }) => outlinePadding
-  },
-  here: {
-    x: ({ containerWidth }) => containerWidth - circleDiameter - outlinePadding
-  },
-  notDecided: {
-    x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
-  },
-  dragBounds: ({ containerWidth }) => {
-    console.log("bounds: ", containerWidth)
-    return ({
-      right: containerWidth - circleDiameter - outlinePadding,
-      left: outlinePadding
-    })
-  }
-});
-
 const PosedArrowsContainer = posed.div({
   decided: { scale: 0 },
   notDecided: { scale: 1 }
@@ -140,7 +118,7 @@ const statePositions = {
   notDecided: (containerWidth) => containerWidth * 0.5 - circleDiameter * 0.5,
   here: (containerWidth) => containerWidth - circleDiameter - outlinePadding,
   notHere: (containerWidth) => outlinePadding
-}
+};
 
 const Handle = ({containerWidth, state="notDecided", changeState}) => {
   const [handle, changeHandle] = useState({
@@ -168,11 +146,8 @@ const Handle = ({containerWidth, state="notDecided", changeState}) => {
   return (
       <Draggable
         axis='x'
-        // handle='.overlay'
         position={handle.position}
         onStop={onStop}
-        // onStart={onStart}
-        // onDrag={onDragCallback}
         bounds={{ left: outlinePadding, right: containerWidth - circleDiameter - outlinePadding }}
       >
         <Circle />
@@ -217,7 +192,6 @@ const AttendingButton = ({missingReason, onChange}) => {
                   </ArrowsContainer>
                   <Spacer />
                 </RoundedRectangle>
-                {/* <Circle key={width} onDragEnd={e => onDragEnd(e, width)} poseKey={usage} containerWidth={width} pose={pose}/> */}
                 <Handle key={width} containerWidth={width} changeState={handleChange} />
               </InnerContainer>
             )
