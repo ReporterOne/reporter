@@ -93,6 +93,7 @@ export const Commander = React.memo((props) => {
                 isFaded={selectedSoldier && user !== selectedSoldier}
                 kind={user.avatar.kind} 
                 status={user.status}
+                jumping={true}
                 />
             ))}
           </AvatarsContainer>
