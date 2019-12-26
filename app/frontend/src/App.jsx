@@ -14,7 +14,6 @@ import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from "~/components/Menu/PrivateRoute";
 
-import AppContext from './AppContext';
 import {useReasons} from "~/hooks/date_datas";
 import store from './store';
 
@@ -89,9 +88,7 @@ const App = (props) => {
       <StylesProvider injectFirst>
         <GlobalStyle/>
         <ThemeProvider theme={theme}>
-          <AppContext.Provider value={{}}>
-            <ProvidedApp/>
-          </AppContext.Provider>
+          <ProvidedApp/>
         </ThemeProvider>
       </StylesProvider>
     </Provider>
