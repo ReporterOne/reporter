@@ -1,11 +1,13 @@
 import React, {useCallback, useState} from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
+import lodash from 'lodash';
 
 import { Container, RoundedContainer, theme } from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import ReasonsDialog from "~/dialogs/Reasons";
+import {useSelector} from "react-redux";
 
 
 const HeaderWelcome = styled.h2`
@@ -38,7 +40,7 @@ const names = [
 ];
 
 const Dashboard = React.memo((props) => {
-  const name = names[4];
+  const name = useSelector(state => lodash.get(state.users.me, "english_name"));
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedValue, changeSelectedValue] = useState(null);
 
@@ -60,7 +62,7 @@ const Dashboard = React.memo((props) => {
       <Container flex={2} style={{ padding: '15px' }}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
-          <HeaderName mode="single" max={45}>{name}</HeaderName>
+          <HeaderName mode="single" max={45}>{lodash.capitalize(name)}</HeaderName>
         </WelcomeMessage>
         <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
       </Container>
