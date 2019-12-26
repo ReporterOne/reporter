@@ -133,6 +133,7 @@ const AttendenceValue = styled.span`
   font-weight: normal;
   font-size: 20px;
   flex:1;
+  white-space: nowrap;
 `;
 
 const statePositions = {
@@ -185,8 +186,13 @@ const attendenceStatus = {
   notDecided: ""
 }
 
-const AttendingButton = (props) => {
+const AttendingButton = ({missingReason, onChange}) => {
   const [pose, changePose] = useState("notDecided");
+
+  const handleChange = useCallback((state) => {
+    onChange(state);
+    changePose(state);
+  }, [changePose, onChange]);
 
   return (
     <Container>
@@ -201,7 +207,7 @@ const AttendingButton = (props) => {
                   </ArrowsContainer>
                   <Spacer />
                   <AttendenceValue>
-                    {attendenceStatus[pose]}
+                    {pose === "notHere" ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
                   </AttendenceValue>
                   <Spacer />
                   <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
@@ -210,7 +216,7 @@ const AttendingButton = (props) => {
                   <Spacer />
                 </RoundedRectangle>
                 {/* <Circle key={width} onDragEnd={e => onDragEnd(e, width)} poseKey={usage} containerWidth={width} pose={pose}/> */}
-                <Handle key={width} containerWidth={width} changeState={changePose} />
+                <Handle key={width} containerWidth={width} changeState={handleChange} />
               </InnerContainer>
             )
           }

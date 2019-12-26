@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
 
 import { Container, RoundedContainer, theme } from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
+import ReasonsDialog from "~/dialogs/Reasons";
 
 
 const HeaderWelcome = styled.h2`
@@ -38,7 +39,21 @@ const names = [
 
 const Dashboard = React.memo((props) => {
   const name = names[4];
-  const [status, changeStatus] = useState("notDecided");
+  const [openDialog, changeOpenDialog] = useState(false);
+  const [selectedValue, changeSelectedValue] = useState(null);
+
+  const handleClose = useCallback((value) => {
+    changeOpenDialog(false);
+    changeSelectedValue(value);
+  });
+
+  const handleOnChange = useCallback((state) => {
+    if(state === "notHere") {
+      changeOpenDialog(true);
+    } else {
+      changeSelectedValue(null);
+    }
+  });
 
   return (
     <Container stretched>
@@ -47,11 +62,12 @@ const Dashboard = React.memo((props) => {
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{name}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton pose={status} changePose={changeStatus} />
+        <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
         <Calender />
       </RoundedContainer>
+      <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
     </Container>
   );
 });
