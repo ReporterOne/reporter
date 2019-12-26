@@ -13,12 +13,15 @@ def get_dates_data(
     end_date: date = None
 ) -> List[DateData]:
     if end_date:
-        return db.query(DateData).filter(DateData.user_id == user_id,
-                                         start_date <= DateData.date <=
-                                         end_date).all()
+        return db.query(DateData).filter(
+            DateData.user_id == user_id,
+            start_date <= DateData.date <= end_date
+        ).all()
     else:
-        return db.query(DateData).filter(DateData.user_id == user_id,
-                                         start_date == DateData.date).all()
+        return db.query(DateData).filter(
+            DateData.user_id == user_id,
+            start_date == DateData.date
+        ).all()
 
 
 def get_multiple_users_dates_data(
