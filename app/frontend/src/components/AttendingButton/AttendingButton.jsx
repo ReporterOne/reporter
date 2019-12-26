@@ -132,8 +132,8 @@ const AttendenceValue = styled.span`
   display: flex;
   font-weight: normal;
   font-size: 20px;
-  flex:1;
   white-space: nowrap;
+  text-align: center;
 `;
 
 const statePositions = {
