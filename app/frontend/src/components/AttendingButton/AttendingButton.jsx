@@ -3,7 +3,6 @@ import { AutoSizer } from 'react-virtualized';
 
 import styled from 'styled-components';
 import Arrows from '~/assets/Arrows.svg';
-import Draggable from 'react-draggable';
 
 import {
   SVGIcon,
@@ -12,6 +11,7 @@ import {
 } from '~/components/common';
 
 import posed from 'react-pose';
+import {motion, useAnimation} from "framer-motion";
 
 const ContainerHeight = 60;
 const rectangleMargin = 15;
@@ -70,17 +70,13 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-const Circle = styled.div`
+const Circle = styled(motion.div)`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
   border-radius: 50%;
   display: inline-block;
   z-index: 1;
-  will-change: transform;
-  &:not(.react-draggable-dragging) {
-    transition: transform ${props => props.theme.handleSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 `;
 
 const ArrowsContainer = styled(PosedArrowsContainer)`
@@ -114,55 +110,31 @@ const AttendenceValue = styled.span`
   text-align: center;
 `;
 
-const statePositions = {
-  notDecided: (containerWidth) => containerWidth * 0.5 - circleDiameter * 0.5,
-  here: (containerWidth) => containerWidth - circleDiameter - outlinePadding,
-  notHere: (containerWidth) => outlinePadding
-};
-
-const Handle = ({containerWidth, state="notDecided", changeState}) => {
-  const [handle, changeHandle] = useState({
-    position: { x: statePositions[state](containerWidth), y: 0 },
-    state: state
-  });
-
-  const onStop = useCallback((e, data) => {
-    const circlePosition = data.x;
-    let state = "notDecided";
-    if (circlePosition >= ((containerWidth - circleDiameter) * 0.5) + 70) {
-      state = 'here';
-    }
-    else if (circlePosition <= ((containerWidth - circleDiameter) * 0.5) - 70) {
-      state = 'notHere';
-    }
-    const newHandle = {
-      ...handle, state,
-      position: { x: statePositions[state](containerWidth), y: 0 }
-    };
-
-    changeHandle(newHandle);
-    changeState(state);
-  }, [changeHandle, handle, containerWidth]);
-  return (
-      <Draggable
-        axis='x'
-        position={handle.position}
-        onStop={onStop}
-        bounds={{ left: outlinePadding, right: containerWidth - circleDiameter - outlinePadding }}
-      >
-        <Circle />
-      </Draggable>
-  )
-}
 
 const attendenceStatus = {
   here: "Attending",
   notHere: "Missing",
   notDecided: ""
-}
+};
+const ANIMATION_TIME = 0.5;
+const DEACCELERATION = 2;
 
 const AttendingButton = ({missingReason, onChange}) => {
   const [pose, changePose] = useState("notDecided");
+  const controls = useAnimation();
+  const onDragEnd = useCallback((containerWidth) => (event, info) => {
+    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*DEACCELERATION*0.5;
+
+    let state = "notDecided";
+    if (endPos >= ((containerWidth - circleDiameter) * 0.5) + 70) {
+      state = 'here';
+    }
+    else if (endPos <= ((containerWidth - circleDiameter) * 0.5) - 70) {
+      state = 'notHere';
+    }
+    controls.start(state);
+    changePose(state);
+  });
 
   const handleChange = useCallback((state) => {
     changePose(state);
@@ -192,7 +164,18 @@ const AttendingButton = ({missingReason, onChange}) => {
                   </ArrowsContainer>
                   <Spacer />
                 </RoundedRectangle>
-                <Handle key={width} containerWidth={width} changeState={handleChange} />
+                <Circle key={width}
+                        drag={"x"} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding }}
+                        variants={{
+                          notHere: {x: outlinePadding},
+                          here: {x: width - circleDiameter - outlinePadding},
+                          notDecided: {x: ((width - circleDiameter) * 0.5)}
+                        }}
+                        initial="notDecided"
+                        dragElastic={false}
+                        animate={controls}
+                        onDragEnd={onDragEnd(width)}
+                />
               </InnerContainer>
             )
           }
