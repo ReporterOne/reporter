@@ -1,20 +1,25 @@
 import React, {useEffect, useState} from "react";
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import {useSelector, useDispatch} from "react-redux";
+import {Formik, Field, Form, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 
+import {updateLogin} from '~/actions/general';
 import AuthService from '~/services/auth';
 
 import {Container, RoundedContainer, theme} from '~/components/common';
 
 
 const Login = React.memo(({location, history}) => {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(state => state.general.login);
 
   useEffect(() => {
-    if (AuthService.is_logged_in()) {
-      history.push("/");
+    if (isLoggedIn) {
+      const {from} = location.state || {from: {pathname: "/"}};
+      history.push(from);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <Container stretched>
@@ -31,14 +36,13 @@ const Login = React.memo(({location, history}) => {
           setStatus();
           AuthService.login(username, password).then(
             user => {
-                const {from} = location.state || {from: {pathname: "/"}};
-                history.push(from);
-              },
-              error => {
-                setSubmitting(false);
-                setStatus(error);
-              }
-            );
+              dispatch(updateLogin(true));
+            },
+            error => {
+              setSubmitting(false);
+              setStatus(error);
+            }
+          );
         }}
         render={({errors, status, touched, isSubmitting}) => (
           <Form>
@@ -60,7 +64,8 @@ const Login = React.memo(({location, history}) => {
               <button type="submit" className="btn btn-primary"
                       disabled={isSubmitting}>Login
               </button>
-              {isSubmitting && <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>              }
+              {isSubmitting && <img
+                src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>}
             </div>
             {status && <div className={'alert alert-danger'}>{status}</div>}
           </Form>

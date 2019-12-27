@@ -27,4 +27,4 @@ COPY --from=build-stage /app/app/frontend/dist/index.html /app/app/backend/serve
 
 WORKDIR /app/app/backend/
 
-CMD uvicorn server.main:app --host 0.0.0.0 --port 8443
+CMD gunicorn -k uvicorn.workers.UvicornWorker -c gunicorn.conf.py server.main:app --access-logfile '-'
