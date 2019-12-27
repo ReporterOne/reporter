@@ -7,6 +7,7 @@ import dashboardIconUrl from '~/assets/dashboard.svg';
 import commanderIconUrl from '~/assets/whistle.svg';
 import operatorIconUrl from '~/assets/signature.svg';
 import hierarchyIconUrl from '~/assets/hierarchy.svg';
+import settingsIconUrl from '~/assets/settings.svg';
 import { Container, theme, SVGIcon } from '~/components/common';
 
 const OptionsContainer = styled(Container)`
@@ -45,6 +46,9 @@ export const Menu = React.memo(({ avatar, avatarRef }) => {
       <Spacer />
       <Separator />
       <Container>
+        <Option path="/settings">
+          <SVGIcon src={settingsIconUrl} size={20} />
+        </Option>
       </Container>
     </OptionsContainer>
   );

@@ -39,7 +39,6 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
   }, []);
 
   useEffect(() => {
-    console.log(dragBounds);
     if (updateBounds) {
       updateBounds(dragBounds);
     }
