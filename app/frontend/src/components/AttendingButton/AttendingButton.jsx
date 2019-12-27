@@ -117,11 +117,19 @@ const attendenceStatus = {
   notDecided: ""
 };
 const ANIMATION_TIME = 0.5;
-const DEACCELERATION = 2;
+const DEACCELERATION = -0.5;
 
 const AttendingButton = ({missingReason, onChange}) => {
   const [pose, changePose] = useState("notDecided");
   const controls = useAnimation();
+
+  const handleChange = useCallback((state) => {
+    changePose(state);
+    setTimeout(() => {
+      onChange(state);
+    }, theme.handleSpeed * 1000);
+  }, [changePose, onChange]);
+
   const onDragEnd = useCallback((containerWidth) => (event, info) => {
     const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*DEACCELERATION*0.5;
 
@@ -133,15 +141,9 @@ const AttendingButton = ({missingReason, onChange}) => {
       state = 'notHere';
     }
     controls.start(state);
-    changePose(state);
+    handleChange(state);
   });
 
-  const handleChange = useCallback((state) => {
-    changePose(state);
-    setTimeout(() => {
-      onChange(state);
-    }, theme.handleSpeed * 1000);
-  }, [changePose, onChange]);
 
   return (
     <Container>

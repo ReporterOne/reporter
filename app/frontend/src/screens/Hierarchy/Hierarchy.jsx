@@ -418,7 +418,7 @@ const getTreeOf = (id, tree, prev) => {
   }
 };
 
-export const Hierarchy = (props) => {
+export const Hierarchy = React.memo((props) => {
   const [currentHierarchy, changeCurrentHierarchy] = useState(hierarchy);
 
   const replaceUser = useCallback((id1, id2) => {
@@ -476,6 +476,6 @@ export const Hierarchy = (props) => {
              addUser={addUser}/>
     </PageContainer>
   );
-};
+});
 
 export default Hierarchy;
