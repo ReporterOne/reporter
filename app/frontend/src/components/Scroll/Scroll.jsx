@@ -9,19 +9,28 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
   const [observer, changeObserver] = useState(null);
   const [size, changeSize] = useState({width: 0, height: 0});
   const [containerSize, changeContainerSize] = useState({width: 0, height: 0});
+
   const dragBounds = useMemo(() => ({
     left: Math.min(-(size.left + size.right) + containerSize.width, 0),
     right: 0,
     top: Math.min(-(size.top + size.bottom) + containerSize.height, 0),
     bottom: 0
-  }), [size, containerSize])
+  }), [size, containerSize]);
+
   useEffect(() => {
     changeContainerSize(containerRef.current.getBoundingClientRect());
     const resizeObserve = new ResizeObserver(entries => {
-      const size = entries[0].contentRect;
-      changeSize(size);
+      for (const entry of entries) {
+        const size = entry.contentRect;
+        if (entry.target === teamsRef.current) {
+          changeSize(size);
+        } else if(entry.target === containerRef.current) {
+          changeContainerSize(size);
+        }
+      }
     });
     resizeObserve.observe(teamsRef.current);
+    resizeObserve.observe(containerRef.current);
     changeObserver(resizeObserve);
 
     return () => {
@@ -41,7 +50,9 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
       <div ref={teamsRef} style={{
         display: 'inline-flex',
         height: contentHeight,
-        width: contentWidth
+        width: contentWidth,
+        minWidth: "100%",
+        minHeight: "100%"
       }}>
         {children}
       </div>

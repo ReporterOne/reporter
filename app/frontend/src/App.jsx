@@ -64,7 +64,7 @@ const ProvidedApp = (props) => {
               <Route path="/hierarchy">
                 Hierarchy
               </Route>
-              <Route path="login">
+              <Route path="/login">
                 Login Page
               </Route>
               <Route path="/operator">

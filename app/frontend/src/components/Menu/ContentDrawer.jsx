@@ -8,9 +8,6 @@ import {DrawerContext} from './BaseDrawer.jsx';
 
 const Content = styled(Container)`
   width: 100vw;
-  @media screen and (orientation: landscape) {
-      width: 100vh;
-  }
 `;
 
 export const DrawerContent = (props) => {
