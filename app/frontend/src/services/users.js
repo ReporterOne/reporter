@@ -2,12 +2,12 @@ import axios from 'axios';
 
 import AuthService, {PermissionsError} from './auth';
 
-const PREFIX = "/api/v1/dates_status";
+const PREFIX = "/api/v1/users";
 
-class DateStatusService {
-  async getReasons() {
+class UsersService {
+  async getCurrentUser() {
     try {
-      const response = await axios.get(`${PREFIX}/reasons`,
+      const response = await axios.get(`${PREFIX}/me`,
         {
           headers: {
             ...AuthService.getAuthHeader()
@@ -20,10 +20,10 @@ class DateStatusService {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
       }
-      console.warn("couldn't get reasons", error.response.status);
+      console.warn("couldn't get user details", error.response.status);
       throw error;
     }
   }
 }
 
-export default new DateStatusService();
+export default new UsersService();

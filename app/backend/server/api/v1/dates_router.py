@@ -12,7 +12,7 @@ from db.database import get_db
 router = APIRouter()
 
 
-@router.get("/dates_status", response_model=List[schemas.DateResponse])
+@router.get("/", response_model=List[schemas.DateResponse])
 async def get_dates_status(
     start: date,
     end: date = None,
@@ -27,7 +27,7 @@ async def get_dates_status(
                                               users_id=users_id)
 
 
-@router.get("/dates_status/reasons", response_model=List[str])
+@router.get("/reasons", response_model=List[str])
 def get_reasons(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_user)

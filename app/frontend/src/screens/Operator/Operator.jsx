@@ -4,8 +4,8 @@ import posed, {PoseGroup} from 'react-pose';
 import {HERE, NOT_ANSWERED, NOT_HERE, users} from '~/utils';
 
 import { Container } from '~/components/common';
-import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
-import AvatarExpanded from "~/components/Avatar/AvatarExpanded.jsx";
+import AvatarDetails from '~/components/Avatar/AvatarDetails';
+import AvatarExpanded from "~/components/Avatar/AvatarExpanded";
 import Calender from "~/components/Calendar";
 import { motion, useAnimation } from "framer-motion";
 
@@ -65,7 +65,7 @@ const AnimatedReason = posed(Container)({
   }
 });
 
-export const Operator = (props) => {
+export const Operator = React.memo((props) => {
   let animationIndex = 0;
   const controls = useAnimation();
   const [drag, changeDrag] = useState('y');
@@ -137,6 +137,6 @@ export const Operator = (props) => {
       </OpeningCalendar>
     </PageContainer>
   );
-}
+});
 
 export default Operator;
