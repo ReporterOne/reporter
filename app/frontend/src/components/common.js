@@ -47,6 +47,7 @@ export const Icon = styled.img`
 export const SVGIcon = styled(SVG)`
   width: ${({size = 30}) => size}px;
   height: ${({size = 30}) => size}px;
+  margin: auto;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -56,9 +57,11 @@ export const Container = styled.div`
   position: relative;
   overflow-y: ${({scrollable}) => scrollable? 'auto' : 'visible'};
   display: ${props => (props.block ? 'block' : 'flex')};
-  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 1 auto"))};
+  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 0 auto"))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
+  min-width: 0;
+  min-height: 0;
 `;
 
 export const CenteredContainer = styled(Container)`
