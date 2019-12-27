@@ -4,6 +4,7 @@ import {createGlobalStyle, css} from 'styled-components';
 import {Rubik} from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
+
 import posed, {PoseGroup} from 'react-pose';
 
 export const GlobalStyle = createGlobalStyle`
@@ -119,6 +120,8 @@ export const theme = {
   drawer: '#353535',
   approved: '#22B573',
   notApproved: '#F15A24',
+  grey: 'rgb(120, 120, 120)',
+  white:'rgb(255, 255, 255)',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,
