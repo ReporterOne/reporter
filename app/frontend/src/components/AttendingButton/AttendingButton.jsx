@@ -173,7 +173,7 @@ const AttendingButton = ({missingReason, onChange}) => {
                           here: {x: width - circleDiameter - outlinePadding},
                           notDecided: {x: ((width - circleDiameter) * 0.5)}
                         }}
-                        initial="notDecided"
+                        initial={pose}
                         dragElastic={false}
                         animate={controls}
                         onDragEnd={onDragEnd(width)}
