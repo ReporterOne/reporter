@@ -1,0 +1,23 @@
+title: User
+type: object
+description: ''
+properties:
+  id:
+    type: integer
+  commander:
+    type: integer
+  reminder_time:
+    type: string
+    format: time
+  english_name:
+    type: string
+  user_auth_keys:
+    $ref: ./userauthkeys.v1.yaml
+  mador:
+    $ref: ./mador.v1.yaml
+  operates:
+    type: array
+    items:
+      type: integer
+required:
+  - id

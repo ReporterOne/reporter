@@ -16,7 +16,7 @@ fileConfig(config.config_file_name)
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-import crud as my_config
+import database as my_config
 config.set_main_option('sqlalchemy.url', my_config.DATABASE_URI)
 
 # add your model's MetaData object here
@@ -71,7 +71,8 @@ def run_migrations_online():
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata,
+            compare_type=True, compare_server_default=True
         )
 
         with context.begin_transaction():
