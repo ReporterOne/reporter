@@ -32,7 +32,7 @@ const Day = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${props => dayColor(props)};
-  ${props => dayWhen[props.when]}
+  ${({when}) => dayWhen[when]}
 `;
 const DateLabel = styled.span`
   line-height: 1;
@@ -41,20 +41,20 @@ const DateLabel = styled.span`
   opacity: ${props => props.isSameMonth ? 1 : 0.2};
 `;
 
-const dayColor = (props) => {
-  if (!props.isPast) {
-    return props.isSameMonth ? dayStatus[props.status] : 'rgb(255, 255, 255)'
+const dayColor = ({isPast,isSameMonth,status}) => {
+  if (!isPast) {
+    return isSameMonth ? dayStatus[status] : theme.white
   }
   else {
-    return 'rgb(255, 255, 255)'
+    return theme.white
   }
 }
-const dayLabelIsPased = (props) => {
-  if (!props.isPast) {
-    return  props.isSameMonth ? dateLabelStatus[props.decided] : 'rgb(120, 120, 120)' 
+const dayLabelIsPased = ({isPast,isSameMonth,decided,status}) => {
+  if (!isPast) {
+    return  isSameMonth ? dateLabelStatus[decided] : theme.grey 
   }
   else {
-    return dayStatus[props.status]
+    return dayStatus[status]
   }
 }
 
@@ -67,16 +67,16 @@ const dayWhen = {
 const dayStatus = {
   here: theme.approved,
   notHere: theme.notApproved,
-  notDecided: 'rgb(255, 255, 255)'
+  notDecided: theme.white
 };
 const dateLabelStatus = {
-  no: 'rgb(120, 120, 120)',
-  yes: 'rgb(255, 255, 255)'
+  no: theme.grey,
+  yes: theme.white
 };
 
-const Cells = (props) => {
+const Cells = ({currentDate, onDateClick}) => {
   const rows = useMemo(() => {
-    const monthStart = startOfMonth(props.currentDate);
+    const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(addWeeks(monthEnd, 1));
@@ -93,7 +93,7 @@ const Cells = (props) => {
               end: endOfWeek(date)
             }).map(date => {
               return (
-                <Day status={'here'} isPast={isPast(date)} when={'Mid'} isSameMonth={isSameMonth(date, monthStart)} key={date} onClick={() => props.onDateClick(date)}>
+                <Day status={'here'} isPast={isPast(date)} when={'Mid'} isSameMonth={isSameMonth(date, monthStart)} key={date} onClick={() => onDateClick(date)}>
                   <DateLabel decided={'yes'} status={'here'} isPast={isPast(date)} isSameMonth={isSameMonth(date, monthStart)}>
                     {format(date, CellsDateFormat)}
                   </DateLabel>
@@ -104,7 +104,7 @@ const Cells = (props) => {
         </Week>
       );
     });
-  }, [props.currentDate]);
+  }, [currentDate]);
 
   return <Container stretched>{rows}</Container>;
 };

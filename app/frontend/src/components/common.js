@@ -16,6 +16,8 @@ export const theme = {
   drawer: '#353535',
   approved: '#22B573',
   notApproved: '#F15A24',
+  grey: 'rgb(120, 120, 120)',
+  white:'rgb(255, 255, 255)',
   cards: 'white',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
