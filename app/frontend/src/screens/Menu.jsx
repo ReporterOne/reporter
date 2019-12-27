@@ -28,7 +28,7 @@ const Spacer = styled.div`
 export const Menu = React.memo(({ avatar, avatarRef }) => {
   return (
     <OptionsContainer stretched>
-      <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} status="here"/>
+      <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} status="here" jumping={true}/>
       <Separator />
       <Option selected path="/">
         <SVGIcon src={dashboardIconUrl} size={20} />
