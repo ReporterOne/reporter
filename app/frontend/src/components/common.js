@@ -25,18 +25,6 @@ export const GlobalStyle = createGlobalStyle`
         font-family: 'Assistant', sans-serif;
         overflow: hidden;
     }
-    @media screen and (orientation: landscape) {
-      html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-      }
-    }
 `;
 
 export const Icon = styled.img`

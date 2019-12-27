@@ -23,13 +23,13 @@ export const Overlay = ({ innerRef, onSwipedLeft, onSwiping, ...props }) => {
   return (
     <OverlayFiller ref={innerRef} {...props} onClick={props.onClick}></OverlayFiller>
   )
-}
+};
 
 
 Overlay.propTypes = {
   isOpen: PropTypes.bool,
   onClick: PropTypes.func,
-}
+};
 
 
 export default Overlay;
