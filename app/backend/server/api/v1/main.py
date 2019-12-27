@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from server.api.v1 import dates_router
+
+from . import dates_router
 
 api_v1 = FastAPI(openapi_prefix="/api/v1")
 

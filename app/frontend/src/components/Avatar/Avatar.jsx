@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Icon } from '~/components/common';
+import {Icon, theme} from '~/components/common';
 
 import {
   Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
@@ -112,8 +112,23 @@ const sized = {
     statusOffset: 7
   }
 };
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = true, innerRef = undefined, status = undefined, ...props }) => {
+
+const JUMPING_AMOUNT = 10;
+
+export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false, innerRef = undefined, status = undefined, jumping=false, ...props }) => {
   const style = useMemo(() => sized[type], [type]);
+  const [isJumping, setIsJumping] = useState(false);
+
+  const handleClick = useCallback(() => {
+    if (jumping) {
+      setIsJumping(true);
+      setTimeout(() => {
+        setIsJumping(false);
+      }, theme.animationsSpeed * 1000);
+    }
+
+  }, [jumping, isJumping, setIsJumping]);
+
   return (
     <AvatarContainer>
       <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size}>
@@ -122,8 +137,9 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
           ref={innerRef}
           background_size={style.background_size}
           className={manual ? 'avatarManual' : 'avatarAutomatic'}
+          onClick={handleClick}
           style={{
-            transform: `translateY(${(100 - appearing)}%)`,
+            transform: `translateY(${isJumping ? (100 - appearing) + JUMPING_AMOUNT : (100 - appearing)}%)`,
           }} />
       </BackgroundBottomHalf>
       <Status status={status} offset={style.statusOffset} />

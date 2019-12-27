@@ -25,6 +25,11 @@ class User(BaseModel):
         orm_mode = True
 
 
+class UserAuth(User):
+    username: str
+    password: str
+
+
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
     leader_id: int = None

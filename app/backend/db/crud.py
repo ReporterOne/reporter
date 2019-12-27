@@ -7,9 +7,23 @@ from db import schemas
 from utils.datetime_utils import daterange
 
 # User:
+def create_user(db: Session, username: str, password: str) -> User:
+    new_user = User(english_name=username,
+                    username=username,
+                    password=password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
 
 def get_user(db: Session, user_id: int) -> User:
-    return db.query(User).filter(User.id == user_id).one()
+    return db.query(User).filter(User.id == user_id).first()
+
+
+def get_user_by_username(db: Session, username: str) -> User:
+    return db.query(User).filter(User.username == username).first()
+
 
 def get_subjects(db: Session, commander_id: int) -> List[User]:
     commander = get_user(db, commander_id)
@@ -35,7 +49,7 @@ def get_dates_data(db: Session, user_id: int,
                                         start_date == DateData.date).one()]
 
 def get_multiple_users_dates_data(db: Session, users_id: List[int],
-                                          start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
+                                  start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
     return [{'user_id': user_id, 'data': get_dates_data(db, user_id, start_date, end_date)}
             for user_id in users_id]
 
@@ -64,3 +78,8 @@ def delete_users_dates_data(db: Session, users_id: List[int],
 
 def put_data_in_user(db: Session, body=schemas.DateDataBody) -> schemas.DateResponse:
     pass  #TODO
+
+# Reasons:
+
+def get_reasons(db: Session):
+    return [reason.name for reason in db.query(Reason).all()]

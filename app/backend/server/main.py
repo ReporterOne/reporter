@@ -1,4 +1,5 @@
 """Main backend API serving."""
+import uvicorn
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -7,6 +8,7 @@ from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from . import auth
 from .api.v1 import api_v1
 
 
@@ -19,6 +21,18 @@ app.mount("/api/v1", api_v1)
 
 templates = Jinja2Templates(directory=str(base_dir / "templates"))
 
+
+app.include_router(
+    auth.router,
+    tags=["Authentication"],
+    prefix="/api"
+)
+
+
 @app.get("/.*")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8433)
