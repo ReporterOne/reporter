@@ -19,6 +19,14 @@ import {AccountCircle} from "@material-ui/icons";
 const EntrancePage = styled(Container)`
   background-color: ${({theme}) => theme.main};
   align-items: center;
+  overflow-x: hidden;
+`;
+
+const ContentWrapper = styled(Container)`
+  width: 100%;
+  align-items: center;
+  min-height: 520px;
+  overflow-x: hidden;
 `;
 
 const Moon = styled.div`
@@ -164,7 +172,7 @@ const LoginFormWrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: auto;
+  overflow: visible;
 `;
 
 const LoginForm = styled.form`
@@ -235,112 +243,115 @@ const Entrance = React.memo(({location, history}) => {
   }, [isLoggedIn]);
 
   return (
-    <EntrancePage stretched>
-      <Wrapper ref={containerRef}>
-        <ForeGround>
-          <Spacer enabled={!isOpen}/>
-          <Content radius={size} enabled={isOpen} size={size}
-                   initialized={initialized}>
-            <ConstantSpacer size={isOpen ? 50 : 0}/>
-            <Title key={size} mode="single" max={42}>Reporter</Title>
+    <EntrancePage stretched scrollable>
+      <ContentWrapper stretched>
+        <Wrapper ref={containerRef}>
+          <ForeGround>
+            <Spacer enabled={!isOpen}/>
+            <Content radius={size} enabled={isOpen} size={size}
+                     initialized={initialized}>
+              <ConstantSpacer size={isOpen ? 50 : 0}/>
+              <Title key={size} mode="single" max={42}>Reporter</Title>
+              <AnimatePresence>
+                {
+                  isOpen && (
+                    <LoginFormWrapper exit={{opacity: 0}}
+                                      animate={{opacity: 1}}
+                                      initial={{opacity: 0}}>
+                      <LoginForm id="loginForm" onSubmit={onSend}>
+                        <FormControl>
+                          <InputLabel
+                            htmlFor="username-field">Username</InputLabel>
+                          <Input id="username-field"
+                                 onChange={(event) => setUsername(event.target.value)}
+                                 endAdornment={
+                                   <InputAdornment position="end">
+                                     <AccountCircle/>
+                                   </InputAdornment>
+                                 }
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <InputLabel
+                            htmlFor="password-field">Password</InputLabel>
+                          <Input type="password" id="password-field"
+                                 onChange={(event) => setPassword(event.target.value)}
+                                 endAdornment={
+                                   <InputAdornment position="end">
+                                     <AccountCircle/>
+                                   </InputAdornment>
+                                 }
+                          />
+                        </FormControl>
+                      </LoginForm>
+                    </LoginFormWrapper>
+                  )
+                }
+              </AnimatePresence>
+            </Content>
+            <BackGround>
+              <Ring size={size + INNER_RING_DISTANCE} opacity={0.3}
+                    animate={{rotate: 360}}
+                    transition={{
+                      loop: Infinity,
+                      ease: "linear",
+                      duration: Math.random() * 5 + 5
+                    }}
+              >
+                <Moon/>
+              </Ring>
+              <Ring size={size + OUTER_RING_DISTANCE} opacity={0.1}
+                    animate={{rotate: 360}}
+                    transition={{
+                      loop: Infinity,
+                      ease: "linear",
+                      duration: Math.random() * 5 + 5
+                    }}
+              >
+                <Moon/>
+              </Ring>
+            </BackGround>
+          </ForeGround>
+          <BottomSegment size={size}>
+            <Spacer/>
             <AnimatePresence>
               {
                 isOpen && (
-                  <LoginFormWrapper exit={{opacity: 0}} animate={{opacity: 1}}
-                                    initial={{opacity: 0}}>
-                    <LoginForm id="loginForm" onSubmit={onSend}>
-                      <FormControl>
-                        <InputLabel
-                          htmlFor="username-field">Username</InputLabel>
-                        <Input id="username-field"
-                               onChange={(event) => setUsername(event.target.value)}
-                               endAdornment={
-                                 <InputAdornment position="end">
-                                   <AccountCircle/>
-                                 </InputAdornment>
-                               }
-                        />
-                      </FormControl>
-                      <FormControl>
-                        <InputLabel
-                          htmlFor="password-field">Password</InputLabel>
-                        <Input type="password" id="password-field"
-                               onChange={(event) => setPassword(event.target.value)}
-                               endAdornment={
-                                 <InputAdornment position="end">
-                                   <AccountCircle/>
-                                 </InputAdornment>
-                               }
-                        />
-                      </FormControl>
-                    </LoginForm>
-                  </LoginFormWrapper>
+                  <BackForm exit={{opacity: 0}} animate={{opacity: 1}}
+                            initial={{opacity: 0}}>
+                    <BackButton
+                      onClick={() => setIsOpen(false)}>back</BackButton>
+                  </BackForm>
                 )
               }
             </AnimatePresence>
-          </Content>
-          <BackGround>
-            <Ring size={size + INNER_RING_DISTANCE} opacity={0.3}
-                  animate={{rotate: 360}}
-                  transition={{
-                    loop: Infinity,
-                    ease: "linear",
-                    duration: Math.random() * 5 + 5
-                  }}
-            >
-              <Moon/>
-            </Ring>
-            <Ring size={size + OUTER_RING_DISTANCE} opacity={0.1}
-                  animate={{rotate: 360}}
-                  transition={{
-                    loop: Infinity,
-                    ease: "linear",
-                    duration: Math.random() * 5 + 5
-                  }}
-            >
-              <Moon/>
-            </Ring>
-          </BackGround>
-        </ForeGround>
-        <BottomSegment size={size}>
-          <Spacer/>
-          <AnimatePresence>
-            {
-              isOpen && (
-                <BackForm exit={{opacity: 0}} animate={{opacity: 1}}
-                          initial={{opacity: 0}}>
-                  <BackButton
-                    onClick={() => setIsOpen(false)}>back</BackButton>
-                </BackForm>
+          </BottomSegment>
+        </Wrapper>
+        <Controls>
+          {
+            !isOpen ?
+              (
+                <>
+                  <Button onClick={() => setIsOpen(true)}>Sign In</Button>
+                  <FlatButton>Sign Up</FlatButton>
+                </>
               )
-            }
-          </AnimatePresence>
-        </BottomSegment>
-      </Wrapper>
-      <Controls>
-        {
-          !isOpen ?
-            (
-              <>
-                <Button onClick={() => setIsOpen(true)}>Sign In</Button>
-                <FlatButton>Sign Up</FlatButton>
-              </>
-            )
-            : (
-              <>
-                <LoginButton
-                  disabled={!validInput}
-                  type="submit"
-                  form="loginForm"
-                  state={validInput ? "ready" : "not-ready"}
-                >
-                  <span>V</span>
-                </LoginButton>
-                <a>Forgot your password?</a>
-              </>
-            )
-        }
-      </Controls>
+              : (
+                <>
+                  <LoginButton
+                    disabled={!validInput}
+                    type="submit"
+                    form="loginForm"
+                    state={validInput ? "ready" : "not-ready"}
+                  >
+                    <span>V</span>
+                  </LoginButton>
+                  <a>Forgot your password?</a>
+                </>
+              )
+          }
+        </Controls>
+      </ContentWrapper>
     </EntrancePage>
   );
 });
