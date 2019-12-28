@@ -12,7 +12,7 @@ export const PrivateRoute = ({component: Component, ...rest}) => {
       if (!isLoggedIn) {
         // not logged in so redirect to login page with the return url
         return <Redirect
-          to={{pathname: '/login', state: {from: props.location}}}/>
+          to={{pathname: '/entrance', state: {from: props.location}}}/>
       }
 
       // authorised so return component

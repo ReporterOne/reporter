@@ -29,15 +29,6 @@ const WelcomeMessage = styled(Container)`
   padding: 0px 20px;
 `;
 
-const names = [
-  "Michael Tugendhaft",
-  "Elran Shefer",
-  "Osher De Paz",
-  "Ariel Domb",
-  "AReallyReally LongName",
-  "Tugy",
-  "Adi Tugy"
-];
 
 const Dashboard = React.memo((props) => {
   const name = useSelector(state => lodash.get(state.users.me, "english_name"));

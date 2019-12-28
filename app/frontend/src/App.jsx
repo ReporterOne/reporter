@@ -2,10 +2,11 @@ import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'styled-components';
-import {StylesProvider} from '@material-ui/core/styles';
+import {ThemeProvider as MUIThemeProvider} from '@material-ui/styles';
+import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';
 
 import Menu from '@/Menu';
-import Login from "@/Login";
+import Entrance from "@/Entrance";
 import Operator from '@/Operator';
 import Dashboard from '@/Dashboard';
 import Hierarchy from "@/Hierarchy";
@@ -53,39 +54,41 @@ const ProvidedApp = (props) => {
 
   return (
     <Router>
-      <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-              onDragEnd={onDrawerDragEnd}>
-        <DrawerMenu>
-          <Menu avatar={avatar} avatarRef={avatarRef}/>
-        </DrawerMenu>
-        <DrawerContent
-          titleComponent={() => (
-            <Switch>
-              <Route path="/hierarchy">
-                Hierarchy
-              </Route>
-              <Route path="/login">
-                Login Page
-              </Route>
-              <Route path="/operator">
-                Operator Space
-              </Route>
-              <Route path="/commander">
-                Commander Space
-              </Route>
-              <Route path="/">
-              </Route>
-            </Switch>
-          )}>
-          <Switch>
-            <Route path="/login" component={Login}/>
-            <PrivateRoute path="/hierarchy" component={Hierarchy}/>
-            <PrivateRoute path="/operator" component={Operator}/>
-            <PrivateRoute path="/commander" component={Commander}/>
-            <PrivateRoute path="/" component={Dashboard}/>
-          </Switch>
-        </DrawerContent>
-      </Drawer>
+      <Switch>
+        <Route path="/entrance" component={Entrance}/>
+        <Route path="/" render={() => (
+          <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
+                  onDragEnd={onDrawerDragEnd}>
+            <DrawerMenu>
+              <Menu avatar={avatar} avatarRef={avatarRef}/>
+            </DrawerMenu>
+            <DrawerContent
+              titleComponent={() => (
+                <Switch>
+                  <Route path="/hierarchy">
+                    Hierarchy
+                  </Route>
+                  <Route path="/operator">
+                    Operator Space
+                  </Route>
+                  <Route path="/commander">
+                    Commander Space
+                  </Route>
+                  <Route path="/">
+                  </Route>
+                </Switch>
+              )}>
+              <Switch>
+                <PrivateRoute path="/hierarchy" component={Hierarchy}/>
+                <PrivateRoute path="/operator" component={Operator}/>
+                <PrivateRoute path="/commander" component={Commander}/>
+                <PrivateRoute path="/" component={Dashboard}/>
+              </Switch>
+            </DrawerContent>
+          </Drawer>
+
+        )}/>
+      </Switch>
     </Router>
   );
 };
@@ -94,10 +97,12 @@ const App = (props) => {
   return (
     <Provider store={store}>
       <StylesProvider injectFirst>
-        <GlobalStyle/>
-        <ThemeProvider theme={theme}>
-          <ProvidedApp/>
-        </ThemeProvider>
+        <MUIThemeProvider theme={createMuiTheme(theme)}>
+          <GlobalStyle/>
+          <ThemeProvider theme={theme}>
+            <ProvidedApp/>
+          </ThemeProvider>
+        </MUIThemeProvider>
       </StylesProvider>
     </Provider>
   )

@@ -101,7 +101,16 @@ export const FadeInContainer = ({poseKey, ...props}) => (
 
 export const theme = {
   cards: 'white',
+  palette: {
+    primary: {
+      main: "#4725a5"
+    },
+    secondary: {
+      main: "#FFF"
+    }
+  },
   main: '#4725a5',
+  secondary: '#FFF',
   shadows: shadows,
   innerShadows: innerShaddow,
   buttons: {
@@ -117,4 +126,4 @@ export const theme = {
   handleSpeed: 0.3,
   avatarSpeed: 0.3,
   animationsSpeed: 0.4
-}
+};
