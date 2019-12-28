@@ -62,6 +62,7 @@ const BackGround = styled.div`
 
 const Wrapper = styled(Container)`
   width: 80%;
+  max-width: 600px;
   align-items: center;
   flex: 1;
 `;
