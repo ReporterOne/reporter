@@ -56,6 +56,7 @@ const Dashboard = React.memo((props) => {
       changeSelectedValue(null);
     }
   });
+  const userIdList = [useSelector(state => lodash.get(state.users.me, "id"))];
 
   return (
     <Container stretched>
@@ -67,7 +68,7 @@ const Dashboard = React.memo((props) => {
         <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender />
+        <Calender userIdList={userIdList}/>
       </RoundedContainer>
       <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
     </Container>

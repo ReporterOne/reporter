@@ -33,7 +33,7 @@ const Calendar = (props) => {
             <FadeInContainer stretched poseKey={currentDate}>
                 <Header currentDate={currentDate} selectedDate={selectedDate} />
                 <Days currentDate={currentDate} />
-                <Cells currentDate={currentDate} onDateClick={onDateClick} />
+                <Cells currentDate={currentDate} onDateClick={onDateClick} userIdList={props.userIdList} />
             </FadeInContainer>
         </StyledSwipeable>
 
