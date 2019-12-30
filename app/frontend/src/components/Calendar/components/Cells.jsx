@@ -10,9 +10,15 @@ import {
   eachWeekOfInterval,
   eachDayOfInterval,
   isPast,
+  getUnixTime,
 } from "date-fns";
 import styled from 'styled-components';
 import { Container, theme } from '~/components/common';
+import { fetchDateDate } from "~/hooks/date_datas";
+import { useSelector } from "react-redux";
+import lodash from 'lodash';
+
+
 
 const CellsDateFormat = "d";
 
@@ -74,13 +80,27 @@ const dateLabelStatus = {
   yes: theme.white
 };
 
-const Cells = ({currentDate, onDateClick}) => {
+const Cells = ({currentDate, onDateClick, userIdList}) => {
+  const {monthStart, monthEnd, startDate, endDate} = useMemo(() => {
+    const dateMonthStart = startOfMonth(currentDate);
+    const dateMonthEnd = endOfMonth(dateMonthStart);
+    const dateStartDate = startOfWeek(dateMonthStart);
+    const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
+    return {monthStart: dateMonthStart,
+            monthEnd: dateMonthEnd,
+            startDate: dateStartDate,
+            endDate: dateEndDate};
+  })
+  const fetchParams = useMemo(() => {
+    return (
+      {start: getUnixTime(monthStart),
+      end: getUnixTime(monthEnd),
+      userId: userIdList}
+      );
+  });
+  fetchDateDate(fetchParams);
+  const dates = useSelector(state => lodash.get(state.general.dates , "data"));
   const rows = useMemo(() => {
-    const monthStart = startOfMonth(currentDate);
-    const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(addWeeks(monthEnd, 1));
-
     return eachWeekOfInterval({
       start: startDate,
       end: endDate
