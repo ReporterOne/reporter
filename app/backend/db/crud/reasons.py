@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
-from datetime import date, time
 from typing import List
+from datetime import date, time
+from sqlalchemy.orm import Session
 
 from db.models import Reason
 

@@ -3,9 +3,9 @@ from datetime import date
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Query, Depends, Security
 
-from server.auth import get_current_user
 from db import crud, schemas
 from db.database import get_db
+from server.auth import get_current_user
 
 router = APIRouter()
 
@@ -30,7 +30,14 @@ async def post_dates_status(
     current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
-    return crud.set_new_date_data(db=db, body=body)
+    return crud.set_new_date_data(db=db, 
+                start_date=body.start_date,
+                end_date=body.end_date,
+                state=body.state,
+                reason=body.reason,
+                reported_by_id=body.reported_by_id,
+                reported_time=body.reported_time
+            )
 
 @router.delete("/")
 async def delete_dates_status(
@@ -51,7 +58,15 @@ async def put_dates_status(
     current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
-    return crud.put_data_in_user(db=db, body=body)
+    return crud.put_data_in_user(
+            db=db, 
+            start_date=body.start_date,
+            end_date=body.end_date,
+            state=body.state,
+            reason=body.reason,
+            reported_by_id=body.reported_by_id,
+            reported_time=body.reported_time
+        )
 
 @router.get("/reasons", response_model=List[str])
 def get_reasons(

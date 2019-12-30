@@ -1,8 +1,8 @@
 from enum import Enum 
+from pydantic import BaseModel
 from typing import List, Dict, Any
 from datetime import date, time, datetime
 
-from pydantic import BaseModel
 
 
 class Mador(BaseModel):
