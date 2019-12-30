@@ -3,13 +3,15 @@ from datetime import datetime, timedelta
 from typing import List
 
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, Security, APIRouter, Form
+from fastapi import (Depends, FastAPI, HTTPException, Security, APIRouter,
+                     Form, Body)
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
 from jwt import PyJWTError
+from jwt.exceptions import ExpiredSignatureError
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -24,7 +26,7 @@ SECRET_KEY = os.environ.get(
     "ONE_REPORT_SECRET",
     "a10519645263a665b3a10068a29b9e6171f32bad184d82a8aef0d790fe09d49a")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 500
 
 router = APIRouter()
 
@@ -97,6 +99,13 @@ async def get_current_user(
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
         token_data = TokenData(scopes=token_scopes, username=username)
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail="Token is expired",
+            headers={"WWW-Authenticate": authenticate_value},
+        )
+
     except (PyJWTError, ValidationError):
         raise credentials_exception
 
@@ -132,7 +141,7 @@ async def login_for_access_token(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     # TODO: give only possible scopes
     access_token = create_access_token(
-        data={"sub": user.username, "scopes": form_data.scopes},
+        data={"sub": user.username, "scopes": ["personal"]},
         expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer",
@@ -142,7 +151,7 @@ async def login_for_access_token(
 @router.post("/register", response_model=User)
 def register(
     *,
-    username: str,
+    username: str = Body(..., regex=r"^[A-Za-z0-9]+$"),
     password: str,
     db: Session = Depends(get_db)
 ):

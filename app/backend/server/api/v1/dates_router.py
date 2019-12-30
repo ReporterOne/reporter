@@ -9,8 +9,7 @@ from db.database import get_db
 
 router = APIRouter()
 
-
-@router.get("/dates_status", response_model=List[schemas.RangeDatesResponse])
+@router.get("/", response_model=List[schemas.RangeDatesResponse])
 async def get_dates_status(
     start: date,
     end: date = None,
@@ -24,7 +23,7 @@ async def get_dates_status(
                                               end_date=end,
                                               users_id=users_id)
 
-@router.post("/dates_status", response_model=schemas.RangeDatesResponse)
+@router.post("/", response_model=schemas.RangeDatesResponse)
 async def post_dates_status(
     body: schemas.PostDateDataBody,
     db: Session = Depends(get_db),
@@ -33,7 +32,7 @@ async def post_dates_status(
 ):
     return crud.set_new_date_data(db=db, body=body)
 
-@router.delete("/dates_status")
+@router.delete("/")
 async def delete_dates_status(
     start: date, 
     end: date = None, 
@@ -45,7 +44,7 @@ async def delete_dates_status(
                             end_date=end, 
                             users_id=users_id)
 
-@router.put("/dates_status", response_model=schemas.RangeDatesResponse)
+@router.put("/", response_model=schemas.RangeDatesResponse)
 async def put_dates_status(
     body: schemas.PutDateDataBody,
     db: Session = Depends(get_db),
@@ -54,7 +53,7 @@ async def put_dates_status(
 ):
     return crud.put_data_in_user(db=db, body=body)
 
-@router.get("/dates_status/reasons", response_model=List[str])
+@router.get("/reasons", response_model=List[str])
 def get_reasons(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_user)

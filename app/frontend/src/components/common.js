@@ -4,6 +4,7 @@ import {createGlobalStyle, css} from 'styled-components';
 import {Rubik} from '~/assets/fonts/';
 import IconButton from '@material-ui/core/IconButton';
 import SVG from 'react-inlinesvg';
+
 import posed, {PoseGroup} from 'react-pose';
 
 export const GlobalStyle = createGlobalStyle`
@@ -24,18 +25,6 @@ export const GlobalStyle = createGlobalStyle`
         font-family: 'Assistant', sans-serif;
         overflow: hidden;
     }
-    @media screen and (orientation: landscape) {
-      html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-      }
-    }
 `;
 
 export const Icon = styled.img`
@@ -46,6 +35,7 @@ export const Icon = styled.img`
 export const SVGIcon = styled(SVG)`
   width: ${({size = 30}) => size}px;
   height: ${({size = 30}) => size}px;
+  margin: auto;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -55,9 +45,11 @@ export const Container = styled.div`
   position: relative;
   overflow-y: ${({scrollable}) => scrollable? 'auto' : 'visible'};
   display: ${props => (props.block ? 'block' : 'flex')};
-  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 1 auto"))};
+  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 0 auto"))};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
   background-color: ${props => props.background || 'transparent'};
+  min-width: 0;
+  min-height: 0;
 `;
 
 export const CenteredContainer = styled(Container)`
@@ -119,6 +111,8 @@ export const theme = {
   drawer: '#353535',
   approved: '#22B573',
   notApproved: '#F15A24',
+  grey: 'rgb(120, 120, 120)',
+  white:'rgb(255, 255, 255)',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,

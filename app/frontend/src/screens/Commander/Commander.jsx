@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import styled from 'styled-components';
 import { Textfit } from 'react-textfit';
 
@@ -7,6 +7,7 @@ import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import {users} from '~/utils';
+import ReasonsDialog from "~/dialogs/Reasons";
 
 const Header = styled(Container)`
   padding: 0 0 30px 0;
@@ -62,7 +63,28 @@ const AvatarsContainer = styled.div`
 
 export const Commander = React.memo((props) => {
   const [selectedSoldier, changeSelectedSoldier] = useState(null);
-  const [status, changeStatus] = useState("notDecided");
+
+  const [openDialog, changeOpenDialog] = useState(false);
+  const [selectedValue, changeSelectedValue] = useState(null);
+
+  const handleClose = useCallback((value) => {
+    changeOpenDialog(false);
+    changeSelectedValue(value);
+  });
+
+  const handleOnChange = useCallback((state) => {
+    if(state === "notHere") {
+      changeOpenDialog(true);
+    } else {
+      changeSelectedValue(null);
+    }
+  });
+
+  const handleSelectedSoldier = useCallback((value) => {
+    changeSelectedValue(null);
+    changeSelectedSoldier(value);
+    console.log(value);
+  });
 
   return (
     <Container stretched>
@@ -70,7 +92,8 @@ export const Commander = React.memo((props) => {
         <FadeInContainer poseKey={selectedSoldier === null}>
           {
             selectedSoldier ?
-              <AttendingButton key={selectedSoldier} pose={status} changePose={changeStatus}/>
+              // TODO: change selectedSoldier.name to selectedSoldier.id when hierarchy get pushed!
+              <AttendingButton key={selectedSoldier.name} missingReason={selectedValue} onChange={handleOnChange}/>
               :
               <WelcomeMessage>
                 <HeaderWelcome>Hello,</HeaderWelcome>
@@ -88,7 +111,7 @@ export const Commander = React.memo((props) => {
             {users.map((user, index) => (
               <AvatarDetails
                 key={index}
-                onClick={() => { changeSelectedSoldier( selectedSoldier !== user ? user : null) }}
+                onClick={() => { handleSelectedSoldier( selectedSoldier !== user ? user : null) }}
                 name={user.name}
                 isFaded={selectedSoldier && user !== selectedSoldier}
                 kind={user.avatar.kind} 
@@ -99,6 +122,7 @@ export const Commander = React.memo((props) => {
           </AvatarsContainer>
         </AvatarsWrapper>
       </SubjectDrawer>
+      <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
     </Container>
   );
 });

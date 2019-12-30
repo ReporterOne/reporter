@@ -3,7 +3,6 @@ import { AutoSizer } from 'react-virtualized';
 
 import styled from 'styled-components';
 import Arrows from '~/assets/Arrows.svg';
-import Draggable from 'react-draggable';
 
 import {
   SVGIcon,
@@ -12,6 +11,7 @@ import {
 } from '~/components/common';
 
 import posed from 'react-pose';
+import {motion, useAnimation} from "framer-motion";
 
 const ContainerHeight = 60;
 const rectangleMargin = 15;
@@ -29,28 +29,6 @@ const PosedRRoundedRectangle = posed.div({
   notDecided: {
     backgroundColor: theme.main
   },
-});
-
-const PosedCircle = posed.div({
-  draggable: 'x',
-  enter: {},
-  exit: {},
-  notHere: {
-    x: ({ containerWidth }) => outlinePadding
-  },
-  here: {
-    x: ({ containerWidth }) => containerWidth - circleDiameter - outlinePadding
-  },
-  notDecided: {
-    x: ({ containerWidth }) => containerWidth / 2 - circleDiameter / 2
-  },
-  dragBounds: ({ containerWidth }) => {
-    console.log("bounds: ", containerWidth)
-    return ({
-      right: containerWidth - circleDiameter - outlinePadding,
-      left: outlinePadding
-    })
-  }
 });
 
 const PosedArrowsContainer = posed.div({
@@ -92,17 +70,13 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-const Circle = styled.div`
+const Circle = styled(motion.div)`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
   border-radius: 50%;
   display: inline-block;
   z-index: 1;
-  will-change: transform;
-  &:not(.react-draggable-dragging) {
-    transition: transform ${props => props.theme.handleSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 `;
 
 const ArrowsContainer = styled(PosedArrowsContainer)`
@@ -132,61 +106,44 @@ const AttendenceValue = styled.span`
   display: flex;
   font-weight: normal;
   font-size: 20px;
-  flex:1;
+  white-space: nowrap;
+  text-align: center;
 `;
 
-const statePositions = {
-  notDecided: (containerWidth) => containerWidth * 0.5 - circleDiameter * 0.5,
-  here: (containerWidth) => containerWidth - circleDiameter - outlinePadding,
-  notHere: (containerWidth) => outlinePadding
-}
-
-const Handle = ({containerWidth, state="notDecided", changeState}) => {
-  const [handle, changeHandle] = useState({
-    position: { x: statePositions[state](containerWidth), y: 0 },
-    state: state
-  });
-
-  const onStop = useCallback((e, data) => {
-    const circlePosition = data.x;
-    let state = "notDecided";
-    if (circlePosition >= ((containerWidth - circleDiameter) * 0.5) + 70) {
-      state = 'here';
-    }
-    else if (circlePosition <= ((containerWidth - circleDiameter) * 0.5) - 70) {
-      state = 'notHere';
-    }
-    const newHandle = {
-      ...handle, state,
-      position: { x: statePositions[state](containerWidth), y: 0 }
-    };
-
-    changeHandle(newHandle);
-    changeState(state);
-  }, [changeHandle, handle, containerWidth]);
-  return (
-      <Draggable
-        axis='x'
-        // handle='.overlay'
-        position={handle.position}
-        onStop={onStop}
-        // onStart={onStart}
-        // onDrag={onDragCallback}
-        bounds={{ left: outlinePadding, right: containerWidth - circleDiameter - outlinePadding }}
-      >
-        <Circle />
-      </Draggable>
-  )
-}
 
 const attendenceStatus = {
   here: "Attending",
   notHere: "Missing",
   notDecided: ""
-}
+};
+const ANIMATION_TIME = 0.5;
+const DEACCELERATION = -0.5;
 
-const AttendingButton = (props) => {
+const AttendingButton = ({missingReason, onChange}) => {
   const [pose, changePose] = useState("notDecided");
+  const controls = useAnimation();
+
+  const handleChange = useCallback((state) => {
+    changePose(state);
+    setTimeout(() => {
+      onChange(state);
+    }, theme.handleSpeed * 1000);
+  }, [changePose, onChange]);
+
+  const onDragEnd = useCallback((containerWidth) => (event, info) => {
+    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*DEACCELERATION*0.5;
+
+    let state = "notDecided";
+    if (endPos >= ((containerWidth - circleDiameter) * 0.5) + 70) {
+      state = 'here';
+    }
+    else if (endPos <= ((containerWidth - circleDiameter) * 0.5) - 70) {
+      state = 'notHere';
+    }
+    controls.start(state);
+    handleChange(state);
+  });
+
 
   return (
     <Container>
@@ -201,7 +158,7 @@ const AttendingButton = (props) => {
                   </ArrowsContainer>
                   <Spacer />
                   <AttendenceValue>
-                    {attendenceStatus[pose]}
+                    {pose === "notHere" ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
                   </AttendenceValue>
                   <Spacer />
                   <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
@@ -209,8 +166,18 @@ const AttendingButton = (props) => {
                   </ArrowsContainer>
                   <Spacer />
                 </RoundedRectangle>
-                {/* <Circle key={width} onDragEnd={e => onDragEnd(e, width)} poseKey={usage} containerWidth={width} pose={pose}/> */}
-                <Handle key={width} containerWidth={width} changeState={changePose} />
+                <Circle key={width}
+                        drag={"x"} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding }}
+                        variants={{
+                          notHere: {x: outlinePadding},
+                          here: {x: width - circleDiameter - outlinePadding},
+                          notDecided: {x: ((width - circleDiameter) * 0.5)}
+                        }}
+                        initial={pose}
+                        dragElastic={false}
+                        animate={controls}
+                        onDragEnd={onDragEnd(width)}
+                />
               </InnerContainer>
             )
           }

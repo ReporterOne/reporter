@@ -49,6 +49,5 @@ class RepetativeData(Base):
 
     reason_id = Column(Integer, ForeignKey('reasons.id'), index=True)
     reason = relationship('Reason', backref='repetative_datas', foreign_keys=[reason_id])
-
     reported_time = Column(DateTime)
     is_active = Column(Boolean)

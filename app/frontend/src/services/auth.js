@@ -3,6 +3,10 @@ import axios from 'axios';
 
 const PREFIX = "/api/";
 
+export class PermissionsError extends Error {
+
+}
+
 class AuthService {
   async login(username, password) {
     const response = await axios.post(`${PREFIX}/login`, qs.stringify({
@@ -16,6 +20,12 @@ class AuthService {
     );
     localStorage.setItem("token", response.data.access_token);
     return response.data.user_id;
+  }
+
+  async logout() {
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+    }
   }
 
   is_logged_in() {

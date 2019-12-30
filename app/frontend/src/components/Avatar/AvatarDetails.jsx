@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Avatar from './Avatar.jsx';
+import Avatar from './Avatar';
 import { Container } from '~/components/common';
 
 const AvatarWrapper = styled(Container)`
