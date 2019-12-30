@@ -91,9 +91,13 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
             startDate: dateStartDate,
             endDate: dateEndDate};
   })
-  const fetchParams = {start: getUnixTime(monthStart),
-                      end: getUnixTime(monthEnd),
-                      userId: userIdList}
+  const fetchParams = useMemo(() => {
+    return (
+      {start: getUnixTime(monthStart),
+      end: getUnixTime(monthEnd),
+      userId: userIdList}
+      );
+  });
   fetchDateDate(fetchParams);
   const dates = useSelector(state => lodash.get(state.general.dates , "data"));
   const rows = useMemo(() => {

@@ -44,7 +44,7 @@ class DateStatusService {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
       }
-      console.warn("couldn't get reasons", error.response.status);
+      console.warn("couldn't dates", error.response.status);
       throw error;
     }
   }
