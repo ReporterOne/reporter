@@ -39,8 +39,10 @@ def was_reminded(db: Session, user_id: int) -> bool:
 
 # Date Data:
 
-def get_dates_data(db: Session, user_id: int, 
-                   start_date: date, end_date: date = None) -> List[DateData]:
+def get_dates_data(db: Session, 
+                   user_id: int, 
+                   start_date: date, 
+                   end_date: date = None) -> List[DateData]:
     if end_date:  #TODO: Bug: if there will be one instance and not many, it wont be a list
         return db.query(DateData).filter(DateData.user_id == user_id, 
                                         start_date <= DateData.date <= end_date).all()
@@ -48,17 +50,25 @@ def get_dates_data(db: Session, user_id: int,
         return [db.query(DateData).filter(DateData.user_id == user_id, 
                                         start_date == DateData.date).one()]
 
-def get_multiple_users_dates_data(db: Session, users_id: List[int],
-                                  start_date: date, end_date: date = None) -> List[schemas.DateResponse]:
+def get_multiple_users_dates_data(db: Session, 
+                                  users_id: List[int],
+                                  start_date: date, 
+                                  end_date: date = None) -> List[schemas.RangeDatesResponse]:
     return [{'user_id': user_id, 'data': get_dates_data(db, user_id, start_date, end_date)}
             for user_id in users_id]
 
-def set_new_date_data(db: Session, body=schemas.DateDataBody) -> schemas.DateResponse:
+def _get_reason(db: Session, reason: str) -> str:
+    reason_to_return = db.query(Reason).filter(Reason.name == reason).first()
+    if reason_to_return is None:
+        raise AttributeError(f"Reason: {reason} does not exsists in the DB.")
+
+    return reason_to_return
+
+def set_new_date_data(db: Session, body=schemas.PostDateDataBody) -> schemas.RangeDatesResponse:
     dates_data = []
     for date in daterange(body.start_date, body.end_date):
-        reason = db.query(Reason).filter(Reason.name == body.reason).one()
-        if (not reason) and body.state != schemas.AnswerStateTypes.here:
-            raise AttributeError(f"Reason: {reason} does not exsists in the DB.")
+        if reason is not None:
+            reason = _get_reason(db, body.reason)
 
         dates_data.append(DateData(date=date, user_id=body.user_id,
                                    state=body.state, reason=reason,
@@ -68,18 +78,36 @@ def set_new_date_data(db: Session, body=schemas.DateDataBody) -> schemas.DateRes
     db.commit()
     return {'user_id': body.user_id, 'data': dates_data}
 
-def delete_users_dates_data(db: Session, users_id: List[int],
-                            start_date: date, end_date: date = None)
+def delete_users_dates_data(db: Session, 
+                            users_id: List[int],
+                            start_date: date, 
+                            end_date: date = None):
     for user_id in users_id:
         dates_data_to_remove = get_dates_data(
             db=db, user_id=user_id, start_date=start_date, end_date=end_date)
         for date_data in dates_data_to_remove:
             db.delete(date_data)
 
-def put_data_in_user(db: Session, body=schemas.DateDataBody) -> schemas.DateResponse:
-    pass  #TODO
+def put_data_in_user(db: Session, body=schemas.PutDateDataBody) -> schemas.RangeDatesResponse:
+    request = body.dict()
+    if body.reason is not None:
+        request["reason"] = _get_reason(db, body.reason)
+
+    dates_data = get_dates_data(db=db, 
+                                user_id=request.pop("user_id"),
+                                start_date=request.pop("start_date"),
+                                end_date=request.pop("end_date"))
+
+    for datedata in dates_data:
+        for key, value in body.dict().items():
+            if value is not None:
+                setattr(datedata, key, value)
+    
+    db.commit()
+    return  {'user_id': body.user_id, 'data': dates_data}
 
 # Reasons:
 
 def get_reasons(db: Session):
     return [reason.name for reason in db.query(Reason).all()]
+ 

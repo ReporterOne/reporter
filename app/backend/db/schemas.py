@@ -59,14 +59,27 @@ class AnswerStateTypes(str, Enum):
     not_here = "not_here"
 
 
-class DateDataBody(BaseModel):
+class PostDateDataBody(BaseModel):
     user_id: int 
     start_date: date
-    end_date: date
+    end_date: date = None
     state: AnswerStateTypes
     reason: str = None
     reported_by_id: int
     reported_time: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class PutDateDataBody(BaseModel):
+    user_id: int
+    start_date: date
+    end_date: date = None
+    state: AnswerStateTypes = None
+    reason: str = None
+    reported_by_id: int = None
+    reported_time: datetime = None
 
     class Config:
         orm_mode = True
@@ -84,7 +97,7 @@ class DateDataResponse(BaseModel):
         orm_mode = True
 
 
-class DateResponse(BaseModel):
+class RangeDatesResponse(BaseModel):
     user_id: int
     data: List[DateDataResponse]
 
