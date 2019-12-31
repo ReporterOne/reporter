@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import date, time, datetime
 
 from db import schemas
-from db.models import DateData
+from db.models import DateData, DateDetails
 from .reasons import get_reason_by_name
 from utils.datetime_utils import daterange
 
@@ -43,32 +43,56 @@ def get_multiple_users_dates_data(
     ]
 
 
+def _get_date_details(
+    db: Session, 
+    date: date,
+    make_if_not_exists: bool = False
+) -> DateDetails:
+
+    date_details = db.query(DateDetails).filter(DateDetails.date == date).first()
+    if make_if_not_exists and date_details is None:
+        date_details = DateDetails(date=date)
+        db.add(date_details)
+        db.commit()
+        db.refresh(date_details)
+
+    return date_details
+
+
 def set_new_date_data(
     db: Session,
     user_id: int,
+    state: schemas.AnswerStateTypes,
+    reported_by_id: int,
+    reported_time: datetime,
     start_date: date,
     end_date: date = None,
-    state: schemas.AnswerStateTypes = None,
-    reason: str = None,
-    reported_by_id: int = None,
-    reported_time: datetime = None
+    reason: str = None
 ) -> schemas.RangeDatesResponse:
 
-    dates_data = []
-    for date in daterange(start_date, end_date):
-        if reason is not None:
-            reason = get_reason_by_name(db, reason)
+    if reason is not None:
+        reason = get_reason_by_name(db, reason)
         
-        elif state.name == 'not_here':
-            raise RuntimeError('Cannot sign as "not_here"' 
-                               'with no reason.')
+    elif state.name == 'not_here':
+        raise RuntimeError('Cannot sign as "not_here"' 
+                            'with no reason.')
+    
+    dates_data = []
+    for day in daterange(start_date, end_date):
+        
+        date_details = _get_date_details(
+            db=db, 
+            date=day, 
+            make_if_not_exists=True
+        )
 
         dates_data.append(DateData(
-                date=date, 
+                date=day, 
+                date_details=date_details,
                 user_id=user_id,
                 state=state, 
                 reason=reason, 
-                reported_by=reported_by, 
+                reported_by=reported_by_id, 
                 reported_time=reported_time
             ))
     db.add_all(dates_data)
@@ -97,7 +121,8 @@ def delete_users_dates_data(
     db.commit()
 
 def put_data_in_user(
-    db: Session, 
+    db: Session,
+    user_id: int,
     start_date: date,
     end_date: date = None,
     state: schemas.AnswerStateTypes = None,

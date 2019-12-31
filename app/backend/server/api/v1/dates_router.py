@@ -30,7 +30,8 @@ async def post_dates_status(
     current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
-    return crud.set_new_date_data(db=db, 
+    return crud.set_new_date_data(
+                db=db, 
                 start_date=body.start_date,
                 end_date=body.end_date,
                 state=body.state,
@@ -60,6 +61,7 @@ async def put_dates_status(
 ):
     return crud.put_data_in_user(
             db=db, 
+            user_id=body.user_id,
             start_date=body.start_date,
             end_date=body.end_date,
             state=body.state,
