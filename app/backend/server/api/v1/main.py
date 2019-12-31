@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from . import dates_router, user
+from . import dates_router, users_router
 
 api_v1 = FastAPI(openapi_prefix="/api/v1")
 
@@ -11,7 +11,7 @@ api_v1.include_router(
 )
 
 api_v1.include_router(
-    user.router,
+    users_router.router,
     tags=["Users"],
     prefix="/users"
 )
