@@ -12,33 +12,37 @@ from db.database import get_db
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.User])
-async def get_users(
-    users_id: List[int] = Query([]),
+@router.get("/{user_id}", response_model=schemas.User)
+async def get_user(
+    user_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ):
-    if len(users_id) == 0:
-        return crud.get_subjects(
-                db=db, 
-                commander_id=current_user
-            )
-
-    return crud.get_users(
+    return crud.get_user(
             db=db, 
-            users_id=users_id
+            user_id=user_id
         )
 
-@router.post("/", response_model=List[schemas.User])
-async def post_users(
-    users_id: List[int] = Query([]),
+
+@router.delete("/{user_id}")
+async def delete_user(
+    user_id: int = None,
     db: Session = Depends(get_db),
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ):
-    if len(users_id) == 0:
-        
+    crud.delete_user(db=db, user_id=user_id)
+
+
+@router.get("/{user_id}/commander_id")
+async def get_commander(
+    user_id: int = None,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+) -> int:
+    return crud.get_commander_id(db=db, user_id=user_id)
 
 
 @router.get("/me", response_model=schemas.User)
@@ -47,3 +51,15 @@ async def get_current_user(
                                           scopes=["personal"])
 ):
     return current_user
+
+
+@router.get("/subjects", response_model=List[schemas.User])
+async def get_subjects(
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    return crud.get_subjects(
+            db=db, 
+            commander_id=current_user
+        )

@@ -3,6 +3,7 @@ from datetime import date, time
 from typing import List
 
 from db.models import User
+from db import schemas
 
 
 def create_user(
@@ -26,11 +27,41 @@ def get_user(
     return db.query(User).filter(User.id == user_id).first()
 
 
+def delete_user(
+    db: Session,
+    user_id: int
+):
+    user = get_user(db=db, user_id=user_id)
+    db.delete(user)
+
+
 def get_users(
     db: Session,
     users_id: List[int]
 ) -> List[User]:
     return [get_user(db=db, user_id=user_id) for user_id in users_id]
+
+
+def get_commander_id(
+    db: Session,
+    user_id: int
+) -> int:
+    return get_user(db=db, user_id=user_id).commander_id
+
+
+def get_hierarchy(
+    db: Session,
+    leader_id: int
+) -> schemas.Hierarchy:
+    childs = get_subjects(db=db, commander_id=leader_id)
+    if len(childs) == 0:
+        return dict(leader_id=leader_id, childs=[])
+
+    return dict(
+            leader_id=leader_id, 
+            childs=[get_hierarchy(db=db, leader_id=child.id) 
+                    for child in childs]
+        )
 
 
 def get_user_by_username(

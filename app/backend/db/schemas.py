@@ -15,7 +15,7 @@ class Mador(BaseModel):
 
 class User(BaseModel):
     id: int
-    commander: int = None
+    commander_id: int = None
     reminder_time: time = None
     english_name: str = None
     mador: Mador = None
@@ -32,15 +32,8 @@ class UserAuth(User):
 
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
-    leader_id: int = None
+    leader_id: int
     childs: List[Any]  # list of Hierarchy.
-
-
-class HierarchyList(BaseModel):
-    """Hierarchy for Reporter and Admin 
-        that can view more then 1 hierarchy.
-    """
-    hierarchys: List[Hierarchy]
 
 
 class StatusTypes(str, Enum):
