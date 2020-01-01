@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 from datetime import date, time, datetime
 
 from db import schemas
-from db.models import DateData, DateDetails, Reason
 from .reasons import get_reason_by_name
+from .crud_utils import put_values_if_not_none
 from utils.datetime_utils import daterange
+from db.models import DateData, DateDetails, Reason
 
 
 def get_dates_data(
@@ -141,18 +142,15 @@ def put_data_in_user(
             end_date=end_date
         )
 
-    for datedata in dates_data:
-        if state is not None:
-            datedata.state = state
-
-        if reason is not None:
-            datedata.reason = reason
-
-        if reported_by_id is not None:
-            datedata.reported_by_id = reported_by_id
-
-        if reported_time is not None:
-            datedata.reported_time = reported_time
     
-    db.commit()
+    for datedata in dates_data:
+        put_values_if_not_none(
+                db=db,
+                obj=datedata, 
+                state=state, 
+                reason=reason, 
+                reported_by_id=reported_by_id, 
+                reported_time=reported_time
+            )
+    
     return dict(user_id=user_id, date=dates_data)
