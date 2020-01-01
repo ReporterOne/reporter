@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import date, time, datetime
 
 from db import schemas
-from db.models import DateData, DateDetails
+from db.models import DateData, DateDetails, Reason
 from .reasons import get_reason_by_name
 from utils.datetime_utils import daterange
 
@@ -73,7 +73,7 @@ def set_new_date_data(
     if reason is not None:
         reason = get_reason_by_name(db, reason)
         
-    elif state.name == 'not_here':
+    elif state.name == Reason.NOT_HERE:
         raise RuntimeError('Cannot sign as "not_here"' 
                             'with no reason.')
     
@@ -87,12 +87,11 @@ def set_new_date_data(
         )
 
         dates_data.append(DateData(
-                date=day, 
                 date_details=date_details,
                 user_id=user_id,
                 state=state, 
                 reason=reason, 
-                reported_by=reported_by_id, 
+                reported_by_id=reported_by_id, 
                 reported_time=reported_time
             ))
     db.add_all(dates_data)
