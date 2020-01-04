@@ -8,7 +8,7 @@ import {logoutIfNoPermission} from '~/hooks/utils';
 
 export const fetchCurrentUser = () => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(state => state.general.login);
+  const isLoggedIn = useSelector((state) => state.general.login);
 
   useEffect(() => {
     (async () => {

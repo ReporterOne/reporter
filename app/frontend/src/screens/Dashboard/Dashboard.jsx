@@ -47,7 +47,7 @@ const Dashboard = React.memo((props) => {
       changeSelectedValue(null);
     }
   });
-  const userIdList = [useSelector(state => lodash.get(state.users.me, "id"))];
+  const userIdList = [useSelector((state) => lodash.get(state.users.me, 'id'))];
 
   return (
     <Container stretched>

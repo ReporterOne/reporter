@@ -28,27 +28,34 @@ class DateStatusService {
       throw error;
     }
   }
-  async getDateData({start, end,userId}) {
+
+  /**
+   * Get date datas from server.
+   * @param {number} start - start timestamp
+   * @param {number} end - end timestamp
+   * @param {number} userId - relevant user id.
+   * @return {Promise<T>}
+   */
+  async getDateData({start, end, userId}) {
     try {
       const response = await axios.get(`${PREFIX}`,
-      {
-        params:{ 
-          start: start,
-          end: end,
-          user_id: userId
-        },
-          headers: {
-            ...AuthService.getAuthHeader()
-          }
-        }
+          {
+            params: {
+              start: start,
+              end: end,
+              user_id: userId,
+            },
+            headers: {
+              ...AuthService.getAuthHeader(),
+            },
+          },
       );
       return response.data;
-    
     } catch (error) {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
       }
-      console.warn("couldn't dates", error.response.status);
+      console.warn('couldn\'t dates', error.response.status);
       throw error;
     }
   }

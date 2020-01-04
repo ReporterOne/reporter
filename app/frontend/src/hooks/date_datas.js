@@ -24,22 +24,22 @@ export const fetchReasons = () => {
 
 export const fetchDateDate = (params) => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(state => state.general.login);
-  
-  const start = params.start
+  const isLoggedIn = useSelector((state) => state.general.login);
+
+  const start = params.start;
   const end = params.end;
   const userId = params.userId;
   useEffect(() => {
     (async () => {
-      if(isLoggedIn) {
+      if (isLoggedIn) {
         await logoutIfNoPermission(async () => {
           // console.log({start,end})
-          const dateData = await DateStatusService.getDateData({start,end,userId});
+          const dateData = await DateStatusService.getDateData({start, end, userId});
           // const dateData = "aa"
           dispatch(updateDates(dateData));
         }, dispatch);
       }
-    })()
+    })();
   }, [isLoggedIn, dispatch, params]);
 };
 
