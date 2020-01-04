@@ -1,1 +1,1 @@
-export { default as default } from "./Entrance.jsx";
+export {default as default} from './Entrance.jsx';

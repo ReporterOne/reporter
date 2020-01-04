@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import {
   startOfWeek,
   format,
@@ -13,11 +13,10 @@ import {
   getUnixTime,
 } from "date-fns";
 import styled from 'styled-components';
-import { Container, theme } from '~/components/common';
-import { fetchDateDate } from "~/hooks/date_datas";
-import { useSelector } from "react-redux";
+import {Container, theme} from '~/components/common';
+import {fetchDateDate} from "~/hooks/date_datas";
+import {useSelector} from "react-redux";
 import lodash from 'lodash';
-
 
 
 const CellsDateFormat = "d";
@@ -43,23 +42,21 @@ const Day = styled.div`
 const DateLabel = styled.span`
   line-height: 1;
   font-weight: bold;
-  color: ${props => dayLabelIsPased(props) };
+  color: ${props => dayLabelIsPased(props)};
   opacity: ${props => props.isSameMonth ? 1 : 0.2};
 `;
 
-const dayColor = ({isPast,isSameMonth,status}) => {
+const dayColor = ({isPast, isSameMonth, status}) => {
   if (!isPast) {
     return isSameMonth ? dayStatus[status] : theme.white
-  }
-  else {
+  } else {
     return theme.white
   }
 }
-const dayLabelIsPased = ({isPast,isSameMonth,decided,status}) => {
+const dayLabelIsPased = ({isPast, isSameMonth, decided, status}) => {
   if (!isPast) {
-    return  isSameMonth ? dateLabelStatus[decided] : theme.grey 
-  }
-  else {
+    return isSameMonth ? dateLabelStatus[decided] : theme.grey
+  } else {
     return dayStatus[status]
   }
 }
@@ -86,20 +83,24 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
     const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
-    return {monthStart: dateMonthStart,
-            monthEnd: dateMonthEnd,
-            startDate: dateStartDate,
-            endDate: dateEndDate};
+    return {
+      monthStart: dateMonthStart,
+      monthEnd: dateMonthEnd,
+      startDate: dateStartDate,
+      endDate: dateEndDate
+    };
   })
   const fetchParams = useMemo(() => {
     return (
-      {start: getUnixTime(monthStart),
-      end: getUnixTime(monthEnd),
-      userId: userIdList}
-      );
+      {
+        start: getUnixTime(monthStart),
+        end: getUnixTime(monthEnd),
+        userId: userIdList
+      }
+    );
   });
   fetchDateDate(fetchParams);
-  const dates = useSelector(state => lodash.get(state.general.dates , "data"));
+  const dates = useSelector(state => lodash.get(state.general.dates, "data"));
   const rows = useMemo(() => {
     return eachWeekOfInterval({
       start: startDate,
@@ -113,8 +114,12 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
               end: endOfWeek(date)
             }).map(date => {
               return (
-                <Day status={'here'} isPast={isPast(date)} when={'Mid'} isSameMonth={isSameMonth(date, monthStart)} key={date} onClick={() => onDateClick(date)}>
-                  <DateLabel decided={'yes'} status={'here'} isPast={isPast(date)} isSameMonth={isSameMonth(date, monthStart)}>
+                <Day status={'here'} isPast={isPast(date)} when={'Mid'}
+                     isSameMonth={isSameMonth(date, monthStart)} key={date}
+                     onClick={() => onDateClick(date)}>
+                  <DateLabel decided={'yes'} status={'here'}
+                             isPast={isPast(date)}
+                             isSameMonth={isSameMonth(date, monthStart)}>
                     {format(date, CellsDateFormat)}
                   </DateLabel>
                 </Day>
@@ -130,4 +135,3 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
 };
 
 export default Cells;
-

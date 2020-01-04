@@ -1,8 +1,8 @@
-import {UPDATE_CURRENT_USER} from "~/actions/users";
+import {UPDATE_CURRENT_USER} from '~/actions/users';
 
 
 const initialState = {
-  me: null
+  me: null,
 };
 
 
@@ -11,7 +11,7 @@ export const usersReducer = (state = initialState, action) => {
     case UPDATE_CURRENT_USER:
       return {
         ...state,
-        me: action.user
+        me: action.user,
       };
 
     default: return state;

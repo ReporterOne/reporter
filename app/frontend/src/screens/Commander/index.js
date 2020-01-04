@@ -1,1 +1,1 @@
-export { default as default } from "./Commander.jsx";
+export {default as default} from './Commander.jsx';

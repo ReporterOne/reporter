@@ -1,20 +1,19 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
-import MUIButton from "@material-ui/core/Button";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import MUIButton from '@material-ui/core/Button';
 import {Textfit} from 'react-textfit';
 import styled from 'styled-components';
 
 import {updateLogin} from '~/actions/general';
 import AuthService from '~/services/auth';
 
-import {Container, RoundedContainer, theme} from '~/components/common';
-import {AnimatePresence, motion} from "framer-motion";
-import {MuiThemeProvider} from "@material-ui/core";
-import InputLabel from "@material-ui/core/InputLabel";
+import {Container} from '~/components/common';
+import {AnimatePresence, motion} from 'framer-motion';
+import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import {AccountCircle} from "@material-ui/icons";
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import {AccountCircle} from '@material-ui/icons';
 
 const EntrancePage = styled(Container)`
   background-color: ${({theme}) => theme.main};
@@ -100,8 +99,8 @@ const Content = styled(Container)`
   will-change: border-top-right-radius, border-top-left-radius, flex, padding-top, min-height;
   transition: ${
   ({initialized}) => initialized ?
-    "0.5s border-top-right-radius, 0.5s border-top-left-radius, 0.5s flex, 0.5s padding-top, 0.5s min-height"
-    : "none"
+    '0.5s border-top-right-radius, 0.5s border-top-left-radius, 0.5s flex, 0.5s padding-top, 0.5s min-height' :
+    'none'
 };
   flex: ${({enabled}) => enabled ? 1 : 0};
 `;
@@ -157,7 +156,7 @@ const FlatButton = styled(MUIButton)`
 const LoginButton = styled(MUIButton)`
   width: 60px;
   height: 60px;
-  background-color: ${({theme, state = "not-ready"}) => state === "ready" ? theme.secondary : "transparent"};
+  background-color: ${({theme, state = 'not-ready'}) => state === 'ready' ? theme.secondary : 'transparent'};
   border: 1px solid ${({theme}) => theme.secondary};
   border-radius: 10px;
   box-sizing: border-box;
@@ -194,22 +193,19 @@ const OUTER_RING_DISTANCE = 150;
 
 const Entrance = React.memo(({location, history}) => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(state => state.general.login);
+  const isLoggedIn = useSelector((state) => state.general.login);
   const [size, setSize] = useState(0);
   const containerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const [usernameReady, setUsernameReady] = useState(false);
-  const [passwordReady, setPasswordReady] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const validInput = useMemo(() => {
     return (
-      username.length > 3
-      &&
+      username.length > 3 &&
       password.length > 3
-    )
+    );
   }, [username, password]);
 
 
@@ -223,7 +219,7 @@ const Entrance = React.memo(({location, history}) => {
 
   useEffect(() => {
     setSize(containerRef.current.getBoundingClientRect());
-    const resizeObserve = new ResizeObserver(entries => {
+    const resizeObserve = new ResizeObserver((entries) => {
       const sizeRect = entries[0].contentRect;
       setSize(Math.min(sizeRect.width, sizeRect.height));
       setInitialized(true);
@@ -231,14 +227,14 @@ const Entrance = React.memo(({location, history}) => {
     resizeObserve.observe(containerRef.current);
 
     return () => {
-      resizeObserve.disconnect()
-    }
+      resizeObserve.disconnect();
+    };
   }, []);
 
 
   useEffect(() => {
     if (isLoggedIn) {
-      const {from} = location.state || {from: {pathname: "/"}};
+      const {from} = location.state || {from: {pathname: '/'}};
       history.push(from);
     }
   }, [isLoggedIn]);
@@ -250,38 +246,38 @@ const Entrance = React.memo(({location, history}) => {
           <ForeGround>
             <Spacer enabled={!isOpen}/>
             <Content radius={size} enabled={isOpen} size={size}
-                     initialized={initialized}>
+              initialized={initialized}>
               <ConstantSpacer size={isOpen ? 50 : 0}/>
               <Title key={size} mode="single" max={42}>Reporter</Title>
               <AnimatePresence>
                 {
                   isOpen && (
                     <LoginFormWrapper exit={{opacity: 0}}
-                                      animate={{opacity: 1}}
-                                      initial={{opacity: 0}}>
+                      animate={{opacity: 1}}
+                      initial={{opacity: 0}}>
                       <LoginForm id="loginForm" onSubmit={onSend}>
                         <FormControl>
                           <InputLabel
                             htmlFor="username-field">Username</InputLabel>
                           <Input id="username-field"
-                                 onChange={(event) => setUsername(event.target.value)}
-                                 endAdornment={
-                                   <InputAdornment position="end">
-                                     <AccountCircle/>
-                                   </InputAdornment>
-                                 }
+                            onChange={(event) => setUsername(event.target.value)}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <AccountCircle/>
+                              </InputAdornment>
+                            }
                           />
                         </FormControl>
                         <FormControl>
                           <InputLabel
                             htmlFor="password-field">Password</InputLabel>
                           <Input type="password" id="password-field"
-                                 onChange={(event) => setPassword(event.target.value)}
-                                 endAdornment={
-                                   <InputAdornment position="end">
-                                     <AccountCircle/>
-                                   </InputAdornment>
-                                 }
+                            onChange={(event) => setPassword(event.target.value)}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <AccountCircle/>
+                              </InputAdornment>
+                            }
                           />
                         </FormControl>
                       </LoginForm>
@@ -292,22 +288,22 @@ const Entrance = React.memo(({location, history}) => {
             </Content>
             <BackGround>
               <Ring size={size + INNER_RING_DISTANCE} opacity={0.3}
-                    animate={{rotate: 360}}
-                    transition={{
-                      loop: Infinity,
-                      ease: "linear",
-                      duration: Math.random() * 5 + 5
-                    }}
+                animate={{rotate: 360}}
+                transition={{
+                  loop: Infinity,
+                  ease: 'linear',
+                  duration: Math.random() * 5 + 5,
+                }}
               >
                 <Moon/>
               </Ring>
               <Ring size={size + OUTER_RING_DISTANCE} opacity={0.1}
-                    animate={{rotate: 360}}
-                    transition={{
-                      loop: Infinity,
-                      ease: "linear",
-                      duration: Math.random() * 5 + 5
-                    }}
+                animate={{rotate: 360}}
+                transition={{
+                  loop: Infinity,
+                  ease: 'linear',
+                  duration: Math.random() * 5 + 5,
+                }}
               >
                 <Moon/>
               </Ring>
@@ -319,7 +315,7 @@ const Entrance = React.memo(({location, history}) => {
               {
                 isOpen && (
                   <BackForm exit={{opacity: 0}} animate={{opacity: 1}}
-                            initial={{opacity: 0}}>
+                    initial={{opacity: 0}}>
                     <BackButton
                       onClick={() => setIsOpen(false)}>back</BackButton>
                   </BackForm>
@@ -336,14 +332,14 @@ const Entrance = React.memo(({location, history}) => {
                   <Button onClick={() => setIsOpen(true)}>Sign In</Button>
                   <FlatButton>Sign Up</FlatButton>
                 </>
-              )
-              : (
+              ) :
+              (
                 <>
                   <LoginButton
                     disabled={!validInput}
                     type="submit"
                     form="loginForm"
-                    state={validInput ? "ready" : "not-ready"}
+                    state={validInput ? 'ready' : 'not-ready'}
                   >
                     <span>V</span>
                   </LoginButton>
