@@ -1,4 +1,5 @@
 node_modules/
+coverage/
 __pycache__/
 *.pyc
 
@@ -7,3 +8,4 @@ __pycache__/
 
 build/
 app/frontend/dist/
+jest.config.js

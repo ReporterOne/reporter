@@ -1,11 +1,23 @@
 {
-    "presets": [
-        "@babel/env",
-        "@babel/preset-react"
-    ],
-    "plugins": [
-        "@babel/plugin-proposal-class-properties",
-        "@babel/plugin-proposal-optional-chaining",
-        "babel-plugin-styled-components"
+  "presets": [
+    "@babel/env",
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-optional-chaining",
+    "babel-plugin-styled-components",
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./app/frontend/src"
+        ],
+        "alias": {
+          "~": "./app/frontend/src",
+          "@": "./app/frontend/src/screens"
+        }
+      }
     ]
+  ]
 }
