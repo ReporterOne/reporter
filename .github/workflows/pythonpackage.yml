@@ -23,13 +23,16 @@ jobs:
         pip install pipenv
         pipenv lock --requirements > requirements.txt
         pip install -r requirements.txt
-        export PYTHONPATH=${PWD}/app/backend
     - name: Lint with flake8
+      env:
+        PYTHONPATH: ${PWD}/app/backend/
       run: |
         pip install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 app/backend
     - name: Lint with pylint
+      env:
+        PYTHONPATH: ${PWD}/app/backend/
       run: |
         pip install pylint
         pylint app/backend/ -E
