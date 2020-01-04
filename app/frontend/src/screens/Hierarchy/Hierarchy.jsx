@@ -467,8 +467,10 @@ export const Hierarchy = React.memo((props) => {
 
   return (
     <PageContainer stretched>
-      <Build hierarchy={currentHierarchy} replaceUser={replaceUser}
-        addUser={addUser}/>
+      <Build hierarchy={currentHierarchy}
+             replaceUser={replaceUser}
+             addUser={addUser}
+      />
     </PageContainer>
   );
 });

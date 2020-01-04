@@ -23,28 +23,19 @@ describe('Render all screens', () => {
       })),
     });
     expect(container).toMatchSnapshot();
-
     const menuButton = container.querySelector("[id='openMainmenu']");
-    act(() => {
-      fireEvent.click(menuButton);
-    });
+    fireEvent.click(menuButton);
     expect(container).toMatchSnapshot();
     const commanderButton = container.querySelector("[id='commanderButton']");
-    act(() => {
-      fireEvent.click(commanderButton);
-    });
+    fireEvent.click(commanderButton);
     expect(container).toMatchSnapshot();
 
     const hierarchyButton = container.querySelector("[id='hierarchyButton']");
-    act(() => {
-      fireEvent.click(hierarchyButton);
-    });
+    fireEvent.click(hierarchyButton);
     expect(container).toMatchSnapshot();
 
     const operatorButton = container.querySelector("[id='operatorButton']");
-    act(() => {
-      fireEvent.click(operatorButton);
-    });
+    fireEvent.click(operatorButton);
     expect(container).toMatchSnapshot();
   });
 });

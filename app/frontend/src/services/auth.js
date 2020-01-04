@@ -1,7 +1,7 @@
 import qs from 'qs';
 import axios from 'axios';
 
-const PREFIX = '/api/';
+const PREFIX = '/api';
 
 /** Permissions Error in-case the request was Bad.*/
 export class PermissionsError extends Error {}

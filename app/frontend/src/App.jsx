@@ -55,43 +55,41 @@ export const App = (props) => {
   }, [avatar]);
 
   return (
-    <Router>
-      <Switch>
-        <Route path="/entrance" component={Entrance}/>
-        <Route path="/" render={() => (
-          <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-            onDragEnd={onDrawerDragEnd}>
-            <DrawerMenu>
-              <Menu avatar={avatar} avatarRef={avatarRef}/>
-            </DrawerMenu>
-            <DrawerContent
-              titleComponent={() => (
-                <Switch>
-                  <Route path="/hierarchy">
-                    Hierarchy
-                  </Route>
-                  <Route path="/operator">
-                    Operator Space
-                  </Route>
-                  <Route path="/commander">
-                    Commander Space
-                  </Route>
-                  <Route path="/">
-                  </Route>
-                </Switch>
-              )}>
+    <Switch>
+      <Route path="/entrance" component={Entrance}/>
+      <Route path="/" render={() => (
+        <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
+                onDragEnd={onDrawerDragEnd}>
+          <DrawerMenu>
+            <Menu avatar={avatar} avatarRef={avatarRef}/>
+          </DrawerMenu>
+          <DrawerContent
+            titleComponent={() => (
               <Switch>
-                <PrivateRoute path="/hierarchy" component={Hierarchy}/>
-                <PrivateRoute path="/operator" component={Operator}/>
-                <PrivateRoute path="/commander" component={Commander}/>
-                <PrivateRoute path="/" component={Dashboard}/>
+                <Route path="/hierarchy">
+                  Hierarchy
+                </Route>
+                <Route path="/operator">
+                  Operator Space
+                </Route>
+                <Route path="/commander">
+                  Commander Space
+                </Route>
+                <Route path="/">
+                </Route>
               </Switch>
-            </DrawerContent>
-          </Drawer>
+            )}>
+            <Switch>
+              <PrivateRoute path="/hierarchy" component={Hierarchy}/>
+              <PrivateRoute path="/operator" component={Operator}/>
+              <PrivateRoute path="/commander" component={Commander}/>
+              <PrivateRoute path="/" component={Dashboard}/>
+            </Switch>
+          </DrawerContent>
+        </Drawer>
 
-        )}/>
-      </Switch>
-    </Router>
+      )}/>
+    </Switch>
   );
 };
 
@@ -111,7 +109,9 @@ export const StyledApp = (props) => {
 export const ProvidedApp = (props) => {
   return (
     <Provider store={store}>
-      <StyledApp/>
+      <Router>
+        <StyledApp/>
+      </Router>
     </Provider>
   );
 };
