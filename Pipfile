@@ -18,13 +18,13 @@ jinja2 = "*"
 aiofiles = "*"
 pylint = "*"
 sqlalchemy = "*"
-psycopg2 = "*"
 alembic = "*"
 faker = "*"
 passlib = {extras = ["bcrypt"],version = "*"}
 pyjwt = "*"
 python-multipart = "*"
 gunicorn = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
