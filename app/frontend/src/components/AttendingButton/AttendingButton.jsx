@@ -70,7 +70,7 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-const Circle = styled(motion.div)`
+export const Circle = styled(motion.div)`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
@@ -119,8 +119,8 @@ const attendenceStatus = {
 const ANIMATION_TIME = 0.5;
 const DEACCELERATION = -0.5;
 
-const AttendingButton = ({missingReason, onChange}) => {
-  const [pose, changePose] = useState('notDecided');
+const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) => {
+  const [pose, changePose] = useState(initialState);
   const controls = useAnimation();
 
   const handleChange = useCallback((state) => {

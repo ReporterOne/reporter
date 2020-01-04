@@ -1,0 +1,188 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Avatar Details component Basic Avatar Details 1`] = `
+<div>
+  <div
+    class="common__Container-tzqv5k-3 AvatarDetails__AvatarWrapper-sc-1hvnle5-0 kszVNo"
+  >
+    <div
+      class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+    >
+      <div
+        class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 bivPeu"
+        size="58"
+      >
+        <div
+          class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 dUldmu"
+          size="58"
+        />
+        <img
+          class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 bHESPl avatarAutomatic"
+          size="62"
+          src="test-file-stub"
+          style="transform: translateY(0%);"
+        />
+      </div>
+      <div
+        class="Avatar__Status-sc-10jec1a-5 fqVIwN"
+        offset="5"
+      />
+    </div>
+    <div
+      class="common__Container-tzqv5k-3 AvatarDetails__Name-sc-1hvnle5-1 goTVFw"
+    >
+      <span
+        class="AvatarDetails__NameFragment-sc-1hvnle5-2 brqQXW"
+      >
+        User
+      </span>
+      <span
+        class="AvatarDetails__NameFragment-sc-1hvnle5-2 brqQXW"
+      >
+        Name
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test Avatar Expanded component Basic Avatar Expanded 1`] = `
+<div>
+  <div
+    class="common__Container-tzqv5k-3 AvatarExpanded__AvatarWrapper-sc-1ed03kn-0 fPyMnS"
+  >
+    <div
+      class="AvatarExpanded__Wrapper-sc-1ed03kn-1 iRcARu"
+      style="width: 100%;"
+    >
+      <div
+        class="AvatarExpanded__AvatarContainer-sc-1ed03kn-2 bwzSta"
+      >
+        <div
+          class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+        >
+          <div
+            class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 gZkrFg"
+            size="58"
+          >
+            <div
+              class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 dUldmu"
+              size="58"
+            />
+            <img
+              class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 bHESPl avatarAutomatic"
+              size="62"
+              src="test-file-stub"
+              style="transform: translateY(0%);"
+            />
+          </div>
+          <div
+            class="Avatar__Status-sc-10jec1a-5 fqVIwN"
+            offset="5"
+          />
+        </div>
+      </div>
+      <div
+        class="AvatarExpanded__Details-sc-1ed03kn-3 jyvmqZ"
+      >
+        <div
+          class="common__Container-tzqv5k-3 AvatarExpanded__Content-sc-1ed03kn-4 jXJrh"
+        >
+          <div
+            class="common__Container-tzqv5k-3 AvatarExpanded__Name-sc-1ed03kn-5 hjKprm"
+          >
+            User Name
+          </div>
+          <div
+            class="AvatarExpanded__Reason-sc-1ed03kn-6 hKaHYU"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test avatar component Avatar jumping 1`] = `
+<div>
+  <div
+    class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+  >
+    <div
+      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+      size="48"
+    >
+      <div
+        class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
+        size="48"
+      />
+      <img
+        class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
+        size="52"
+        src="test-file-stub"
+        style="transform: translateY(0%);"
+      />
+    </div>
+    <div
+      class="Avatar__Status-sc-10jec1a-5 faAWeY"
+      offset="0"
+    />
+  </div>
+</div>
+`;
+
+exports[`Test avatar component Basic Avatar 1`] = `
+<div>
+  <div
+    class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+  >
+    <div
+      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+      size="48"
+    >
+      <div
+        class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
+        size="48"
+      />
+      <img
+        class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
+        size="52"
+        src="test-file-stub"
+        style="transform: translateY(0%);"
+      />
+    </div>
+    <div
+      class="Avatar__Status-sc-10jec1a-5 faAWeY"
+      offset="0"
+    />
+  </div>
+</div>
+`;
+
+exports[`Test avatar component Basic Avatar 2`] = `
+<div>
+  <div
+    class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+  >
+    <div
+      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+      size="48"
+    >
+      <div
+        class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
+        size="48"
+      />
+      <img
+        class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
+        size="52"
+        src="test-file-stub"
+        style="transform: translateY(0%);"
+      />
+    </div>
+    <div
+      class="Avatar__Status-sc-10jec1a-5 faAWeY"
+      offset="0"
+    />
+  </div>
+</div>
+`;

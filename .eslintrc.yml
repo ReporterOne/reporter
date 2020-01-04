@@ -14,6 +14,10 @@ parserOptions:
   sourceType: module
 plugins:
   - react
+overrides:
+  - files:
+      - app/frontend/src/**/*.js
+      - app/frontend/src/**/*.jsx
 rules:
   react/prop-types: off
   max-len:

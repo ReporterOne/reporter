@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Attending Button Basic tests 1`] = `
+<div>
+  <div
+    class="AttendingButton__Container-msoqie-0 drZre"
+  >
+    <div
+      class="AttendingButton__OuterContainer-msoqie-3 eCrLwM"
+    >
+      <div
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
+        <div
+          class="AttendingButton__InnerContainer-msoqie-2 fuEOsJ"
+          style="height: 0px; width: 0px;"
+        >
+          <div
+            class="AttendingButton__RoundedRectangle-msoqie-1 bZXilb"
+            style="height: 0px; width: 0px; background-color: rgb(71, 37, 165);"
+          >
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: none;"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <span
+              class="AttendingButton__AttendenceValue-msoqie-9 ksMhrp"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: none;"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+          </div>
+          <div
+            class="AttendingButton__Circle-msoqie-5 cIuBbP"
+            style="transform: translateX(-27px) translateZ(0);"
+          />
+        </div>
+      </div>
+      <div
+        class="resize-triggers"
+      >
+        <div
+          class="expand-trigger"
+        >
+          <div
+            style="width: 1px; height: 1px;"
+          />
+        </div>
+        <div
+          class="contract-trigger"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test Attending Button Test here 1`] = `
+<div>
+  <div
+    class="AttendingButton__Container-msoqie-0 drZre"
+  >
+    <div
+      class="AttendingButton__OuterContainer-msoqie-3 eCrLwM"
+    >
+      <div
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
+        <div
+          class="AttendingButton__InnerContainer-msoqie-2 fuEOsJ"
+          style="height: 0px; width: 0px;"
+        >
+          <div
+            class="AttendingButton__RoundedRectangle-msoqie-1 bZXilb"
+            style="height: 0px; width: 0px; background-color: rgb(34, 181, 115);"
+          >
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: scale(0) translateZ(0);"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <span
+              class="AttendingButton__AttendenceValue-msoqie-9 ksMhrp"
+            >
+              Attending
+            </span>
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: scale(0) translateZ(0);"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+          </div>
+          <div
+            class="AttendingButton__Circle-msoqie-5 cIuBbP"
+            style="transform: translateX(-57px) translateZ(0);"
+          />
+        </div>
+      </div>
+      <div
+        class="resize-triggers"
+      >
+        <div
+          class="expand-trigger"
+        >
+          <div
+            style="width: 1px; height: 1px;"
+          />
+        </div>
+        <div
+          class="contract-trigger"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test Attending Button Test missing 1`] = `
+<div>
+  <div
+    class="AttendingButton__Container-msoqie-0 drZre"
+  >
+    <div
+      class="AttendingButton__OuterContainer-msoqie-3 eCrLwM"
+    >
+      <div
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
+        <div
+          class="AttendingButton__InnerContainer-msoqie-2 fuEOsJ"
+          style="height: 0px; width: 0px;"
+        >
+          <div
+            class="AttendingButton__RoundedRectangle-msoqie-1 bZXilb"
+            style="height: 0px; width: 0px; background-color: rgb(241, 90, 36);"
+          >
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: scale(0) translateZ(0);"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <span
+              class="AttendingButton__AttendenceValue-msoqie-9 ksMhrp"
+            >
+              testing
+            </span>
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+            <div
+              class="AttendingButton__ArrowsContainer-msoqie-6 gkQJPv"
+              style="transform: scale(0) translateZ(0);"
+            />
+            <div
+              class="AttendingButton__Spacer-msoqie-4 gDZiZO"
+            />
+          </div>
+          <div
+            class="AttendingButton__Circle-msoqie-5 cIuBbP"
+            style="transform: translateX(3px) translateZ(0);"
+          />
+        </div>
+      </div>
+      <div
+        class="resize-triggers"
+      >
+        <div
+          class="expand-trigger"
+        >
+          <div
+            style="width: 1px; height: 1px;"
+          />
+        </div>
+        <div
+          class="contract-trigger"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
