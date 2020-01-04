@@ -36,3 +36,17 @@ jobs:
       run: |
         pip install pylint
         pylint app/backend/ -E
+
+    - name: Pytest
+      env:
+        PYTHONPATH: app/backend/
+      run: |
+        pip install pytest pytest-cov
+        pytest --cov=app/backend/ --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
