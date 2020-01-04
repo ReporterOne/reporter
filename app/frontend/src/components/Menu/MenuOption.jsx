@@ -1,14 +1,14 @@
 
-import React, { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, {useContext} from 'react';
+import {NavLink} from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DrawerContext } from './BaseDrawer.jsx';
+import {DrawerContext} from './BaseDrawer.jsx';
 import Button from '@material-ui/core/Button';
 
 
-const StyledOptionButton = styled(({ selected, ...props }) => (
-  <Button classes={{ containedPrimary: "primary", label: "label" }} {...props} />
+const StyledOptionButton = styled(({selected, ...props}) => (
+  <Button classes={{containedPrimary: 'primary', label: 'label'}} {...props} />
 ))`
   border-radius: 50%;
   width: 45px;
@@ -17,9 +17,9 @@ const StyledOptionButton = styled(({ selected, ...props }) => (
   position: relative;
   padding: 0;
   min-width: unset;
-  background-color: ${({ theme }) => theme.buttons.normal};
+  background-color: ${({theme}) => theme.buttons.normal};
   &&:hover {
-    background-color: ${({ theme }) => theme.buttons.normal};
+    background-color: ${({theme}) => theme.buttons.normal};
   }
 
   & .label {
@@ -27,7 +27,7 @@ const StyledOptionButton = styled(({ selected, ...props }) => (
   }
 
   &&.selected {
-    background-color: ${({ theme }) => theme.buttons.selected};
+    background-color: ${({theme}) => theme.buttons.selected};
   }
 `;
 
@@ -44,18 +44,21 @@ const OptionWrapper = styled.div`
 `;
 
 
-export const Option = React.memo(({ path, ...props }) => {
-  const { isOpen, toggleDrawer } = useContext(DrawerContext);
+export const Option = React.memo(({path, ...props}) => {
+  const {isOpen, toggleDrawer} = useContext(DrawerContext);
   return (
     <OptionWrapper>
       <StyledOptionButton color="primary" variant="contained" activeClassName="selected" exact
         component={StyledLink} to={path} onClick={() => {
-          if(isOpen) {
+          if (isOpen) {
             toggleDrawer();
           }
-      }} {...props} />
+        }} {...props} />
     </OptionWrapper>
   );
 });
+
+
+Option.displayName = 'Option';
 
 export default Option;

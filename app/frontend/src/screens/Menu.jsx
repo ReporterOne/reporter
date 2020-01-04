@@ -8,7 +8,7 @@ import commanderIconUrl from '~/assets/whistle.svg';
 import operatorIconUrl from '~/assets/signature.svg';
 import hierarchyIconUrl from '~/assets/hierarchy.svg';
 import settingsIconUrl from '~/assets/settings.svg';
-import { Container, theme, SVGIcon } from '~/components/common';
+import {Container, SVGIcon} from '~/components/common';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -26,7 +26,7 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-export const Menu = React.memo(({ avatar, avatarRef }) => {
+export const Menu = React.memo(({avatar, avatarRef}) => {
   return (
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} status="here" jumping={true}/>
@@ -54,5 +54,7 @@ export const Menu = React.memo(({ avatar, avatarRef }) => {
   );
 }, (props, prevProps) => _.isEqual(props, prevProps));
 
+
+Menu.displayName = 'Menu';
 
 export default Menu;

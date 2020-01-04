@@ -1,13 +1,13 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
-import { Textfit } from 'react-textfit';
+import {Textfit} from 'react-textfit';
 import lodash from 'lodash';
 
-import { Container, RoundedContainer, theme } from '~/components/common';
+import {Container, RoundedContainer, theme} from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
-import ReasonsDialog from "~/dialogs/Reasons";
-import {useSelector} from "react-redux";
+import ReasonsDialog from '~/dialogs/Reasons';
+import {useSelector} from 'react-redux';
 
 
 const HeaderWelcome = styled.h2`
@@ -29,18 +29,9 @@ const WelcomeMessage = styled(Container)`
   padding: 0px 20px;
 `;
 
-const names = [
-  "Michael Tugendhaft",
-  "Elran Shefer",
-  "Osher De Paz",
-  "Ariel Domb",
-  "AReallyReally LongName",
-  "Tugy",
-  "Adi Tugy"
-];
 
 const Dashboard = React.memo((props) => {
-  const name = useSelector(state => lodash.get(state.users.me, "english_name"));
+  const name = useSelector((state) => lodash.get(state.users.me, 'english_name'));
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedValue, changeSelectedValue] = useState(null);
 
@@ -50,17 +41,17 @@ const Dashboard = React.memo((props) => {
   });
 
   const handleOnChange = useCallback((state) => {
-    if(state === "notHere") {
+    if (state === 'notHere') {
       changeOpenDialog(true);
     } else {
       changeSelectedValue(null);
     }
   });
-  const userIdList = [useSelector(state => lodash.get(state.users.me, "id"))];
+  const userIdList = [useSelector((state) => lodash.get(state.users.me, 'id'))];
 
   return (
     <Container stretched>
-      <Container flex={2} style={{ padding: '15px' }}>
+      <Container flex={2} style={{padding: '15px'}}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{lodash.capitalize(name)}</HeaderName>
@@ -74,5 +65,7 @@ const Dashboard = React.memo((props) => {
     </Container>
   );
 });
+
+Dashboard.displayName = 'Dashboard';
 
 export default Dashboard;

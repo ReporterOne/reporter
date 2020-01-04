@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Avatar from './Avatar';
-import { Container } from '~/components/common';
+import {Container} from '~/components/common';
 
 const AvatarWrapper = styled(Container)`
   margin: 0 5px;
@@ -25,16 +25,16 @@ const NameFragment = styled.span`
 `;
 
 
-export const AvatarDetails = ({ name, onClick, isFaded = false, ...props }) => {
-
+export const AvatarDetails = ({name, onClick, isFaded = false, ...props}) => {
   return (
     <AvatarWrapper onClick={onClick} faded={isFaded}>
       <Avatar type="big" {...props} />
       <Name>
-        {name.split(" ", 1).concat(name.split(" ").slice(1).join(" ")).map((fragment, index) => <NameFragment key={index}>{fragment}</NameFragment>)}
+        {name.split(' ', 1).concat(name.split(' ').slice(1).join(' ')).map(
+            (fragment, index) => <NameFragment key={index}>{fragment}</NameFragment>)}
       </Name>
     </AvatarWrapper>
-  )
-}
+  );
+};
 
 export default AvatarDetails;

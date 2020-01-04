@@ -1,20 +1,17 @@
-from typing import List
-from datetime import date
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Query, Depends, Security
+"""Users api requests."""
+from fastapi import APIRouter, Security
 
 from server.auth import get_current_user
 
-from db import crud
 from db import schemas
-from db.database import get_db
 
 router = APIRouter()
 
 
 @router.get("/me", response_model=schemas.User)
-async def get_current_user(
+async def get_user_me(
     current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
+    """Get the current user."""
     return current_user

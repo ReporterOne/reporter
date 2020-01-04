@@ -1,10 +1,10 @@
+"""Authentication module."""
 import os
 from datetime import datetime, timedelta
 from typing import List
 
 import jwt
-from fastapi import (Depends, FastAPI, HTTPException, Security, APIRouter,
-                     Form, Body)
+from fastapi import (Depends, HTTPException, Security, APIRouter, Body)
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -13,6 +13,7 @@ from fastapi.security import (
 from jwt import PyJWTError
 from jwt.exceptions import ExpiredSignatureError
 from sqlalchemy.orm import Session
+# pylint: disable=no-name-in-module
 from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
 
@@ -32,11 +33,13 @@ router = APIRouter()
 
 
 class Token(BaseModel):
+    """Token model."""
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
+    """Token data model."""
     username: str = None
     scopes: List[str] = []
 
@@ -49,24 +52,28 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify the given password with the hashed password."""
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
+def get_password_hash(password: str) -> str:
+    """Get the given password hash."""
     return pwd_context.hash(password)
 
 
-def authenticate_user(db, username: str, password: str):
+def authenticate_user(db: Session, username: str, password: str) -> User:
+    """Authenticate the user and return it from the db."""
     user = get_user_by_username(db, username)
     if not user:
-        return False
+        return None
     if not verify_password(password, user.password):
-        return False
+        return None
     return user
 
 
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
+def create_access_token(*, data: dict, expires_delta: timedelta = None) -> str:
+    """Create an access token and return the encoding of it."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -81,7 +88,8 @@ async def get_current_user(
     security_scopes: SecurityScopes,
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
-):
+) -> User:
+    """Get the current user from the given token."""
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -124,7 +132,8 @@ async def get_current_user(
 
 async def get_current_user_secured(
     current_user: User = Security(get_current_user, scopes=["personal"])
-):
+) -> User:
+    """Get the current user with secured scope."""
     return current_user
 
 
@@ -133,9 +142,10 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
+    """Login to system and get access token."""
     user = authenticate_user(db, form_data.username, form_data.password)
 
-    if not user:
+    if user is None:
         raise HTTPException(status_code=400,
                             detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -144,8 +154,11 @@ async def login_for_access_token(
         data={"sub": user.username, "scopes": ["personal"]},
         expires_delta=access_token_expires,
     )
-    return {"access_token": access_token, "token_type": "bearer",
-            "user_id": user.id}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.id
+    }
 
 
 @router.post("/register", response_model=User)
@@ -154,7 +167,8 @@ def register(
     username: str = Body(..., regex=r"^[A-Za-z0-9]+$"),
     password: str,
     db: Session = Depends(get_db)
-):
+) -> User:
+    """Register to application and return the created user."""
     existing_user = get_user_by_username(db, username)
     if existing_user:
         raise HTTPException(status_code=400,

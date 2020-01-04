@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom'
-import { Container, StyledIconButton, SVGIcon } from '~/components/common';
+import {Container, StyledIconButton, SVGIcon} from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 
 
@@ -24,7 +23,7 @@ const PageTitle = styled.h3`
 export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
   return (
     <Container row>
-      <StyledIconButton onClick={onMenuClick} style={{ zIndex: 1 }}>
+      <StyledIconButton onClick={onMenuClick} style={{zIndex: 1}}>
         <SVGIcon src={iconUrl} />
       </StyledIconButton>
       <TitleWrapper>
@@ -35,5 +34,7 @@ export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
     </Container>
   );
 });
+
+MenuHeader.displayName = 'MenuHeader';
 
 export default MenuHeader;

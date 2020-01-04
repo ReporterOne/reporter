@@ -43,11 +43,11 @@ export const StyledIconButton = styled(IconButton)`
 
 export const Container = styled.div`
   position: relative;
-  overflow-y: ${({scrollable}) => scrollable? 'auto' : 'visible'};
-  display: ${props => (props.block ? 'block' : 'flex')};
-  flex: ${props => (props.flex || (props.stretched ? "1 1 0" : "0 0 auto"))};
-  flex-direction: ${props => (props.row ? 'row' : 'column')};
-  background-color: ${props => props.background || 'transparent'};
+  overflow-y: ${({scrollable}) => scrollable ? 'auto' : 'visible'};
+  display: ${(props) => (props.block ? 'block' : 'flex')};
+  flex: ${(props) => (props.flex || (props.stretched ? '1 1 0' : '0 0 auto'))};
+  flex-direction: ${(props) => (props.row ? 'row' : 'column')};
+  background-color: ${(props) => props.background || 'transparent'};
   min-width: 0;
   min-height: 0;
 `;
@@ -58,11 +58,16 @@ export const CenteredContainer = styled(Container)`
 
 export const innerShaddow = [
   undefined,
-  css`box-shadow: inset 0 0px 3px rgba(0,0,0,0.12),inset  0 0px 2px rgba(0,0,0,0.24);`,
-  css`box-shadow: inset 0 0px 6px rgba(0,0,0,0.16),inset  0 0px 6px rgba(0,0,0,0.23);`,
-  css`box-shadow: inset 0 0px 20px rgba(0,0,0,0.19),inset  0 0px 6px rgba(0,0,0,0.23);`,
-  css`box-shadow: inset 0 0px 28px rgba(0,0,0,0.25),inset  0 0px 10px rgba(0,0,0,0.22);`,
-  css`box-shadow: inset 0 0px 38px rgba(0,0,0,0.30),inset  0 0px 12px rgba(0,0,0,0.22);`
+  css`box-shadow: inset 0 0px 3px rgba(0,0,0,0.12),
+                  inset  0 0px 2px rgba(0,0,0,0.24);`,
+  css`box-shadow: inset 0 0px 6px rgba(0,0,0,0.16),
+                  inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 20px rgba(0,0,0,0.19),
+                  inset  0 0px 6px rgba(0,0,0,0.23);`,
+  css`box-shadow: inset 0 0px 28px rgba(0,0,0,0.25),
+                  inset  0 0px 10px rgba(0,0,0,0.22);`,
+  css`box-shadow: inset 0 0px 38px rgba(0,0,0,0.30),
+                  inset  0 0px 12px rgba(0,0,0,0.22);`,
 ];
 
 
@@ -72,24 +77,24 @@ export const shadows = [
   css`box-shadow: 0 0px 6px rgba(0,0,0,0.16), 0 0px 6px rgba(0,0,0,0.23);`,
   css`box-shadow: 0 0px 20px rgba(0,0,0,0.19), 0 0px 6px rgba(0,0,0,0.23);`,
   css`box-shadow: 0 0px 28px rgba(0,0,0,0.25), 0 0px 10px rgba(0,0,0,0.22);`,
-  css`box-shadow: 0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);`
+  css`box-shadow: 0 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);`,
 ];
 
 export const DEFAULT_RADIUS = 30;
 
 export const RoundedContainer = styled(Container)`
-  border-top-left-radius: ${props => props.radius || DEFAULT_RADIUS}px;
-  border-top-right-radius: ${props => props.radius || DEFAULT_RADIUS}px;
-  padding: ${props => props.padding || '20px 15px'};
-  ${props => {
-  const i = props.shadow || 1;
-  return shadows[i];
-}}
+  border-top-left-radius: ${(props) => props.radius || DEFAULT_RADIUS}px;
+  border-top-right-radius: ${(props) => props.radius || DEFAULT_RADIUS}px;
+  padding: ${(props) => props.padding || '20px 15px'};
+  ${(props) => {
+    const i = props.shadow || 1;
+    return shadows[i];
+  }}
 `;
 
 const PosedFadedContainer = posed(Container)({
   enter: {opacity: 1, delay: 100, beforeChildren: true},
-  exit: {opacity: 0}
+  exit: {opacity: 0},
 });
 
 export const FadeInContainer = ({poseKey, ...props}) => (
@@ -101,7 +106,16 @@ export const FadeInContainer = ({poseKey, ...props}) => (
 
 export const theme = {
   cards: 'white',
+  palette: {
+    primary: {
+      main: '#4725a5',
+    },
+    secondary: {
+      main: '#FFF',
+    },
+  },
   main: '#4725a5',
+  secondary: '#FFF',
   shadows: shadows,
   innerShadows: innerShaddow,
   buttons: {
@@ -112,9 +126,9 @@ export const theme = {
   approved: '#22B573',
   notApproved: '#F15A24',
   grey: 'rgb(120, 120, 120)',
-  white:'rgb(255, 255, 255)',
+  white: 'rgb(255, 255, 255)',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,
-  animationsSpeed: 0.4
-}
+  animationsSpeed: 0.4,
+};

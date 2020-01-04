@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
 
 const DayChar = styled.span`
@@ -22,7 +22,7 @@ const Container = styled.div`
 const Days = (props) => {
   const days = useMemo(() => {
     const symbols = ['s', 'm', 't', 'w', 't', 'f', 's'];
-    return symbols.map((label, index) => <DayChar key={index}>{label}</DayChar>)
+    return symbols.map((label, index) => <DayChar key={index}>{label}</DayChar>);
   });
   return <Container>{days}</Container>;
 };

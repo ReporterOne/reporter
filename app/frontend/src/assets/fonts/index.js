@@ -1,1 +1,1 @@
-export { Rubik } from './Rubik/Rubik-Black.ttf';
+export {Rubik} from './Rubik/Rubik-Black.ttf';
