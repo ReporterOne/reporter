@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "lint:js": "npx eslint app/frontend/ --ext .js --ext .jsx",
+    "lint:py": "flake8 app/backend/;pylint app/backend/",
     "requirements": "npm install; pipenv install --dev",
     "start:frontend": "webpack-dev-server --config webpack.dev.js",
     "start:backend": "cd app/backend/; uvicorn server.main:app --reload --host '0.0.0.0' --port 8443",
