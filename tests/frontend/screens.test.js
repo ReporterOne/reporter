@@ -9,7 +9,7 @@ import {createStore} from 'redux';
 describe('Render all screens', () => {
   test('render main app', () => {
     const {container} = renderWithRedux(<StyledApp/>);
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test('test screen navigation', () => {
@@ -22,20 +22,20 @@ describe('Render all screens', () => {
         users: {me: {english_name: "Elran Shefer"}},
       })),
     });
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
     const menuButton = container.querySelector("[id='openMainmenu']");
     fireEvent.click(menuButton);
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
     const commanderButton = container.querySelector("[id='commanderButton']");
     fireEvent.click(commanderButton);
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
 
     const hierarchyButton = container.querySelector("[id='hierarchyButton']");
     fireEvent.click(hierarchyButton);
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
 
     const operatorButton = container.querySelector("[id='operatorButton']");
     fireEvent.click(operatorButton);
-    expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 });

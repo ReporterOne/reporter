@@ -10,9 +10,9 @@ describe('Test avatar component', () => {
   test('Basic Avatar', () => {
     act(() => {
       const {container, getByRole} = render(<Avatar/>);
-      expect(container).toMatchSnapshot();
+      expect(container.firstChild).toMatchSnapshot();
       fireEvent.click(getByRole('img')); // assert it does nothing on click
-      expect(container).toMatchSnapshot();
+      expect(container.firstChild).toMatchSnapshot();
     });
   });
 
@@ -21,7 +21,7 @@ describe('Test avatar component', () => {
       const {container, getByRole} = render(<Avatar jumping={true}/>);
       fireEvent.click(getByRole('img'));
       jest.runAllTimers();
-      expect(container).toMatchSnapshot();
+      expect(container.firstChild).toMatchSnapshot();
     });
   });
 });
@@ -30,7 +30,7 @@ describe('Test Avatar Details component', () => {
   test('Basic Avatar Details', () => {
     act(() => {
       const {container} = render(<AvatarDetails name="User Name"/>);
-      expect(container).toMatchSnapshot();
+      expect(container.firstChild).toMatchSnapshot();
     });
   });
 });
@@ -39,7 +39,7 @@ describe('Test Avatar Expanded component', () => {
   test('Basic Avatar Expanded', () => {
     act(() => {
       const {container} = render(<AvatarExpanded name="User Name"/>);
-      expect(container).toMatchSnapshot();
+      expect(container.firstChild).toMatchSnapshot();
     });
   });
 });

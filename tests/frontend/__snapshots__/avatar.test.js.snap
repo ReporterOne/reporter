@@ -134,47 +134,45 @@ exports[`Test Avatar Details component Basic Avatar Details 1`] = `
   line-height: 105%;
 }
 
-<div>
+<div
+  class="c0"
+>
   <div
-    class="c0"
+    class="c1"
   >
     <div
-      class="c1"
+      class="c2"
+      size="58"
     >
       <div
-        class="c2"
+        class="c3"
         size="58"
-      >
-        <div
-          class="c3"
-          size="58"
-        />
-        <img
-          class="c4 avatarAutomatic"
-          size="62"
-          src="test-file-stub"
-          style="transform: translateY(0%);"
-        />
-      </div>
-      <div
-        class="c5"
-        offset="5"
+      />
+      <img
+        class="c4 avatarAutomatic"
+        size="62"
+        src="test-file-stub"
+        style="transform: translateY(0%);"
       />
     </div>
     <div
-      class="c6"
+      class="c5"
+      offset="5"
+    />
+  </div>
+  <div
+    class="c6"
+  >
+    <span
+      class="c7"
     >
-      <span
-        class="c7"
-      >
-        User
-      </span>
-      <span
-        class="c7"
-      >
-        Name
-      </span>
-    </div>
+      User
+    </span>
+    <span
+      class="c7"
+    >
+      Name
+    </span>
   </div>
 </div>
 `;
@@ -387,56 +385,54 @@ exports[`Test Avatar Expanded component Basic Avatar Expanded 1`] = `
   display: flex;
 }
 
-<div>
+<div
+  class="c0"
+>
   <div
-    class="c0"
+    class="c1"
+    style="width: 100%;"
   >
     <div
-      class="c1"
-      style="width: 100%;"
+      class="c2"
     >
       <div
-        class="c2"
+        class="c3"
       >
         <div
-          class="c3"
+          class="c4"
+          size="58"
         >
           <div
-            class="c4"
+            class="c5"
             size="58"
-          >
-            <div
-              class="c5"
-              size="58"
-            />
-            <img
-              class="c6 avatarAutomatic"
-              size="62"
-              src="test-file-stub"
-              style="transform: translateY(0%);"
-            />
-          </div>
-          <div
-            class="c7"
-            offset="5"
+          />
+          <img
+            class="c6 avatarAutomatic"
+            size="62"
+            src="test-file-stub"
+            style="transform: translateY(0%);"
           />
         </div>
+        <div
+          class="c7"
+          offset="5"
+        />
       </div>
+    </div>
+    <div
+      class="c8"
+    >
       <div
-        class="c8"
+        class="c9"
       >
         <div
-          class="c9"
+          class="c10"
         >
-          <div
-            class="c10"
-          >
-            User Name
-          </div>
-          <div
-            class="c11"
-          />
+          User Name
         </div>
+        <div
+          class="c11"
+        />
       </div>
     </div>
   </div>
@@ -513,30 +509,28 @@ exports[`Test avatar component Avatar jumping 1`] = `
   background-color: transperant;
 }
 
-<div>
+<div
+  class="c0"
+>
   <div
-    class="c0"
+    class="c1"
+    size="48"
   >
     <div
-      class="c1"
+      class="c2"
       size="48"
-    >
-      <div
-        class="c2"
-        size="48"
-      />
-      <img
-        class="c3 avatarAutomatic"
-        size="52"
-        src="test-file-stub"
-        style="transform: translateY(0%);"
-      />
-    </div>
-    <div
-      class="c4"
-      offset="0"
+    />
+    <img
+      class="c3 avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
     />
   </div>
+  <div
+    class="c4"
+    offset="0"
+  />
 </div>
 `;
 
@@ -610,57 +604,53 @@ exports[`Test avatar component Basic Avatar 1`] = `
   background-color: transperant;
 }
 
-<div>
+<div
+  class="c0"
+>
   <div
-    class="c0"
+    class="c1"
+    size="48"
   >
     <div
-      class="c1"
+      class="c2"
       size="48"
-    >
-      <div
-        class="c2"
-        size="48"
-      />
-      <img
-        class="c3 avatarAutomatic"
-        size="52"
-        src="test-file-stub"
-        style="transform: translateY(0%);"
-      />
-    </div>
-    <div
-      class="c4"
-      offset="0"
+    />
+    <img
+      class="c3 avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
     />
   </div>
+  <div
+    class="c4"
+    offset="0"
+  />
 </div>
 `;
 
 exports[`Test avatar component Basic Avatar 2`] = `
-<div>
+<div
+  class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+>
   <div
-    class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+    class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+    size="48"
   >
     <div
-      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
       size="48"
-    >
-      <div
-        class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
-        size="48"
-      />
-      <img
-        class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
-        size="52"
-        src="test-file-stub"
-        style="transform: translateY(0%);"
-      />
-    </div>
-    <div
-      class="Avatar__Status-sc-10jec1a-5 faAWeY"
-      offset="0"
+    />
+    <img
+      class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
     />
   </div>
+  <div
+    class="Avatar__Status-sc-10jec1a-5 faAWeY"
+    offset="0"
+  />
 </div>
 `;
