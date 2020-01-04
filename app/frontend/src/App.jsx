@@ -20,7 +20,7 @@ import {fetchReasons} from '~/hooks/date_datas';
 import {fetchCurrentUser} from '~/hooks/users';
 import store from './store';
 
-const ProvidedApp = (props) => {
+export const App = (props) => {
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const avatarRef = useRef(null);
 
@@ -60,7 +60,7 @@ const ProvidedApp = (props) => {
         <Route path="/entrance" component={Entrance}/>
         <Route path="/" render={() => (
           <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-            onDragEnd={onDrawerDragEnd}>
+                  onDragEnd={onDrawerDragEnd}>
             <DrawerMenu>
               <Menu avatar={avatar} avatarRef={avatarRef}/>
             </DrawerMenu>
@@ -95,19 +95,25 @@ const ProvidedApp = (props) => {
   );
 };
 
-const App = (props) => {
+export const StyledApp = (props) => {
+  return (
+    <StylesProvider injectFirst>
+      <MUIThemeProvider theme={createMuiTheme(theme)}>
+        <GlobalStyle/>
+        <ThemeProvider theme={theme}>
+          <App/>
+        </ThemeProvider>
+      </MUIThemeProvider>
+    </StylesProvider>
+  );
+};
+
+export const ProvidedApp = (props) => {
   return (
     <Provider store={store}>
-      <StylesProvider injectFirst>
-        <MUIThemeProvider theme={createMuiTheme(theme)}>
-          <GlobalStyle/>
-          <ThemeProvider theme={theme}>
-            <ProvidedApp/>
-          </ThemeProvider>
-        </MUIThemeProvider>
-      </StylesProvider>
+      <StyledApp/>
     </Provider>
   );
 };
 
-export default App;
+export default ProvidedApp;

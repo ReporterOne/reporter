@@ -1,8 +1,6 @@
 import React from 'react';
 import {render, fireEvent, act} from '@testing-library/react';
-import {shallow, mount} from 'enzyme';
-import AttendingButton, {Circle} from '~/components/AttendingButton/AttendingButton';
-import {createBubbledEvent} from './utils/events';
+import AttendingButton from '~/components/AttendingButton/AttendingButton';
 
 
 describe('Test Attending Button', () => {

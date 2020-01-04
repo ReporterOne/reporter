@@ -23,7 +23,7 @@ const PageTitle = styled.h3`
 export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
   return (
     <Container row>
-      <StyledIconButton onClick={onMenuClick} style={{zIndex: 1}}>
+      <StyledIconButton onClick={onMenuClick} style={{zIndex: 1}} id="openMainmenu">
         <SVGIcon src={iconUrl} />
       </StyledIconButton>
       <TitleWrapper>

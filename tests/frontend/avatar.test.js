@@ -5,7 +5,6 @@ import {Avatar} from '~/components/Avatar/Avatar';
 import AvatarDetails from '~/components/Avatar/AvatarDetails';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
 
-jest.useFakeTimers();
 
 describe('Test avatar component', () => {
   test('Basic Avatar', () => {

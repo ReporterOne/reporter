@@ -31,22 +31,22 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} status="here" jumping={true}/>
       <Separator />
-      <Option selected path="/">
+      <Option selected path="/" id="dashboardButton">
         <SVGIcon src={dashboardIconUrl} size={20} />
       </Option>
-      <Option path="/commander">
+      <Option path="/commander" id="commanderButton">
         <SVGIcon src={commanderIconUrl} size={20} />
       </Option>
-      <Option path="/operator">
+      <Option path="/operator" id="operatorButton">
         <SVGIcon src={operatorIconUrl} size={20} />
       </Option>
-      <Option path="/hierarchy">
+      <Option path="/hierarchy" id="hierarchyButton">
         <SVGIcon src={hierarchyIconUrl} size={20} />
       </Option>
       <Spacer />
       <Separator />
       <Container>
-        <Option path="/settings">
+        <Option path="/settings" id="settingsButton">
           <SVGIcon src={settingsIconUrl} size={20} />
         </Option>
       </Container>
