@@ -60,7 +60,7 @@ export const App = (props) => {
         <Route path="/entrance" component={Entrance}/>
         <Route path="/" render={() => (
           <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-                  onDragEnd={onDrawerDragEnd}>
+            onDragEnd={onDrawerDragEnd}>
             <DrawerMenu>
               <Menu avatar={avatar} avatarRef={avatarRef}/>
             </DrawerMenu>
