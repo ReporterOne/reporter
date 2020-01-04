@@ -42,7 +42,7 @@ jobs:
         PYTHONPATH: app/backend/
       run: |
         pip install pytest pytest-cov
-        pytest --cov=app/backend/ --cov-report=xml
+        pytest --cov=app/backend/ --cov-report=xml app/backend
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
