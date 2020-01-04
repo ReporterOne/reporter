@@ -1,14 +1,19 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
+import {Router} from 'react-router-dom';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
-import { render, fireEvent } from '@testing-library/react';
-import { createMemoryHistory } from 'history'
+import {render, fireEvent} from '@testing-library/react';
+import {createMemoryHistory} from 'history'
 
 
 import {mainReducer} from '~/store';
 
-export function renderWithRedux(ui, {initialState, store = createStore(mainReducer, initialState)} = {}, history = createMemoryHistory()) {
+export function renderWithRedux(ui,
+                                {
+                                  initialState,
+                                  store = createStore(mainReducer, initialState),
+                                  history = createMemoryHistory()
+                                } = {}) {
   return {
     ...render(<Router history={history}><Provider store={store}>{ui}</Provider></Router>),
     // adding `store` to the returned utilities to allow us
