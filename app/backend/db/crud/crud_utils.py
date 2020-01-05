@@ -4,3 +4,5 @@ def put_values_if_not_none(db, obj, **kwargs):
             setattr(obj, attr, value)
     
     db.commit()
+    db.refresh(obj)
+    
