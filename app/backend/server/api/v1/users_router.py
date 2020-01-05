@@ -37,12 +37,25 @@ async def delete_user(
 
 @router.get("/{user_id}/commander_id")
 async def get_commander(
-    user_id: int = None,
+    user_id: int,
     db: Session = Depends(get_db),
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ) -> int:
     return crud.get_commander_id(db=db, user_id=user_id)
+
+
+@router.get("/{user_id}/subjects", response_model=List[schemas.User])
+async def get_subjects(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    return crud.get_subjects(
+            db=db, 
+            commander_id=user_id
+        )
 
 
 @router.get("/me", response_model=schemas.User)
@@ -51,15 +64,3 @@ async def get_current_user(
                                           scopes=["personal"])
 ):
     return current_user
-
-
-@router.get("/subjects", response_model=List[schemas.User])
-async def get_subjects(
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
-                                          scopes=["personal"])
-):
-    return crud.get_subjects(
-            db=db, 
-            commander_id=current_user
-        )

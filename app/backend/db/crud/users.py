@@ -33,6 +33,7 @@ def delete_user(
 ):
     user = get_user(db=db, user_id=user_id)
     db.delete(user)
+    db.commit()
 
 
 def get_users(

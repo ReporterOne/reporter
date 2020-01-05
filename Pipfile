@@ -7,7 +7,6 @@ verify_ssl = true
 pycodestyle = "*"
 ipdb = "*"
 autopep8 = "*"
-rope = "*"
 
 [packages]
 fastapi = "*"
