@@ -35,7 +35,7 @@ async def post_dates_status(
 ):
     """Post dates status."""
     return crud.set_new_date_data(
-                db=db, 
+                db=db,
                 start_date=body.start_date,
                 end_date=body.end_date,
                 state=body.state,
@@ -46,16 +46,16 @@ async def post_dates_status(
 
 @router.delete("/")
 async def delete_dates_status(
-    start: date, 
-    end: date = None, 
-    users_id: List[int] = Query([]), 
+    start: date,
+    end: date = None,
+    users_id: List[int] = Query([]),
     db: Session = Depends(get_db)
 ):
     """Delete dates status."""
     crud.delete_users_dates_data(db=db,
-                            start_date=start, 
-                            end_date=end, 
-                            users_id=users_id)
+                                 start_date=start,
+                                 end_date=end,
+                                 users_id=users_id)
 
 @router.put("/", response_model=schemas.RangeDatesResponse)
 async def put_dates_status(
@@ -66,7 +66,7 @@ async def put_dates_status(
 ):
     """Put dates status."""
     return crud.put_data_in_user(
-            db=db, 
+            db=db,
             user_id=body.user_id,
             start_date=body.start_date,
             end_date=body.end_date,
