@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import Avatar from './Avatar.jsx';
 import posed from 'react-pose';
 
-import { Container, shadows } from '~/components/common';
-import AvatarDetails from './AvatarDetails.jsx';
+import {Container} from '~/components/common';
 
 const AvatarWrapper = styled(Container)`
   margin: 0 5px;
   display: inline-flex;
-  opacity: ${({ faded }) => faded ? 0.5 : 1};
+  opacity: ${({faded}) => faded ? 0.5 : 1};
   will-change: opacity;
-  transition: opacity ${({ theme }) => theme.animationsSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity ${({theme}) => theme.animationsSpeed}s 
+              cubic-bezier(0.4, 0, 0.2, 1);
   align-items: center;
 `;
 
@@ -21,17 +21,6 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Background = styled(Container)`
-  background-color: white;
-  height: calc(100% - 11px);
-  margin: 9px 0 2px 0;
-  /* fitting to big avatar! */
-  padding-left: 32px;
-  left: 32px;
-  top: 0;
-  z-index: -1;
-  position: absolute;
-`;
 const AvatarContainer = styled.div`
   position: absolute;
   left: 0;
@@ -43,8 +32,8 @@ const AvatarContainer = styled.div`
 
 const Details = styled.div`
   /* fitting to big avatar! */
-  border-top-right-radius: ${({rounded}) => rounded? 30 : 5}px;
-  border-bottom-right-radius: ${({rounded}) => rounded? 30 : 5}px;
+  border-top-right-radius: ${({rounded}) => rounded ? 30 : 5}px;
+  border-bottom-right-radius: ${({rounded}) => rounded ? 30 : 5}px;
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
   min-width: 25px;
@@ -54,8 +43,8 @@ const Details = styled.div`
   padding: 2px 0;
   padding-left: 64px;
   overflow: hidden;
-  white-space: ${({inline}) => inline ? "pre-wrap" : "nowrap"};
-  width: ${({inline}) => inline ? "100px" : "auto"};
+  white-space: ${({inline}) => inline ? 'pre-wrap' : 'nowrap'};
+  width: ${({inline}) => inline ? '100px' : 'auto'};
   display: flex;
   flex-direction: column;
 `;
@@ -81,22 +70,25 @@ const Reason = styled.div`
 
 const PosedWrapper = posed(Wrapper)({
   enter: {
-    width: "100%",
-    delay: ({ innerDelay }) => innerDelay * 100
+    width: '100%',
+    delay: ({innerDelay}) => innerDelay * 100,
   },
   exit: {
-    width: "0%",
-    delay: ({ innerDelay }) => innerDelay * 100
-  }
+    width: '0%',
+    delay: ({innerDelay}) => innerDelay * 100,
+  },
 });
 
 
-export const AvatarExpanded = ({ name, details, onClick, onAvatarTouchStart, delay = 0, rounded = false, inline = false, ...props }) => {
+export const AvatarExpanded = (
+    {
+      name, details, onClick, onAvatarTouchStart, delay = 0,
+      rounded = false, inline = false, ...props
+    },
+) => {
   return (
     <AvatarWrapper onClick={onClick}>
       <PosedWrapper innerDelay={delay}>
-        {/* <Background stretched>
-      </Background> */}
         <AvatarContainer onTouchStart={onAvatarTouchStart}>
           <Avatar squared type="big" {...props} />
         </AvatarContainer>
@@ -109,6 +101,6 @@ export const AvatarExpanded = ({ name, details, onClick, onAvatarTouchStart, del
       </PosedWrapper>
     </AvatarWrapper>
   );
-}
+};
 
 export default AvatarExpanded;

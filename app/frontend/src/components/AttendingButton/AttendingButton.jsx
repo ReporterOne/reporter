@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { AutoSizer } from 'react-virtualized';
+import React, {useState, useCallback} from 'react';
+import {AutoSizer} from 'react-virtualized';
 
 import styled from 'styled-components';
 import Arrows from '~/assets/Arrows.svg';
@@ -11,7 +11,7 @@ import {
 } from '~/components/common';
 
 import posed from 'react-pose';
-import {motion, useAnimation} from "framer-motion";
+import {motion, useAnimation} from 'framer-motion';
 
 const ContainerHeight = 60;
 const rectangleMargin = 15;
@@ -21,19 +21,19 @@ const circleDiameter = ContainerHeight - outlinePadding * 2;
 
 const PosedRRoundedRectangle = posed.div({
   notHere: {
-    backgroundColor: theme.notApproved
+    backgroundColor: theme.notApproved,
   },
   here: {
-    backgroundColor: theme.approved
+    backgroundColor: theme.approved,
   },
   notDecided: {
-    backgroundColor: theme.main
+    backgroundColor: theme.main,
   },
 });
 
 const PosedArrowsContainer = posed.div({
-  decided: { scale: 0 },
-  notDecided: { scale: 1 }
+  decided: {scale: 0},
+  notDecided: {scale: 1},
 });
 
 const Container = styled.div`
@@ -70,7 +70,7 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-const Circle = styled(motion.div)`
+export const Circle = styled(motion.div)`
   height: ${circleDiameter}px;
   width: ${circleDiameter}px;
   background-color: #ffffff;
@@ -112,15 +112,15 @@ const AttendenceValue = styled.span`
 
 
 const attendenceStatus = {
-  here: "Attending",
-  notHere: "Missing",
-  notDecided: ""
+  here: 'Attending',
+  notHere: 'Missing',
+  notDecided: '',
 };
 const ANIMATION_TIME = 0.5;
 const DEACCELERATION = -0.5;
 
-const AttendingButton = ({missingReason, onChange}) => {
-  const [pose, changePose] = useState("notDecided");
+const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) => {
+  const [pose, changePose] = useState(initialState);
   const controls = useAnimation();
 
   const handleChange = useCallback((state) => {
@@ -133,11 +133,10 @@ const AttendingButton = ({missingReason, onChange}) => {
   const onDragEnd = useCallback((containerWidth) => (event, info) => {
     const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*DEACCELERATION*0.5;
 
-    let state = "notDecided";
+    let state = 'notDecided';
     if (endPos >= ((containerWidth - circleDiameter) * 0.5) + 70) {
       state = 'here';
-    }
-    else if (endPos <= ((containerWidth - circleDiameter) * 0.5) - 70) {
+    } else if (endPos <= ((containerWidth - circleDiameter) * 0.5) - 70) {
       state = 'notHere';
     }
     controls.start(state);
@@ -149,42 +148,42 @@ const AttendingButton = ({missingReason, onChange}) => {
     <Container>
       <OuterContainer>
         <AutoSizer>
-          {({ height, width }) => (
-              <InnerContainer style={{ height, width }}>
-                <RoundedRectangle pose={pose} style={{ height, width }}>
-                  <Spacer />
-                  <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
-                    <ArrowsLeft src={Arrows} />
-                  </ArrowsContainer>
-                  <Spacer />
-                  <AttendenceValue>
-                    {pose === "notHere" ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
-                  </AttendenceValue>
-                  <Spacer />
-                  <ArrowsContainer pose={pose === "notDecided" ? "notDecided" : "decided"}>
-                    <ArrowsRight src={Arrows} />
-                  </ArrowsContainer>
-                  <Spacer />
-                </RoundedRectangle>
-                <Circle key={width}
-                        drag={"x"} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding }}
-                        variants={{
-                          notHere: {x: outlinePadding},
-                          here: {x: width - circleDiameter - outlinePadding},
-                          notDecided: {x: ((width - circleDiameter) * 0.5)}
-                        }}
-                        initial={pose}
-                        dragElastic={false}
-                        animate={controls}
-                        onDragEnd={onDragEnd(width)}
-                />
-              </InnerContainer>
-            )
+          {({height, width}) => (
+            <InnerContainer style={{height, width}}>
+              <RoundedRectangle pose={pose} style={{height, width}}>
+                <Spacer />
+                <ArrowsContainer pose={pose === 'notDecided' ? 'notDecided' : 'decided'}>
+                  <ArrowsLeft src={Arrows} />
+                </ArrowsContainer>
+                <Spacer />
+                <AttendenceValue>
+                  {pose === 'notHere' ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
+                </AttendenceValue>
+                <Spacer />
+                <ArrowsContainer pose={pose === 'notDecided' ? 'notDecided' : 'decided'}>
+                  <ArrowsRight src={Arrows} />
+                </ArrowsContainer>
+                <Spacer />
+              </RoundedRectangle>
+              <Circle key={width}
+                drag={'x'} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding}}
+                variants={{
+                  notHere: {x: outlinePadding},
+                  here: {x: width - circleDiameter - outlinePadding},
+                  notDecided: {x: ((width - circleDiameter) * 0.5)},
+                }}
+                initial={pose}
+                dragElastic={false}
+                animate={controls}
+                onDragEnd={onDragEnd(width)}
+              />
+            </InnerContainer>
+          )
           }
         </AutoSizer>
       </OuterContainer>
     </Container>
   );
-}
+};
 
 export default AttendingButton;

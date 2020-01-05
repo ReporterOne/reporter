@@ -8,7 +8,7 @@ import commanderIconUrl from '~/assets/whistle.svg';
 import operatorIconUrl from '~/assets/signature.svg';
 import hierarchyIconUrl from '~/assets/hierarchy.svg';
 import settingsIconUrl from '~/assets/settings.svg';
-import { Container, theme, SVGIcon } from '~/components/common';
+import {Container, SVGIcon} from '~/components/common';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -26,27 +26,27 @@ const Spacer = styled.div`
   flex: 1;
 `;
 
-export const Menu = React.memo(({ avatar, avatarRef }) => {
+export const Menu = React.memo(({avatar, avatarRef}) => {
   return (
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} status="here" jumping={true}/>
       <Separator />
-      <Option selected path="/">
+      <Option selected path="/" id="dashboardButton">
         <SVGIcon src={dashboardIconUrl} size={20} />
       </Option>
-      <Option path="/commander">
+      <Option path="/commander" id="commanderButton">
         <SVGIcon src={commanderIconUrl} size={20} />
       </Option>
-      <Option path="/operator">
+      <Option path="/operator" id="operatorButton">
         <SVGIcon src={operatorIconUrl} size={20} />
       </Option>
-      <Option path="/hierarchy">
+      <Option path="/hierarchy" id="hierarchyButton">
         <SVGIcon src={hierarchyIconUrl} size={20} />
       </Option>
       <Spacer />
       <Separator />
       <Container>
-        <Option path="/settings">
+        <Option path="/settings" id="settingsButton">
           <SVGIcon src={settingsIconUrl} size={20} />
         </Option>
       </Container>
@@ -54,5 +54,7 @@ export const Menu = React.memo(({ avatar, avatarRef }) => {
   );
 }, (props, prevProps) => _.isEqual(props, prevProps));
 
+
+Menu.displayName = 'Menu';
 
 export default Menu;

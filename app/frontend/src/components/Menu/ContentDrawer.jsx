@@ -17,7 +17,7 @@ export const DrawerContent = (props) => {
     <Content stretched background={theme.main} flex="none">
       <Overlay isOpen={isOpen} onClick={toggleDrawer}/>
       <MenuHeader onMenuClick={toggleDrawer}
-                  titleComponent={props.titleComponent}/>
+        titleComponent={props.titleComponent}/>
       {props.children}
     </Content>
   );

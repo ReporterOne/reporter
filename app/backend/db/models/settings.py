@@ -1,4 +1,4 @@
-from sqlalchemy.dialects.postgresql import TIME
+"""Settings model in db."""
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Enum, String, Column, Integer, ForeignKey
 
@@ -23,7 +23,8 @@ class MadorSettings(Base):
     """Mador Settings table for the application."""
     __tablename__ = 'mador_settings'
     id = Column(Integer, primary_key=True)
-    mador_name = Column(String, ForeignKey('madors.name', ondelete='CASCADE'), index=True)
+    mador_name = Column(String, ForeignKey('madors.name', ondelete='CASCADE'),
+                        index=True)
     mador = relationship('Mador', backref=backref('settings', uselist=False))
     key = Column(String)
     value = Column(String)

@@ -7,6 +7,10 @@ verify_ssl = true
 pycodestyle = "*"
 ipdb = "*"
 autopep8 = "*"
+flake8 = "*"
+pylint = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [packages]
 fastapi = "*"
@@ -16,13 +20,13 @@ jinja2 = "*"
 aiofiles = "*"
 pylint = "*"
 sqlalchemy = "*"
-psycopg2 = "*"
 alembic = "*"
 faker = "*"
 passlib = {extras = ["bcrypt"],version = "*"}
 pyjwt = "*"
 python-multipart = "*"
 gunicorn = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"

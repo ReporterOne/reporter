@@ -1,1 +1,1 @@
-export { default as default } from "./Hierarchy.jsx"
+export {default as default} from './Hierarchy.jsx';

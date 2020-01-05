@@ -1,0 +1,656 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Avatar Details component Basic Avatar Details 1`] = `
+.c1 {
+  position: relative;
+  display: inline-block;
+}
+
+.c4 {
+  width: 30px;
+  height: 30px;
+  width: 62px;
+  height: 62px;
+  position: absolute;
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  bottom: 0;
+  left: -2px;
+  margin: auto;
+  will-change: transform;
+}
+
+.c4:not(.avatarManual) {
+  -webkit-transition: -webkit-transform s cubic-bezier(0.4,0,0.2,1);
+  -webkit-transition: transform s cubic-bezier(0.4,0,0.2,1);
+  transition: transform s cubic-bezier(0.4,0,0.2,1);
+}
+
+.c3 {
+  width: 58px;
+  height: 58px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+.c2 {
+  width: 58px;
+  height: 58px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  padding-top: 4px;
+}
+
+.c5 {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: transperant;
+}
+
+.c0 {
+  position: relative;
+  overflow-y: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 5px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  opacity: 1;
+  will-change: opacity;
+  -webkit-transition: opacity s cubic-bezier(0.4,0,0.2,1);
+  transition: opacity s cubic-bezier(0.4,0,0.2,1);
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c6 {
+  position: relative;
+  overflow-y: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c7 {
+  color: white;
+  font-weight: 100;
+  font-size: 0.9rem;
+  line-height: 105%;
+}
+
+<div
+  class="c0"
+>
+  <div
+    class="c1"
+  >
+    <div
+      class="c2"
+      size="58"
+    >
+      <div
+        class="c3"
+        size="58"
+      />
+      <img
+        class="c4 avatarAutomatic"
+        size="62"
+        src="test-file-stub"
+        style="transform: translateY(0%);"
+      />
+    </div>
+    <div
+      class="c5"
+      offset="5"
+    />
+  </div>
+  <div
+    class="c6"
+  >
+    <span
+      class="c7"
+    >
+      User
+    </span>
+    <span
+      class="c7"
+    >
+      Name
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Test Avatar Expanded component Basic Avatar Expanded 1`] = `
+.c3 {
+  position: relative;
+  display: inline-block;
+}
+
+.c6 {
+  width: 30px;
+  height: 30px;
+  width: 62px;
+  height: 62px;
+  position: absolute;
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  bottom: 0;
+  left: -2px;
+  margin: auto;
+  will-change: transform;
+}
+
+.c6:not(.avatarManual) {
+  -webkit-transition: -webkit-transform s cubic-bezier(0.4,0,0.2,1);
+  -webkit-transition: transform s cubic-bezier(0.4,0,0.2,1);
+  transition: transform s cubic-bezier(0.4,0,0.2,1);
+}
+
+.c5 {
+  width: 58px;
+  height: 58px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+.c4 {
+  width: 58px;
+  height: 58px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 0;
+  padding-top: 4px;
+}
+
+.c7 {
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: transperant;
+}
+
+.c0 {
+  position: relative;
+  overflow-y: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 5px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  opacity: 1;
+  will-change: opacity;
+  -webkit-transition: opacity s cubic-bezier(0.4,0,0.2,1);
+  transition: opacity s cubic-bezier(0.4,0,0.2,1);
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 {
+  position: relative;
+  margin: auto;
+  width: 100%;
+}
+
+.c2 {
+  position: absolute;
+  left: 0;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.c8 {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  min-width: 25px;
+  background-color: white;
+  height: 54px;
+  margin: 6px 5px 0px 5px;
+  padding: 2px 0;
+  padding-left: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+  width: auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  position: relative;
+  overflow-y: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 1 1 0;
+  -ms-flex: 1 1 0;
+  flex: 1 1 0;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c10 {
+  position: relative;
+  overflow-y: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: transparent;
+  min-width: 0;
+  min-height: 0;
+  color: gray;
+  font-weight: 600;
+  padding-right: 10px;
+}
+
+.c11 {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 1.8rem;
+  line-height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+<div
+  class="c0"
+>
+  <div
+    class="c1"
+    style="width: 100%;"
+  >
+    <div
+      class="c2"
+    >
+      <div
+        class="c3"
+      >
+        <div
+          class="c4"
+          size="58"
+        >
+          <div
+            class="c5"
+            size="58"
+          />
+          <img
+            class="c6 avatarAutomatic"
+            size="62"
+            src="test-file-stub"
+            style="transform: translateY(0%);"
+          />
+        </div>
+        <div
+          class="c7"
+          offset="5"
+        />
+      </div>
+    </div>
+    <div
+      class="c8"
+    >
+      <div
+        class="c9"
+      >
+        <div
+          class="c10"
+        >
+          User Name
+        </div>
+        <div
+          class="c11"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test avatar component Avatar jumping 1`] = `
+.c0 {
+  position: relative;
+  display: inline-block;
+}
+
+.c3 {
+  width: 30px;
+  height: 30px;
+  width: 52px;
+  height: 52px;
+  position: absolute;
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  bottom: 0;
+  left: -2px;
+  margin: auto;
+  will-change: transform;
+}
+
+.c3:not(.avatarManual) {
+  -webkit-transition: -webkit-transform s cubic-bezier(0.4,0,0.2,1);
+  -webkit-transition: transform s cubic-bezier(0.4,0,0.2,1);
+  transition: transform s cubic-bezier(0.4,0,0.2,1);
+}
+
+.c2 {
+  width: 48px;
+  height: 48px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+.c1 {
+  width: 48px;
+  height: 48px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  padding-top: 4px;
+}
+
+.c4 {
+  position: absolute;
+  bottom: 0;
+  right: 0px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: transperant;
+}
+
+<div
+  class="c0"
+>
+  <div
+    class="c1"
+    size="48"
+  >
+    <div
+      class="c2"
+      size="48"
+    />
+    <img
+      class="c3 avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
+    />
+  </div>
+  <div
+    class="c4"
+    offset="0"
+  />
+</div>
+`;
+
+exports[`Test avatar component Basic Avatar 1`] = `
+.c0 {
+  position: relative;
+  display: inline-block;
+}
+
+.c3 {
+  width: 30px;
+  height: 30px;
+  width: 52px;
+  height: 52px;
+  position: absolute;
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  bottom: 0;
+  left: -2px;
+  margin: auto;
+  will-change: transform;
+}
+
+.c3:not(.avatarManual) {
+  -webkit-transition: -webkit-transform s cubic-bezier(0.4,0,0.2,1);
+  -webkit-transition: transform s cubic-bezier(0.4,0,0.2,1);
+  transition: transform s cubic-bezier(0.4,0,0.2,1);
+}
+
+.c2 {
+  width: 48px;
+  height: 48px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+.c1 {
+  width: 48px;
+  height: 48px;
+  margin: 2px;
+  -webkit-mask-image: radial-gradient(white,black);
+  mask-image: radial-gradient(white,black);
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  padding-top: 4px;
+}
+
+.c4 {
+  position: absolute;
+  bottom: 0;
+  right: 0px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: transperant;
+}
+
+<div
+  class="c0"
+>
+  <div
+    class="c1"
+    size="48"
+  >
+    <div
+      class="c2"
+      size="48"
+    />
+    <img
+      class="c3 avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
+    />
+  </div>
+  <div
+    class="c4"
+    offset="0"
+  />
+</div>
+`;
+
+exports[`Test avatar component Basic Avatar 2`] = `
+<div
+  class="Avatar__AvatarContainer-sc-10jec1a-0 cRADSB"
+>
+  <div
+    class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundBottomHalf-sc-10jec1a-4 joExKC"
+    size="48"
+  >
+    <div
+      class="Avatar__Background-sc-10jec1a-2 Avatar__BackgroundTopHalf-sc-10jec1a-3 eOlcQZ"
+      size="48"
+    />
+    <img
+      class="common__Icon-tzqv5k-0 Avatar__AvatarImage-sc-10jec1a-1 dRIMju avatarAutomatic"
+      size="52"
+      src="test-file-stub"
+      style="transform: translateY(0%);"
+    />
+  </div>
+  <div
+    class="Avatar__Status-sc-10jec1a-5 faAWeY"
+    offset="0"
+  />
+</div>
+`;

@@ -1,3 +1,4 @@
+# pylint: skip-file
 import os
 import json
 from contextlib import contextmanager
@@ -8,7 +9,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
 from db import models
-
 
 USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
 PASSWORD = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
@@ -28,7 +28,7 @@ def get_db():
     try:
         yield db
 
-    except:
+    except:  # noqa
         db.rollback()
 
     finally:
@@ -41,12 +41,13 @@ def transaction():
     try:
         yield s
 
-    except:
+    except:  # noqa
         s.rollback()
         raise
 
     finally:
         s.close()
+
 
 def recreate_database():
     with transaction() as s:
@@ -61,9 +62,10 @@ def recreate_database():
 
         homeland = models.Mador(name='HomeLand')
         homeland_settings = models.MadorSettings(
-            mador=homeland, key='default_reminder_time', value='09:00', type='time')
+            mador=homeland, key='default_reminder_time', value='09:00',
+            type='time')
 
-        s.add_all([pie, pie_settings, homeland, homeland_settings])        
+        s.add_all([pie, pie_settings, homeland, homeland_settings])
 
         # Creat Permissions:
         admin_permission = models.Permission(type="admin")
@@ -71,7 +73,7 @@ def recreate_database():
         commander_permission = models.Permission(type="commander")
         user_permission = models.Permission(type="user")
 
-        s.add_all([admin_permission, operator_permission, 
+        s.add_all([admin_permission, operator_permission,
                    commander_permission, user_permission])
         s.commit()
 
@@ -79,12 +81,14 @@ def recreate_database():
         with open("./app/backend/utils/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
-        s.add_all([models.date_datas.Reason(name=reason) for reason in reasons.values()])
+        s.add_all([models.date_datas.Reason(name=reason) for reason in
+                   reasons.values()])
 
         # Create Users:
         elran = models.User(english_name='Elran Shefer', username='shobe',
                             password=pwd_context.hash('shobe12345678'),
-                            permissions=[user_permission, commander_permission, admin_permission])
+                            permissions=[user_permission, commander_permission,
+                                         admin_permission])
         tugy = models.User(english_name='Michael Tugy', username='tugmica',
                            password=pwd_context.hash('tuguy12345678'),
                            permissions=[user_permission, commander_permission])
@@ -93,7 +97,7 @@ def recreate_database():
                            permissions=[user_permission, operator_permission])
         ido = models.User(english_name='Ido Azolay', username='ado',
                           password=pwd_context.hash('Ido12345678'),
-                           permissions=[user_permission, operator_permission])
+                          permissions=[user_permission, operator_permission])
 
         # Create Randome Users:
         num_of_users = 20
@@ -101,7 +105,9 @@ def recreate_database():
         fake = Faker(['en_US'])
         for _ in range(num_of_users):
             full_name = fake.name()
-            users.append(models.User(english_name=full_name, username=full_name.replace(" ", ""), password="Password1!"))
+            users.append(models.User(english_name=full_name,
+                                     username=full_name.replace(" ", ""),
+                                     password="Password1!"))
 
         users += [elran, tugy, ido, domb]
 

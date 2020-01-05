@@ -1,5 +1,5 @@
-import {updateLogin} from "~/actions/general";
-import AuthService, {PermissionsError} from "~/services/auth";
+import {updateLogin} from '~/actions/general';
+import AuthService, {PermissionsError} from '~/services/auth';
 
 export const logoutIfNoPermission = async (callback, dispatch) => {
   try {

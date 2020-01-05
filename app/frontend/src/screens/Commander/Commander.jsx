@@ -1,13 +1,12 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
-import { Textfit } from 'react-textfit';
 
-import { Container, RoundedContainer, theme, FadeInContainer } from '~/components/common';
+import {Container, RoundedContainer, theme, FadeInContainer} from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import {users} from '~/utils';
-import ReasonsDialog from "~/dialogs/Reasons";
+import ReasonsDialog from '~/dialogs/Reasons';
 
 const Header = styled(Container)`
   padding: 0 0 30px 0;
@@ -40,7 +39,7 @@ const SubjectDrawer = styled(Container)`
   height: 120px;
   flex: unset;
   justify-content: center;
-  background-color: ${({ theme }) => theme.drawer};
+  background-color: ${({theme}) => theme.drawer};
   overflow: hidden;
   position: relative;
 `;
@@ -73,7 +72,7 @@ export const Commander = React.memo((props) => {
   });
 
   const handleOnChange = useCallback((state) => {
-    if(state === "notHere") {
+    if (state === 'notHere') {
       changeOpenDialog(true);
     } else {
       changeSelectedValue(null);
@@ -93,8 +92,7 @@ export const Commander = React.memo((props) => {
           {
             selectedSoldier ?
               // TODO: change selectedSoldier.name to selectedSoldier.id when hierarchy get pushed!
-              <AttendingButton key={selectedSoldier.name} missingReason={selectedValue} onChange={handleOnChange}/>
-              :
+              <AttendingButton key={selectedSoldier.name} missingReason={selectedValue} onChange={handleOnChange}/> :
               <WelcomeMessage>
                 <HeaderWelcome>Hello,</HeaderWelcome>
                 <HeaderName>Commander.</HeaderName>
@@ -111,13 +109,15 @@ export const Commander = React.memo((props) => {
             {users.map((user, index) => (
               <AvatarDetails
                 key={index}
-                onClick={() => { handleSelectedSoldier( selectedSoldier !== user ? user : null) }}
+                onClick={() => {
+                  handleSelectedSoldier( selectedSoldier !== user ? user : null);
+                }}
                 name={user.name}
                 isFaded={selectedSoldier && user !== selectedSoldier}
-                kind={user.avatar.kind} 
+                kind={user.avatar.kind}
                 status={user.status}
                 jumping={true}
-                />
+              />
             ))}
           </AvatarsContainer>
         </AvatarsWrapper>
@@ -126,5 +126,7 @@ export const Commander = React.memo((props) => {
     </Container>
   );
 });
+
+Commander.displayName = 'Commander';
 
 export default Commander;
