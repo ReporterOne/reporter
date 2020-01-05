@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {useSelector} from "react-redux";
+import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 
 import List from '@material-ui/core/List';
@@ -15,18 +15,18 @@ const RTLListItemText = styled(ListItemText)`
 
 
 export const ReasonsDialog = ({onClose, selectedValue, open}) => {
-  const reasons = useSelector(state => state.general.reasons);
+  const reasons = useSelector((state) => state.general.reasons);
   const handleClose = useCallback(() => onClose(selectedValue || reasons[0]), [onClose, selectedValue]);
   const handleListItemClick = useCallback((item) => onClose(item), [onClose]);
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title"
-            open={open}>
+      open={open}>
       <DialogTitle id="simple-dialog-title">Set Missing Reason</DialogTitle>
       <List>
-        {reasons.map(reason => (
+        {reasons.map((reason) => (
           <ListItem button onClick={() => handleListItemClick(reason)}
-                    key={reason}>
+            key={reason}>
             <RTLListItemText primary={reason}/>
           </ListItem>
         ))}

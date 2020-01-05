@@ -1,5 +1,4 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {Icon, theme} from '~/components/common';
 
@@ -17,24 +16,24 @@ const AvatarContainer = styled.div`
 `;
 
 const AvatarImage = styled(Icon)`
-  width: ${({ size = 60 }) => size}px;
-  height: ${({ size = 60 }) => size}px;
+  width: ${({size = 60}) => size}px;
+  height: ${({size = 60}) => size}px;
   position: absolute;
   transform: translateY(0);
   bottom: 0;
-  left: -${({ size, background_size }) => (background_size > size) ? 0 : Math.round((size - background_size) / 2)}px;
+  left: -${({size, backgroundSize}) => (backgroundSize > size) ? 0 : Math.round((size - backgroundSize) / 2)}px;
   margin: auto;
 
   will-change: transform;
   &:not(.avatarManual) {
-    transition: transform ${props => props.theme.avatarSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform ${(props) => props.theme.avatarSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 
 const Background = styled.div`
-  width: ${({ size = 48 }) => size}px;
-  height: ${({ size = 48 }) => size}px;
-  margin: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size) / 2)}px;
+  width: ${({size = 48}) => size}px;
+  height: ${({size = 48}) => size}px;
+  margin: ${({size = 48, avatarSize = 50}) => Math.round((avatarSize - size) / 2)}px;
   /* border-radius: 50%; */
   mask-image: radial-gradient(white, black);
   overflow: hidden;
@@ -44,7 +43,7 @@ const Background = styled.div`
 `;
 
 const BackgroundTopHalf = styled(Background)`
-  background-color: ${({ color = 'white' }) => color};
+  background-color: ${({color = 'white'}) => color};
   border-top-left-radius: 50%;
   border-top-right-radius: 50%;
   bottom: 0;
@@ -54,17 +53,16 @@ const BackgroundTopHalf = styled(Background)`
 const BackgroundBottomHalf = styled(Background)`
   /* clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%); */
   border-bottom-left-radius: 50%;
-  border-bottom-right-radius: ${({squared}) => squared ? 0 : "50%"};
-  padding-top: ${({ size = 48, avatarSize = 50 }) => Math.round((avatarSize - size))}px;
+  border-bottom-right-radius: ${({squared}) => squared ? 0 : '50%'};
+  padding-top: ${({size = 48, avatarSize = 50}) => Math.round((avatarSize - size))}px;
 `;
 
 
 const statusColors = {
-  here: "#22b573",
-  not_here: "#f15a24",
-  not_answered: "#a0a0a0"
-}
-
+  here: '#22b573',
+  not_here: '#f15a24',
+  not_answered: '#a0a0a0',
+};
 
 
 const Status = styled.div`
@@ -74,7 +72,7 @@ const Status = styled.div`
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background-color: ${({status}) => status ? statusColors[status] : "transperant"};
+  background-color: ${({status}) => status ? statusColors[status] : 'transperant'};
 `;
 
 
@@ -88,34 +86,39 @@ const avatarsAvailable = [
 const sized = {
   normal: {
     avatarSize: 52,
-    background_size: 48,
-    statusOffset: 0
+    backgroundSize: 48,
+    statusOffset: 0,
   },
   small: {
     avatarSize: 42,
-    background_size: 38,
-    statusOffset: 0
+    backgroundSize: 38,
+    statusOffset: 0,
   },
   smaller: {
     avatarSize: 32,
-    background_size: 28,
-    statusOffset: 0
+    backgroundSize: 28,
+    statusOffset: 0,
   },
   big: {
     avatarSize: 62,
-    background_size: 58,
-    statusOffset: 5
+    backgroundSize: 58,
+    statusOffset: 5,
   },
   bigger: {
     avatarSize: 72,
-    background_size: 68,
-    statusOffset: 7
-  }
+    backgroundSize: 68,
+    statusOffset: 7,
+  },
 };
 
 const JUMPING_AMOUNT = 10;
 
-export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false, innerRef = undefined, status = undefined, jumping=false, squared = false, ...props }) => {
+export const Avatar = (
+    {
+      type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false,
+      innerRef = undefined, status = undefined, jumping = false, squared = false, ...props
+    },
+) => {
   const style = useMemo(() => sized[type], [type]);
   const [isJumping, setIsJumping] = useState(false);
 
@@ -126,26 +129,27 @@ export const Avatar = ({ type = 'normal', kind = 8, background = 'white', appear
         setIsJumping(false);
       }, theme.animationsSpeed * 1000);
     }
-
   }, [jumping, isJumping, setIsJumping]);
 
   return (
     <AvatarContainer>
-      <BackgroundBottomHalf avatarSize={style.avatarSize} size={style.background_size} squared={squared}>
-        <BackgroundTopHalf size={style.background_size} avatarSize={style.avatarSize} />
+      <BackgroundBottomHalf avatarSize={style.avatarSize}
+        size={style.backgroundSize} squared={squared}>
+        <BackgroundTopHalf size={style.backgroundSize}
+          avatarSize={style.avatarSize}/>
         <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
           ref={innerRef}
-          background_size={style.background_size}
+          backgroundSize={style.backgroundSize}
           className={manual ? 'avatarManual' : 'avatarAutomatic'}
           onClick={handleClick}
           style={{
             transform: `translateY(${isJumping ? (100 - appearing) + JUMPING_AMOUNT : (100 - appearing)}%)`,
-          }} />
+          }}/>
       </BackgroundBottomHalf>
-      <Status status={status} offset={style.statusOffset} />
+      <Status status={status} offset={style.statusOffset}/>
     </AvatarContainer>
   );
-}
+};
 
 
 export default Avatar;

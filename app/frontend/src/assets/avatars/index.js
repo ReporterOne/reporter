@@ -44,9 +44,8 @@ import Av35 from '~/assets/avatars/av35.svg';
 import Av36 from '~/assets/avatars/av36.svg';
 import Av37 from '~/assets/avatars/av37.svg';
 
-
 export {
-  Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8, 
+  Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
   Av1, Av2, Av3, Av4, Av5, Av6, Av7, Av8, Av9, Av10, Av11, Av12, Av13, Av14,
   Av15, Av16, Av17, Av18, Av19, Av20, Av21, Av22, Av23, Av24, Av25, Av26, Av27,
   Av28, Av29, Av30, Av31, Av32, Av33, Av34, Av35, Av36, Av37,

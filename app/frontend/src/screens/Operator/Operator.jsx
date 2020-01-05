@@ -1,13 +1,13 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
 import posed, {PoseGroup} from 'react-pose';
 import {HERE, NOT_ANSWERED, NOT_HERE, users} from '~/utils';
 
-import { Container } from '~/components/common';
+import {Container} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails';
-import AvatarExpanded from "~/components/Avatar/AvatarExpanded";
-import Calender from "~/components/Calendar";
-import { motion, useAnimation } from "framer-motion";
+import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
+import Calender from '~/components/Calendar';
+import {motion, useAnimation} from 'framer-motion';
 
 
 const CALENDAR_HEIGHT = 460;
@@ -58,11 +58,11 @@ const TheRest = styled.div`
 const AnimatedReason = posed(Container)({
   enter: {
     delay: ({index}) => 100 * index,
-    opacity: 1
+    opacity: 1,
   },
   exit: {
-    opacity: 0
-  }
+    opacity: 0,
+  },
 });
 
 export const Operator = React.memo((props) => {
@@ -77,9 +77,9 @@ export const Operator = React.memo((props) => {
     const shouldClose =
       info.velocity.y > 20 || (info.velocity.y >= 0 && info.point.y > 200);
     if (shouldClose) {
-      controls.start("hidden");
+      controls.start('hidden');
     } else {
-      controls.start("visible");
+      controls.start('visible');
     }
   });
 
@@ -89,11 +89,11 @@ export const Operator = React.memo((props) => {
         <Missing>
           <PoseGroup animateOnMount={true}>
             {
-              users.filter(user => user.status === NOT_HERE).map((user, index) => (
+              users.filter((user) => user.status === NOT_HERE).map((user, index) => (
                 <AnimatedReason index={animationIndex++} key={index}>
                   <AvatarExpanded kind={user.avatar.kind} name={user.name}
-                                  delay={animationIndex} details={user.reason}
-                                  status={user.status}/>
+                    delay={animationIndex} details={user.reason}
+                    status={user.status}/>
                 </AnimatedReason>
               ))
             }
@@ -102,14 +102,14 @@ export const Operator = React.memo((props) => {
         <TheRest row>
           <PoseGroup animateOnMount={true}>
             {
-              users.filter(user => user.status !== NOT_HERE).sort((user1, user2) => {
+              users.filter((user) => user.status !== NOT_HERE).sort((user1, user2) => {
                 if (user1.status === user2.status) return 0;
                 if (user1.status === HERE && user2.status === NOT_ANSWERED) return 1;
                 if (user2.status === HERE && user1.status === NOT_ANSWERED) return -1;
               }).map((user, index) => (
                 <AnimatedReason index={animationIndex++} key={index}>
                   <AvatarDetails key={index} kind={user.avatar.kind}
-                                 name={user.name} status={user.status}/>
+                    name={user.name} status={user.status}/>
                 </AnimatedReason>
               ))
             }
@@ -120,11 +120,11 @@ export const Operator = React.memo((props) => {
         drag={drag}
         variants={{
           visible: {y: 0},
-          hidden: {y: CALENDAR_HEIGHT}
+          hidden: {y: CALENDAR_HEIGHT},
         }}
         dragConstraints={{
           top: 0,
-          bottom: CALENDAR_HEIGHT
+          bottom: CALENDAR_HEIGHT,
         }}
         initial="hidden"
         animate={controls}
@@ -138,5 +138,7 @@ export const Operator = React.memo((props) => {
     </PageContainer>
   );
 });
+
+Operator.displayName = 'Operator';
 
 export default Operator;

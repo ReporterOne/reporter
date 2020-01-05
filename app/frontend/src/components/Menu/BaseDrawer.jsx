@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState, useCallback} from 'react';
 import styled from 'styled-components';
-import { Container } from '~/components/common';
+import {Container} from '~/components/common';
 import Draggable from 'react-draggable';
 
 
@@ -13,19 +13,24 @@ const openDrawer = 0;
 const Body = styled(Container)`
   will-change: transform;
   &:not(.react-draggable-dragging) {
-    transition: transform ${props => props.theme.drawerSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform ${(props) => props.theme.drawerSpeed}s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 
 
-export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onDragStart = undefined, onToggle = undefined}) => {
+export const Drawer = (
+    {
+      children, onDrag = undefined, onDragEnd = undefined,
+      onDragStart = undefined, onToggle = undefined,
+    },
+) => {
   const [drawer, changeDrawer] = useState({
     isOpen: false,
     pose: 'close',
     pageTitle: '',
     translateX: closedDrawer,
     drawerWidth: drawerWidth,
-    position: { x: 0, y: 0 }
+    position: {x: 0, y: 0},
   });
 
   const toggleDrawer = useCallback(() => {
@@ -33,7 +38,7 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
       ...drawer,
       isOpen: !drawer.isOpen,
       transformX: !drawer.isOpen ? openDrawer : closedDrawer,
-      position: { x: !drawer.isOpen ? drawerWidth : 0, y: 0 }
+      position: {x: !drawer.isOpen ? drawerWidth : 0, y: 0},
     };
     changeDrawer(newDrawer);
     if (onToggle) {
@@ -52,7 +57,7 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
     const isOpen = drawer.isOpen ? movePercent > 70 : movePercent > 30;
     const newDrawer = {
       ...drawer, isOpen: isOpen,
-      position: { x: isOpen ? drawerWidth : 0, y: 0 }
+      position: {x: isOpen ? drawerWidth : 0, y: 0},
     };
     if (onDragEnd) {
       onDragEnd({event: e, data, drawer: newDrawer});
@@ -67,17 +72,21 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
   }, [onDrag]);
 
   return (
-    <DrawerContext.Provider value={{ isOpen: drawer.isOpen, drawerWidth: drawerWidth, toggleDrawer: toggleDrawer }}>
+    <DrawerContext.Provider value={{
+      isOpen: drawer.isOpen,
+      drawerWidth: drawerWidth,
+      toggleDrawer: toggleDrawer,
+    }}>
       <Draggable
         axis='x'
         // handle='.overlay'
         disabled={!drawer.isOpen}
         position={drawer.position}
-        positionOffset={{ x: closedDrawer, y: 0 }}
+        positionOffset={{x: closedDrawer, y: 0}}
         onStop={onStop}
         onStart={onStart}
         onDrag={onDragCallback}
-        bounds={{ left: 0, right: drawerWidth }}
+        bounds={{left: 0, right: drawerWidth}}
       >
         <Body row stretched>
           {children}
@@ -86,6 +95,6 @@ export const Drawer = ({children, onDrag = undefined, onDragEnd = undefined, onD
     </DrawerContext.Provider>
 
   );
-}
+};
 
 export default Drawer;

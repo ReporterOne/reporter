@@ -1,13 +1,8 @@
-from typing import List
-from datetime import date
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Query, Depends, Security
+"""Users api requests."""
+from fastapi import APIRouter, Security
 
-from server import auth
-
-from db import crud
 from db import schemas
-from db.database import get_db
+from server import auth
 
 router = APIRouter()
 

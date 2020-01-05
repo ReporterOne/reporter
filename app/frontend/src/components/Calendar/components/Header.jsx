@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 import styled from 'styled-components';
-import { format } from "date-fns";
+import {format} from 'date-fns';
 
-const MonthFormat = "MMMM";
-const YearFormat = "yyyy";
+const MonthFormat = 'MMMM';
+const YearFormat = 'yyyy';
 
 
 const Container = styled.div`
@@ -25,7 +25,6 @@ const YearNumber = styled.span`
 `;
 
 const Header = (props) => {
-
   return (
     <Container>
       <MonthName> {format(props.currentDate, MonthFormat)} </MonthName>
@@ -36,6 +35,5 @@ const Header = (props) => {
 
 
 export default Header;
-
 
 

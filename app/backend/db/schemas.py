@@ -1,8 +1,10 @@
-from enum import Enum 
-from typing import List, Dict, Any
+# pylint: disable=missing-class-docstring
+"""Schemes for db responses."""
+from enum import Enum
+from typing import List, Any
 from datetime import date, time, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 
 class Mador(BaseModel):
@@ -53,7 +55,7 @@ class AnswerStateTypes(str, Enum):
 
 
 class DateDataBody(BaseModel):
-    user_id: int 
+    user_id: int
     start_date: date
     end_date: date
     state: AnswerStateTypes
@@ -66,7 +68,7 @@ class DateDataBody(BaseModel):
 
 
 class DateDataResponse(BaseModel):
-    user_id: int 
+    user_id: int
     state: AnswerStateTypes = None
     reason: str = None
     reported_by_id: int = None

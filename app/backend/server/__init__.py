@@ -1,0 +1,1 @@
+"""Server of the application."""
