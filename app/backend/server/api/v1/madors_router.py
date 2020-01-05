@@ -1,8 +1,11 @@
 """Users api requests."""
-from fastapi import APIRouter, Security
+from typing import List
+from sqlalchemy.orm import Session
+from fastapi import APIRouter, Security, Depends
 
 from db import schemas
 from server import auth
+from db.database import get_db
 
 router = APIRouter()
 
