@@ -1,4 +1,4 @@
-"""Dates datas api with db.""""
+"""Dates datas api with db."""
 from typing import List
 from datetime import date, datetime
 
