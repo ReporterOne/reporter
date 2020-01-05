@@ -60,7 +60,7 @@ class AnswerStateTypes(str, Enum):
 
 
 class PostDateDataBody(BaseModel):
-    user_id: int 
+    user_id: int
     start_date: date
     end_date: date = None
     state: AnswerStateTypes

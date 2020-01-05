@@ -1,5 +1,6 @@
+"""Dates datas api with db.""""
 from typing import List
-from datetime import date, time, datetime
+from datetime import date, datetime
 
 from sqlalchemy.orm import Session
 
@@ -81,7 +82,8 @@ def _get_date_details(
     Returns:
         date details of the specified date.
     """
-    date_details = db.query(DateDetails).filter(DateDetails.date == date).first()
+    date_details = db.query(DateDetails).filter(
+        DateDetails.date == date).first()
     if make_if_not_exists and date_details is None:
         date_details = DateDetails(date=date)
         db.add(date_details)
