@@ -21,7 +21,7 @@ def upgrade():
     op.create_unique_constraint(None, 'date_datas', ['id'])
     op.alter_column('date_details', 'type',
                     existing_type=postgresql.ENUM(
-                        'required', 'not_required', 'not_important', 
+                        'required', 'not_required', 'not_important',
                         name='date_type'),
                     type_=sa.Enum('required', 'not_required', 'unknown',
                                   name='date_type'),
@@ -41,10 +41,10 @@ def downgrade():
     op.drop_constraint(None, 'permissions', type_='unique')
     op.alter_column('date_details', 'type',
                     existing_type=sa.Enum(
-                        'required', 'not_required', 
+                        'required', 'not_required',
                         'unknown', name='date_type'),
                     type_=postgresql.ENUM(
-                        'required', 'not_required', 
+                        'required', 'not_required',
                         'not_important', name='date_type'),
                     existing_nullable=True)
     op.drop_constraint(None, 'date_datas', type_='unique')
