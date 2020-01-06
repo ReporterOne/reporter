@@ -6,9 +6,9 @@ from sqlalchemy.orm import Session
 
 from db import schemas
 from db.models import DateData, DateDetails, Reason
+from utils.datetime_utils import daterange
 from .reasons import get_reason_by_name
 from .crud_utils import put_values_if_not_none
-from utils.datetime_utils import daterange
 
 
 def get_dates_data(
@@ -68,7 +68,7 @@ def get_multiple_users_dates_data(
 
 def _get_date_details(
     db: Session,
-    date: date,
+    day: date,
     make_if_not_exists: bool = False
 ) -> DateDetails:
     """Get date details from a specific date.
@@ -83,9 +83,9 @@ def _get_date_details(
         date details of the specified date.
     """
     date_details = db.query(DateDetails).filter(
-        DateDetails.date == date).first()
+        DateDetails.date == day).first()
     if make_if_not_exists and date_details is None:
-        date_details = DateDetails(date=date)
+        date_details = DateDetails(day=day)
         db.add(date_details)
         db.commit()
         db.refresh(date_details)
@@ -130,7 +130,7 @@ def set_new_date_data(
 
         date_details = _get_date_details(
             db=db,
-            date=day,
+            day=day,
             make_if_not_exists=True
         )
 

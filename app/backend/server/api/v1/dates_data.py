@@ -38,6 +38,7 @@ async def post_dates_status(
     """Post dates status."""
     return crud.set_new_date_data(
                 db=db,
+                user_id=body.user_id,
                 start_date=body.start_date,
                 end_date=body.end_date,
                 state=body.state,
