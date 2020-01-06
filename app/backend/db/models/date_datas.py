@@ -33,7 +33,7 @@ class DateDetails(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(Date, unique=True, index=True)
-    type = Column(Enum(REQUIRED, NOT_REQUIRED, UNKNOWN, name='date_type'), 
+    type = Column(Enum(REQUIRED, NOT_REQUIRED, UNKNOWN, name='date_type'),
                   default=UNKNOWN)
 
 
@@ -57,7 +57,6 @@ class DateData(Base):
     reported_by = relationship('User', backref='reports_history',
                                foreign_keys=[reported_by_id])
     reported_time = Column(DateTime)
-
 
 
 class RepetativeData(Base):

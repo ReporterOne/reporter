@@ -174,6 +174,7 @@ def delete_users_dates_data(
 
     db.commit()
 
+
 def put_data_in_user(
     db: Session,
     user_id: int,

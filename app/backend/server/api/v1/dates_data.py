@@ -11,6 +11,7 @@ from server.auth import get_current_user
 
 router = APIRouter()
 
+
 @router.get("/", response_model=List[schemas.RangeDatesResponse])
 async def get_dates_status(
     start: date,
@@ -25,6 +26,7 @@ async def get_dates_status(
                                               start_date=start,
                                               end_date=end,
                                               users_id=users_id)
+
 
 @router.post("/", response_model=schemas.RangeDatesResponse)
 async def post_dates_status(
@@ -44,6 +46,7 @@ async def post_dates_status(
                 reported_time=body.reported_time
             )
 
+
 @router.delete("/")
 async def delete_dates_status(
     start: date,
@@ -56,6 +59,7 @@ async def delete_dates_status(
                                  start_date=start,
                                  end_date=end,
                                  users_id=users_id)
+
 
 @router.put("/", response_model=schemas.RangeDatesResponse)
 async def put_dates_status(
@@ -75,6 +79,7 @@ async def put_dates_status(
             reported_by_id=body.reported_by_id,
             reported_time=body.reported_time
         )
+
 
 @router.get("/reasons", response_model=List[str])
 def get_reasons(
