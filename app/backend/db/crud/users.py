@@ -80,8 +80,8 @@ def get_hierarchy(
         return dict(leader_id=leader_id, childs=[])
 
     return dict(
-            leader_id=leader_id, 
-            childs=[get_hierarchy(db=db, leader_id=child.id) 
+            leader_id=leader_id,
+            childs=[get_hierarchy(db=db, leader_id=child.id)
                     for child in childs]
         )
 

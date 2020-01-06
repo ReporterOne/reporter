@@ -1,13 +1,15 @@
-"""Users api requests."""
+# pylint: disable=unused-argument
+"""Madors api requests."""
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Security, Depends
 
 from db import schemas
-from server import auth
 from db.database import get_db
+from server import auth
 
 router = APIRouter()
+
 
 @router.get("/hierarchy", response_model=List[schemas.Hierarchy])
 async def post_users(

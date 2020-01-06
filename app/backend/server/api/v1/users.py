@@ -1,7 +1,8 @@
+# pylint: disable=unused-argument
+"""Users api requests."""
 from typing import List
-from datetime import date
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Query, Depends, Security
+from fastapi import APIRouter, Depends, Security
 
 from server import auth
 
@@ -20,7 +21,7 @@ async def get_user(
                                           scopes=["personal"])
 ):
     return crud.get_user(
-            db=db, 
+            db=db,
             user_id=user_id
         )
 
@@ -53,7 +54,7 @@ async def get_subjects(
                                           scopes=["personal"])
 ):
     return crud.get_subjects(
-            db=db, 
+            db=db,
             commander_id=user_id
         )
 
