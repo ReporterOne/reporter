@@ -11,6 +11,8 @@ import {
   eachDayOfInterval,
   isPast,
   getUnixTime,
+  isBefore,
+  isSameDay,
 } from "date-fns";
 import styled from 'styled-components';
 import { Container, theme } from '~/components/common';
@@ -63,17 +65,18 @@ const dayLabelIsPased = ({isPast,isSameMonth,status}) => {
       } else {
         return dateLabelStatus.yes
       }
+    } else {
+      return dateLabelStatus[status]
+    }
   }
-  else {
-    return dateLabelStatus[status]
-  }
+  return dateLabelStatus[status]
 }
-
 const dayWhen = {
-  Start: "border-top-left-radius:20px;border-bottom-left-radius:20px;",
-  Mid: "margin-top: 1px;margin-bottom: 1px;",
-  End: "border-top-right-radius:20px;border-bottom-right-radius:20px;",
-  Single: "border-radius:100px;margin: 1px;"
+  Start: "border-top-left-radius:100px;border-bottom-left-radius:100px;margin: 1px 0px; margin-left: 1px;",
+  Mid: "margin: 1px 0px;",
+  End: "border-top-right-radius:100px; border-bottom-right-radius:100px; margin: 1px 0px; margin-right: 1px;",
+  Single: "border-radius:200px; margin: 0px 1px; margin-bottom: 1px",
+
 };
 const dayStatus = {
   here: theme.approved,
@@ -86,48 +89,77 @@ const dateLabelStatus = {
   here: theme.approved,
   notHere: theme.notApproved,
 };
-const formatDates = (fetchDates) => {
-  dateList = []
-  dateObject = {status: null, when: null}
+
+const formatDates = (fetchDates,today) => {
+  const dateDict = {};
+  let dateObject ,varStatus, varWhen, varDate;
   const datesInMonth = fetchDates.length;
-  for (let index=0; index<datesInMonth-1; index++) { 
-    dateObject.status = fetchDates[index].status;
-    if (fetchDates[index-1] === dateObject.status) {
-      if (fetchDates[index+1] === dateObject.status) {
-        dateObject.when = "mid";
+  varDate = today;
+  for (let index=today; index<datesInMonth-1; index++) { 
+    varStatus = fetchDates[index].status;
+    if (fetchDates[index-1].status === varStatus) {
+      if (fetchDates[index+1].status === varStatus) {
+        varWhen = "Mid";
       } else {
-        dateObject.when = "end";
+        varWhen = "End";
       }
     } else {
-      if (fetchDates[index+1] === dateObject.status) {
-        dateObject.when = "start";
+      if (fetchDates[index+1].status === varStatus) {
+        varWhen = "Start";
       } else {
-        dateObject.when = "single";
+        varWhen = "Single";
       }
     }
-    dateList.push(dateObject);
+    dateObject = {status: varStatus, when: varWhen}
+    dateDict[index] = (dateObject);
   }
-  dateObject.status = fetchDates[datesInMonth-1].status;
-  if (fetchDates[datesInMonth-2].status === dateObject.status) {
-    dateObject.when = "end";
-  } else {
-    dateObject.when = "single";
-  }
-  dateList.push(dateObject);
-  return dateList;
+  return dateDict;
 }
 
-}
+const DayRender = (dateList, dates, date, monthStart, onDateClick) => {
+  
+  if (!isSameMonth(date, monthStart)) {
+    return (
+      <Day status={'notDecided'} isPast={isPast(date)} when={'single'} isSameMonth={false} key={date} onClick={() => onDateClick(date)}>
+        <DateLabel status={'no'} isPast={isPast(date)} isSameMonth={false}>
+          {format(date, CellsDateFormat)}
+        </DateLabel>
+      </Day>
+    );
+  } else {
+    if (!isSameDay(date, new Date()) && isPast(date)){
+      
+      return (
+        <Day status={dates[date.getDate()].status} isPast={isPast(date)} when={'single'} isSameMonth={true} key={date} onClick={() => onDateClick(date)}>
+          <DateLabel status={dates[date.getDate()].status} isPast={isPast(date)} isSameMonth={true}>
+            {format(date, CellsDateFormat)}
+          </DateLabel>
+        </Day>
+        );
+    } else {
+      return (
+        <Day status={dateList[date.getDate()].status} isPast={!isSameDay(date, new Date()) && isPast(date)} when={dateList[date.getDate()].when} isSameMonth={true} key={date} onClick={() => onDateClick(date)}>
+          <DateLabel status={dateList[date.getDate()].status} isPast={!isSameDay(date, new Date()) && isPast(date)} isSameMonth={true}>
+            {format(date, CellsDateFormat)}
+          </DateLabel>
+        </Day>
+        );
+    }
+  }
+}  
 const Cells = ({currentDate, onDateClick, userIdList}) => {
-  const {monthStart, monthEnd, startDate, endDate} = useMemo(() => {
+  const {monthStart, monthEnd, startDate, endDate, today} = useMemo(() => {
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
     const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
+    const dateToday  = new Date().getDate();
     return {monthStart: dateMonthStart,
             monthEnd: dateMonthEnd,
             startDate: dateStartDate,
-            endDate: dateEndDate};
+            endDate: dateEndDate,
+            today: dateToday
+          };
   })
   const fetchParams = useMemo(() => {
     return (
@@ -137,8 +169,43 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
       );
   });
   fetchDateDate(fetchParams);
-  const dates = useSelector(state => lodash.get(state.general.dates , "data"));
-  const dateList = formatDates(dates);
+  var dates = useSelector(state => lodash.get(state.general.dates , "data"));
+  dates = [
+    {status: ''},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'here'},
+    {status: 'here'},
+    {status: 'notHere'},
+    {status: 'notHere'},
+    {status: ''},
+  ]
+  const dateList = formatDates(dates, today);
   const rows = useMemo(() => {
     return eachWeekOfInterval({
       start: startDate,
@@ -150,15 +217,7 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
             eachDayOfInterval({
               start: date,
               end: endOfWeek(date)
-            }).map(date => {
-              return (
-                <Day status={dateList[date-1].status} isPast={isPast(date)} when={dateList[date-1].when} isSameMonth={isSameMonth(date, monthStart)} key={date} onClick={() => onDateClick(date)}>
-                  <DateLabel status={dateList[date-1].status} isPast={isPast(date)} isSameMonth={isSameMonth(date, monthStart)}>
-                    {format(date, CellsDateFormat)}
-                  </DateLabel>
-                </Day>
-              );
-            })
+            }).map(date => DayRender(dateList,dates , date, monthStart, onDateClick))
           }
         </Week>
       );
