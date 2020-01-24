@@ -14,7 +14,7 @@ class TestQuery(unittest.TestCase):
         with open("./app/backend/utils/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
-        self.session.add_all([models.date_datas.Reason(name=reason) 
+        self.session.add_all([models.date_datas.Reason(name=reason)
                               for reason in reasons.values()])
         self.session.commit()
 
