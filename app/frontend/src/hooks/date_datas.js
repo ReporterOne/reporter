@@ -2,7 +2,8 @@ import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import DateStatusService from '~/services/date_datas';
-import {updateReasons, updateDates} from '~/actions/general';
+import {updateReasons} from '~/actions/general';
+import {updateDates} from '~/actions/calendar';
 import {logoutIfNoPermission} from '~/hooks/utils';
 
 
@@ -33,13 +34,11 @@ export const fetchDateDate = (params) => {
     (async () => {
       if (isLoggedIn) {
         await logoutIfNoPermission(async () => {
-          // console.log({start,end})
           const dateData = await DateStatusService.getDateData({start, end, userId});
-          // const dateData = "aa"
           dispatch(updateDates(dateData));
         }, dispatch);
       }
     })();
-  }, [isLoggedIn, dispatch, params]);
+  }, [isLoggedIn, dispatch, start, end, userId]);
 };
 

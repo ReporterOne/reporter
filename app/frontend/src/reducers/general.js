@@ -5,7 +5,8 @@ import AuthService from '~/services/auth';
 const initialState = {
   reasons: [],
   login: AuthService.isLoggedIn(),
-  dates: [],
+  // dates: [],
+  // loading:true
 };
 
 
@@ -21,11 +22,12 @@ export const generalReducer = (state = initialState, action) => {
         ...state,
         login: action.login,
       };
-    case UPDATE_DATES:
-      return {
-        ...state,
-        dates: action.dates,
-      };
+    // case UPDATE_DATES:
+    //   return {
+    //     ...state,
+    //     dates: action.dates,
+    //     loading: false,
+    //   };
 
     default: return state;
   }

@@ -38,19 +38,52 @@ class DateStatusService {
    */
   async getDateData({start, end, userId}) {
     try {
-      const response = await axios.get(`${PREFIX}`,
-          {
-            params: {
-              start: start,
-              end: end,
-              user_id: userId,
-            },
-            headers: {
-              ...AuthService.getAuthHeader(),
-            },
-          },
-      );
-      return response.data;
+      // const response = await axios.get(`${PREFIX}`,
+      //     {
+      //       params: {
+      //         start: start,
+      //         end: end,
+      //         user_id: userId,
+      //       },
+      //       headers: {
+      //         ...AuthService.getAuthHeader(),
+      //       },
+      //     },
+      // );
+      const a = [
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'here'},
+        {status: 'here'},
+        {status: 'notHere'},
+        {status: 'notHere'},
+      ]
+      return a;
     } catch (error) {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);

@@ -1,9 +1,10 @@
 import {createStore, combineReducers} from 'redux';
-import {generalReducer, usersReducer} from '~/reducers';
+import {generalReducer, usersReducer, calendarReducer} from '~/reducers';
 
 export const mainReducer = combineReducers({
   general: generalReducer,
   users: usersReducer,
+  calendar: calendarReducer,
 });
 
 export const store = createStore(mainReducer,
