@@ -36,7 +36,7 @@ async def post_dates_status(
                                           scopes=["personal"])
 ):
     """Post dates status."""
-    return crud.set_new_date_data(
+    response = crud.set_new_date_data(
                 db=db,
                 user_id=body.user_id,
                 start_date=body.start_date,
@@ -46,6 +46,7 @@ async def post_dates_status(
                 reported_by_id=body.reported_by_id,
                 reported_time=body.reported_time
             )
+    return response
 
 
 @router.delete("/")

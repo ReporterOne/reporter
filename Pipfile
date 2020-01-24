@@ -22,12 +22,13 @@ pylint = "*"
 sqlalchemy = "*"
 alembic = "*"
 faker = "*"
-passlib = {version = "*",extras = ["bcrypt"]}
+passlib = {extras = ["bcrypt"],version = "*"}
 pyjwt = "*"
 python-multipart = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 boltons = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"

@@ -45,8 +45,14 @@ class StatusTypes(str, Enum):
 
 
 class DateDetails(BaseModel):
+    id: int
     date: date
-    type: StatusTypes = None
+    type: str = None  
+    # TODO: when [BUG] SQLAlchemy Exception when using Enums and jsonable_encoder
+    # will be solved, puth the type to be StatusTypes
+
+    class Config:
+        orm_mode = True
 
 
 class AnswerStateTypes(str, Enum):

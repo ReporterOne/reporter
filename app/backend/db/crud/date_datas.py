@@ -85,7 +85,7 @@ def _get_date_details(
     date_details = db.query(DateDetails).filter(
         DateDetails.date == day).first()
     if make_if_not_exists and date_details is None:
-        date_details = DateDetails(day=day)
+        date_details = DateDetails(date=day)
         db.add(date_details)
         db.commit()
         db.refresh(date_details)
@@ -135,16 +135,16 @@ def set_new_date_data(
         )
 
         dates_data.append(DateData(
-                date_details=date_details,
                 user_id=user_id,
                 state=state,
                 reason=reason,
                 reported_by_id=reported_by_id,
-                reported_time=reported_time
+                reported_time=reported_time,
+                date_details=date_details
             ))
     db.add_all(dates_data)
     db.commit()
-    return dict(user_id=user_id, date=dates_data)
+    return dict(user_id=user_id, data=dates_data)
 
 
 def delete_users_dates_data(
