@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import AuthService, {PermissionsError} from './auth';
 
+import {statusList} from '~/utils/statusList'; 
+
 const PREFIX = '/api/v1/dates_status';
 
 /** DateStatus service for requesting date statuses. */
@@ -38,52 +40,19 @@ class DateStatusService {
    */
   async getDateData({start, end, userId}) {
     try {
-      // const response = await axios.get(`${PREFIX}`,
-      //     {
-      //       params: {
-      //         start: start,
-      //         end: end,
-      //         user_id: userId,
-      //       },
-      //       headers: {
-      //         ...AuthService.getAuthHeader(),
-      //       },
-      //     },
-      // );
-      const a = [
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'here'},
-        {status: 'here'},
-        {status: 'notHere'},
-        {status: 'notHere'},
-      ]
-      return a;
+      const response = await axios.get(`${PREFIX}`,
+          {
+            params: {
+              start: start,
+              end: end,
+              user_id: userId,
+            },
+            headers: {
+              ...AuthService.getAuthHeader(),
+            },
+          },
+      );
+      return response.data;
     } catch (error) {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);

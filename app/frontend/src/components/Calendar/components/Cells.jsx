@@ -139,7 +139,7 @@ const endWhen = (fetchDates, datesInMonth) => {
   return {status, when}; 
 }
 
-const datesformatter = (fetchDates,today) => {
+export const datesformatter = (fetchDates,today) => {
   const dateDict = {};
   const datesInMonth = fetchDates.length;
   dateDict[today] = startWhen(fetchDates, today);
