@@ -24,6 +24,7 @@ describe('Render all screens', () => {
     const {container} = renderWithRedux(<StyledApp/>, {
       history,
       store: createStore(() => ({
+        calendar: {datesLoading:true},
         general: {login: true, reasons: ["reason1", "reason2"]},
         users: {me: {english_name: "Elran Shefer"}},
       })),

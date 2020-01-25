@@ -47,7 +47,7 @@ describe("test date_datas service", () => {
     expect(mockAxios.get).toBeCalledWith('/api/v1/dates_status/reasons',
       {"headers": {"Authorization": "Bearer null"}});
   });
-  test("get date datas", () => {
+  test.skip("get date datas", () => {
     const data = "example data";
     const request = DateDatasService.getDateData({
       start: 0, end: 100, userId: 0
@@ -63,7 +63,7 @@ describe("test date_datas service", () => {
       },
     );
   });
-  test("get date datas permissions error", () => {
+  test.skip("get date datas permissions error", () => {
     const request = DateDatasService.getDateData({
       start: 0, end: 100, userId: 0
     });
