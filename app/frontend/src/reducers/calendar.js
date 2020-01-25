@@ -3,7 +3,7 @@ import {UPDATE_DATES} from '~/actions/calendar';
 
 const initialState = {
   dates: [],
-  datesLoading:true
+  datesLoading: true,
 };
 
 

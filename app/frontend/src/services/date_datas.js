@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import AuthService, {PermissionsError} from './auth';
 
-import {statusList} from '~/utils/statusList'; 
+import {statusList} from '~/utils/statusList';
 
 const PREFIX = '/api/v1/dates_status';
 
@@ -40,19 +40,20 @@ class DateStatusService {
    */
   async getDateData({start, end, userId}) {
     try {
-      const response = await axios.get(`${PREFIX}`,
-          {
-            params: {
-              start: start,
-              end: end,
-              user_id: userId,
-            },
-            headers: {
-              ...AuthService.getAuthHeader(),
-            },
-          },
-      );
-      return response.data;
+      // const response = await axios.get(`${PREFIX}`,
+      //     {
+      //       params: {
+      //         start: start,
+      //         end: end,
+      //         user_id: userId,
+      //       },
+      //       headers: {
+      //         ...AuthService.getAuthHeader(),
+      //       },
+      //     },
+      // );
+      // return response.data;
+      return statusList;
     } catch (error) {
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
