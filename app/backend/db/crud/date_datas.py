@@ -31,7 +31,8 @@ def get_dates_data(
     if end_date:
         return db.query(DateData).filter(
             DateData.user_id == user_id,
-            start_date <= DateData.date <= end_date
+            start_date <= DateData.date,
+            DateData.date <= end_date
         ).all()
 
     return db.query(DateData).filter(
@@ -127,16 +128,14 @@ def set_new_date_data(
 
     dates_data = []
     for day in daterange(start_date, end_date):
-
         date_details = _get_date_details(
             db=db,
             day=day,
             make_if_not_exists=True
         )
-
         dates_data.append(DateData(
                 user_id=user_id,
-                state=state,
+                state=state.name,
                 reason=reason,
                 reported_by_id=reported_by_id,
                 reported_time=reported_time,
@@ -175,7 +174,7 @@ def delete_users_dates_data(
     db.commit()
 
 
-def put_data_in_user(
+def put_date_data_to_user(
     db: Session,
     user_id: int,
     start_date: date,

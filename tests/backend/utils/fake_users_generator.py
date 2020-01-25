@@ -2,7 +2,7 @@
 from faker import Faker
 from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
-from boltons.urlutils import URL, QueryParamDict
+from tests.backend.utils.url_utils import URL, Query
 
 from db import models
 from server import auth
@@ -13,14 +13,12 @@ def _get_fake_username_password():
     return full_name, full_name.replace(" ", ""), "Password1!"
 
 def _get_faked_user_token(app_test: TestClient, username: str, password: str):
-    url = URL('/api/login')
-    query = QueryParamDict(
+    query = Query(
             username=username,
             password=password,
             scopes="personal"
         )
-    # url.query_params = query
-    print(url.to_text())
+    url = URL('/api/login')
     return app_test.post(url.to_text(),
                          data=query.to_text(),
                          headers={

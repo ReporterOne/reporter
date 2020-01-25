@@ -84,9 +84,9 @@ async def put_dates_status(
 
 
 @router.get("/reasons", response_model=List[str])
-def get_reasons(
+async def get_reasons(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_user)
 ):
     """Get all reasons."""
-    return crud.get_reasons(db)
+    return crud.get_reasons(db=db)

@@ -14,7 +14,7 @@ def get_reason_by_name(db: Session, reason: str) -> str:
     return reason_to_return
 
 
-def get_reasons(db: Session) -> List[Reason]:
+def get_reasons(db: Session) -> List[str]:
     """Get Reasons list from db.
 
     Args:

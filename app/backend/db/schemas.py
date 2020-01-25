@@ -45,7 +45,6 @@ class StatusTypes(str, Enum):
 
 
 class DateDetails(BaseModel):
-    id: int
     date: date
     type: str = None  
     # TODO: when [BUG] SQLAlchemy Exception when using Enums and jsonable_encoder
@@ -86,10 +85,17 @@ class PutDateDataBody(BaseModel):
         orm_mode = True
 
 
+class ReasonData(BaseModel):
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class DateDataResponse(BaseModel):
     user_id: int
     state: AnswerStateTypes = None
-    reason: str = None
+    reason: ReasonData = None
     reported_by_id: int = None
     reported_time: datetime = None
     date_details: DateDetails
