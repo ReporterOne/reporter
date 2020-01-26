@@ -71,7 +71,7 @@ async def put_dates_status(
                                           scopes=["personal"])
 ):
     """Put dates status."""
-    return crud.put_data_in_user(
+    return crud.put_date_data_to_user(
             db=db,
             user_id=body.user_id,
             start_date=body.start_date,
