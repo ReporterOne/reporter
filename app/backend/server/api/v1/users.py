@@ -13,6 +13,15 @@ from db.database import get_db
 router = APIRouter()
 
 
+@router.get("/me", response_model=schemas.User)
+async def get_current_user(
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    """Get current user."""
+    return current_user
+
+
 @router.get("/{user_id}", response_model=schemas.User)
 async def get_user(
     user_id: int,
@@ -20,6 +29,7 @@ async def get_user(
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ):
+    """Get user."""
     return crud.get_user(
             db=db,
             user_id=user_id
@@ -33,6 +43,7 @@ async def delete_user(
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ):
+    """Delete user."""
     crud.delete_user(db=db, user_id=user_id)
 
 
@@ -43,6 +54,7 @@ async def get_commander(
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ) -> int:
+    """Get commander."""
     return crud.get_commander_id(db=db, user_id=user_id)
 
 
@@ -53,15 +65,8 @@ async def get_subjects(
     current_user: schemas.User = Security(auth.get_current_user,
                                           scopes=["personal"])
 ):
+    """Get subjects."""
     return crud.get_subjects(
             db=db,
             commander_id=user_id
         )
-
-
-@router.get("/me", response_model=schemas.User)
-async def get_current_user(
-    current_user: schemas.User = Security(auth.get_current_user,
-                                          scopes=["personal"])
-):
-    return current_user

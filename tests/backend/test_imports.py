@@ -1,7 +1,7 @@
+# pylint: skip-file
 """"Test for imports."""
-import pytest
-
 
 def test_imports():
+    """Test imports."""
     from db import models, crud, schemas
     from server import main
