@@ -50,6 +50,7 @@ def transaction():
 
 
 def recreate_database():
+    """Create database for self use."""
     with transaction() as s:
         # Start DB From Scratch
         models.Base.metadata.drop_all(engine)

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 import jwt
-from fastapi import (Depends, HTTPException, Security, APIRouter, Body)
+from fastapi import (Depends, HTTPException, Security, APIRouter, Query)
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -164,7 +164,7 @@ async def login_for_access_token(
 @router.post("/register", response_model=User)
 def register(
     *,
-    username: str = Body(..., regex=r"^[A-Za-z0-9]+$"),
+    username: str = Query(..., regex=r"^[A-Za-z0-9]+$"),
     password: str,
     db: Session = Depends(get_db)
 ) -> User:

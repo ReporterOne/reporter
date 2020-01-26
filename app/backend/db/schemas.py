@@ -17,7 +17,7 @@ class Mador(BaseModel):
 
 class User(BaseModel):
     id: int
-    commander: int = None
+    commander_id: int = None
     reminder_time: time = None
     english_name: str = None
     mador: Mador = None
@@ -34,13 +34,8 @@ class UserAuth(User):
 
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
-    leader_id: int = None
+    leader_id: int
     childs: List[Any]  # list of Hierarchy.
-
-
-class HierarchyList(BaseModel):
-    """Hierarchy for Reporter and Admin that can view more then 1 hierarchy."""
-    hierarchys: List[Hierarchy]
 
 
 class StatusTypes(str, Enum):
@@ -51,7 +46,13 @@ class StatusTypes(str, Enum):
 
 class DateDetails(BaseModel):
     date: date
-    type: StatusTypes = None
+    type: str = None
+    # TODO: when [BUG] SQLAlchemy Exception
+    # when using Enums and jsonable_encoder
+    # will be solved, puth the type to be StatusTypes
+
+    class Config:
+        orm_mode = True
 
 
 class AnswerStateTypes(str, Enum):
@@ -59,10 +60,10 @@ class AnswerStateTypes(str, Enum):
     not_here = "not_here"
 
 
-class DateDataBody(BaseModel):
+class PostDateDataBody(BaseModel):
     user_id: int
     start_date: date
-    end_date: date
+    end_date: date = None
     state: AnswerStateTypes
     reason: str = None
     reported_by_id: int
@@ -72,10 +73,30 @@ class DateDataBody(BaseModel):
         orm_mode = True
 
 
+class PutDateDataBody(BaseModel):
+    user_id: int
+    start_date: date
+    end_date: date = None
+    state: AnswerStateTypes = None
+    reason: str = None
+    reported_by_id: int = None
+    reported_time: datetime = None
+
+    class Config:
+        orm_mode = True
+
+
+class ReasonData(BaseModel):
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class DateDataResponse(BaseModel):
     user_id: int
     state: AnswerStateTypes = None
-    reason: str = None
+    reason: ReasonData = None
     reported_by_id: int = None
     reported_time: datetime = None
     date_details: DateDetails
@@ -84,7 +105,7 @@ class DateDataResponse(BaseModel):
         orm_mode = True
 
 
-class DateResponse(BaseModel):
+class RangeDatesResponse(BaseModel):
     user_id: int
     data: List[DateDataResponse]
 
