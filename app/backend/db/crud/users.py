@@ -52,6 +52,12 @@ def delete_user(
     db: Session,
     user_id: int
 ):
+    """Delete user from the db.
+
+    Args:
+        db: the related db session.
+        user_id: the user id to delete.
+    """
     user = get_user(db=db, user_id=user_id)
     db.delete(user)
     db.commit()
@@ -61,6 +67,15 @@ def get_users(
     db: Session,
     users_id: List[int]
 ) -> List[User]:
+    """Fetch users list from the db.
+
+    Args:
+        db: the related db session.
+        users_id: the users id to fetch.
+
+    Returns:
+        the wanted users.
+    """
     return [get_user(db=db, user_id=user_id) for user_id in users_id]
 
 
@@ -68,6 +83,15 @@ def get_commander_id(
     db: Session,
     user_id: int
 ) -> int:
+    """Get commander's id from the db by it subject's id.
+
+    Args:
+        db: the related db session.
+        user_id: the user's id.
+
+    Returns:
+        the user's commander.
+    """
     return get_user(db=db, user_id=user_id).commander_id
 
 
@@ -75,6 +99,15 @@ def get_hierarchy(
     db: Session,
     leader_id: int
 ) -> schemas.Hierarchy:
+    """Get hierarchy of leader.
+
+    Args:
+        db: the related db session.
+        leader_id: the leader's id.
+
+    Returns:
+        schemas.Hierarchy.
+    """
     childs = get_subjects(db=db, commander_id=leader_id)
     if len(childs) == 0:
         return dict(leader_id=leader_id, childs=[])
