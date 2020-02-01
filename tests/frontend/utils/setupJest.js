@@ -1,8 +1,9 @@
 import fetchMock from 'jest-fetch-mock';
-import {configure} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Enzyme from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
 import 'jest-localstorage-mock';
 
-configure({adapter: new Adapter()});
 fetchMock.enableMocks();
 jest.useFakeTimers();
+
+Enzyme.configure({ adapter: new Adapter() });

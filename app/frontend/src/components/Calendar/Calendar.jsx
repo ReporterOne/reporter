@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback, useMemo, useEffect} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {subMonths, addMonths} from 'date-fns';
 import {Header, Days, Cells} from './components';
@@ -21,10 +21,15 @@ const StyledContainer = styled(motion.div)`
 `;
 
 const Calendar = ({userIdList}) => {
-  const date = new Date();
-  const [currentDate, setCurrentDate] = useState(date);
-  const [selectedDate, setSelectedDate] = useState(date);
+  const [currentDate, setCurrentDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [swipedLeft, setSwipedLeft] = useState(true);
+
+  useEffect(() => {
+      const date = new Date();
+      setCurrentDate(date);
+      setSelectedDate(date);
+  }, []);
 
   const nextMonth = useCallback((e) => {
     setSwipedLeft(false);
@@ -43,6 +48,10 @@ const Calendar = ({userIdList}) => {
   const slideAmount = useMemo(() => {
     return swipedLeft? -300 : 300;
   }, [swipedLeft]);
+
+  if (currentDate === null) {
+    return (<div>loading</div>);
+  }
 
   return (
     <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}>
