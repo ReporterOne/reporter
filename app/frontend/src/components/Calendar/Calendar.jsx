@@ -56,7 +56,7 @@ const Calendar = ({userIdList}) => {
           <Header currentDate={currentDate} selectedDate={selectedDate}/>
           <Days currentDate={currentDate}/>
           <Cells currentDate={currentDate} onDateClick={onDateClick}
-                 userIdList={userIdList}/>
+            userIdList={userIdList}/>
         </StyledContainer>
       </AnimatePresence>
     </StyledSwipeable>
