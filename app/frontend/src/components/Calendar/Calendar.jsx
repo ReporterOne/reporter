@@ -26,9 +26,9 @@ const Calendar = ({userIdList}) => {
   const [swipedLeft, setSwipedLeft] = useState(true);
 
   useEffect(() => {
-      const date = new Date();
-      setCurrentDate(date);
-      setSelectedDate(date);
+    const date = new Date();
+    setCurrentDate(date);
+    setSelectedDate(date);
   }, []);
 
   const nextMonth = useCallback((e) => {
