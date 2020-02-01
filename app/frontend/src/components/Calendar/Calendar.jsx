@@ -54,9 +54,10 @@ const Calendar = ({userIdList}) => {
   }
 
   return (
-    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}>
+    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} trackMouse={true}>
       <AnimatePresence>
         <StyledContainer
+          className="CalendarContainer"
           key={currentDate}
           initial={{x: slideAmount, opacity: 0}}
           animate={{x: 0, opacity: 1}}

@@ -166,6 +166,7 @@ const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) =
                 <Spacer />
               </RoundedRectangle>
               <Circle key={width}
+                      className="AttendingHandle"
                 drag={'x'} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding}}
                 variants={{
                   notHere: {x: outlinePadding},
