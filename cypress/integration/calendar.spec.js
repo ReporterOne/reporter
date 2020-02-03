@@ -9,6 +9,20 @@ function move(element, x, y) {
     .wait(100)
 }
 
+function drag(draggable, amount) {
+  // const draggable = Cypress.$('#cdk-drop-list-0 > :nth-child(1)')[0]  // Pick up this
+  // const droppable = Cypress.$('#cdk-drop-list-1 > :nth-child(4)')[0]  // Drop over this
+
+  // const coords = droppable.getBoundingClientRect()
+  draggable.dispatchEvent(new MouseEvent('mousedown'));
+  draggable.dispatchEvent(new MouseEvent('mousemove', {clientX: 10, clientY: 0}));
+  draggable.dispatchEvent(new MouseEvent('mousemove', {
+    clientX: 10 + amount,
+    clientY: 10  // A few extra pixels to get the ordering right
+  }));
+  draggable.dispatchEvent(new MouseEvent('mouseup'));
+}
+
 function moveMouse(element, x, y) {
   const pointerEvent = {
     force: true,
@@ -44,13 +58,21 @@ context('Calendar', () => {
     });
 
     cy.viewport('iphone-6');
-    cy.visitMobile('/', {draw: true});
+    cy.visit('/');
     cy.wait(1000) // wait for page load
   });
 
   it('swipe left', () => {
     move(cy.get(".AttendingHandle"), 300, 0);
-    cy.get(".CalendarContainer").swipe({draw: true}, [[100, 0], [200, 0]])
+    // cy.get(".CalendarContainer").swipe({draw: true}, [[100, 0], [200, 0]])
+    // const draggable = Cypress.$('.CalendarContainer')[0]  // Pick up this
+    // console.log(draggable);
+    // drag(draggable, 300);
+    cy.get('.CalendarContainer')
+      .swipe({x: 100, y: 0})
+      .swipe({x: 100, y: 0})
+      .swipe({x: 100, y: 0})
+      .swipe({x: 100, y: 0})
   })
 
 });
