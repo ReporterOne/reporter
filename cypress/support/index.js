@@ -19,52 +19,53 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 import 'cy-mobile-commands'
+
 const stacktraces = [];
 
 const _ = Cypress._;
 
 before(() => {
 
-    stacktraces.length = 0;
+  stacktraces.length = 0;
 });
 
 // monkey patch all cy commands to cache stack trace on each call
-Cypress.Commands.each(({ name }) => {
+Cypress.Commands.each(({name}) => {
 
-    const fn = cy[name];
-    cy[name] = ( ...args ) => {
+  const fn = cy[name];
+  cy[name] = (...args) => {
 
-        const ret = fn.call( cy, ...args );
+    const ret = fn.call(cy, ...args);
 
-        stacktraces.push({
-            stack: new Error().stack,
-            chainerId: ret.chainerId
-        });
+    stacktraces.push({
+      stack: new Error().stack,
+      chainerId: ret.chainerId
+    });
 
-        return ret;
-    };
+    return ret;
+  };
 });
 
 // on failure, log the stack trace if one is found
-Cypress.on( 'fail', (err, runnable) => {
+Cypress.on('fail', (err, runnable) => {
 
-    const commands = runnable.commands;
+  const commands = runnable.commands;
 
-    const cmdIdx = _.findLastIndex( commands, cmd => {
-        // "pending" probably means it failed (at the time of this callback,
-        // the failures are still not resolved, unless synchronoues)
-        return (cmd.state === 'pending' || cmd.state === 'failed') && cmd.chainerId;
-    });
+  const cmdIdx = _.findLastIndex(commands, cmd => {
+    // "pending" probably means it failed (at the time of this callback,
+    // the failures are still not resolved, unless synchronoues)
+    return (cmd.state === 'pending' || cmd.state === 'failed') && cmd.chainerId;
+  });
 
-    const cmd = commands && commands[cmdIdx];
-    if ( cmd ) {
-        const data = _.find( stacktraces, { chainerId: cmd.chainerId });
-        if ( data && data.stack ) {
-            console.log( data.stack, data.chainerId );
-        }
+  const cmd = commands && commands[cmdIdx];
+  if (cmd) {
+    const data = _.find(stacktraces, {chainerId: cmd.chainerId});
+    if (data && data.stack) {
+      console.log(data.stack, data.chainerId);
     }
+  }
 
-    throw err;
+  throw err;
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => {
@@ -77,27 +78,42 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 const getCoords = ($el) => {
   const domRect = $el[0].getBoundingClientRect()
-  const coords = { x: domRect.left + (domRect.width / 2 || 0), y: domRect.top + (domRect.height / 2 || 0) }
+  const coords = {
+    x: domRect.left + (domRect.width / 2 || 0),
+    y: domRect.top + (domRect.height / 2 || 0)
+  }
 
   return coords
 }
 
-function drag (subject, to, opts, _log) {
+function drag(subject, to, opts, _log) {
   const win = subject[0].ownerDocument.defaultView;
   const elFromCoords = (coords) => win.document.elementFromPoint(coords.x, coords.y)
   const winMouseEvent = win.MouseEvent;
+  const winPointerEvent = win.PointerEvent;
   const send = (type, coords, el) => {
     el = el || elFromCoords(coords);
+    if (!el) return;
     el.dispatchEvent(
-      new winMouseEvent(type, Object.assign({}, { clientX: coords.x, clientY: coords.y }, { bubbles: true, cancelable: true }))
+      new winMouseEvent(`mouse${type}`, Object.assign({}, {
+        clientX: coords.x,
+        clientY: coords.y
+      }, {bubbles: true, cancelable: true}))
+    )
+    el.dispatchEvent(
+      new winPointerEvent(`pointer${type}`, Object.assign({}, {
+        clientX: coords.x,
+        clientY: coords.y
+      }, {bubbles: true, cancelable: true}))
     )
   };
   const from = getCoords(subject);
+  console.log(from);
   const fromEl = elFromCoords(from);
-  _log.snapshot('before', { next: 'after', at: 0 });
-  _log.set({ coords: to });
-  send('mouseover', from, fromEl);
-  send('mousedown', from, fromEl);
+  _log.snapshot('before', {next: 'after', at: 0});
+  _log.set({coords: to});
+  send('over', from, fromEl);
+  send('down', from, fromEl);
   cy.then(() => {
 
     return Cypress.Promise.try(() => {
@@ -111,30 +127,33 @@ function drag (subject, to, opts, _log) {
             x: from.x + dx * (i),
             y: from.y + dy * (i),
           };
-          send('mousemove', _to, fromEl);
+          send('move', _to, fromEl);
           return Cypress.Promise.delay(opts.delay);
-        }, { concurrency: 1 })
+        }, {concurrency: 1})
       }
     })
       .then(() => {
-        send('mousemove', to, fromEl);
-        send('mouseover', to);
-        send('mousemove', to);
-        send('mouseup', to);
-        _log.snapshot('after', { at: 1 }).end();
+        send('move', to, fromEl);
+        send('over', to);
+        send('move', to);
+        send('up', to);
+        _log.snapshot('after', {at: 1}).end();
         return Cypress.Promise.delay(opts.delayAfter);
       }).then(() => {
+        const releasedPos = getCoords(subject);
+        send('up', releasedPos);
         return subject;
       })
   })
 
 }
+
 const dragTo = (subject, to, opts) => {
 
   opts = Cypress._.defaults(opts, {
     // delay inbetween steps
     delay: 10,
-    delayAfter: 0,
+    delayAfter: 10,
     // interpolation between coords
     steps: 0,
     // >=10 steps
@@ -157,16 +176,27 @@ const dragTo = (subject, to, opts) => {
   drag(subject, fromCoords, toCoords, opts, _log)
 };
 
+const stringToCoords = {
+  up: {x: 0, y: -250},
+  down: {x: 0, y: 250},
+  left: {x: -250, y: 0},
+  right: {x: 250, y: 0}
+};
+
 const swipe = (subject, to, opts) => {
   opts = Cypress._.defaults(opts, {
     // delay inbetween steps
     delay: 10,
-    delayAfter: 0,
+    delayAfter: 10,
     // interpolation between coords
     steps: 0,
     // >=10 steps
     smooth: true,
   });
+
+  if (typeof(to) === "string") {
+    to = stringToCoords[to];
+  }
 
   if (opts.smooth) {
     opts.steps = Math.max(opts.steps, 10)
@@ -186,9 +216,9 @@ const swipe = (subject, to, opts) => {
 };
 
 Cypress.Commands.addAll(
-  { prevSubject: 'element' },
+  {prevSubject: 'element'},
   {
     dragTo,
-    swipe,
+    swipe
   }
 );
