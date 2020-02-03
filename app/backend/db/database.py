@@ -7,6 +7,7 @@ from faker import Faker
 from passlib.context import CryptContext
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, event
+from sqlalchemy.sql import table
 
 from db import models
 
@@ -60,12 +61,14 @@ def transaction():
 
 
 @event.listens_for(models.User.__table__, 'after_create')
-def insert_admin_user(*args, **kwargs):
-    with transaction() as s:
-        s.add(models.User(username='one_report',
-                          english_name="One Report",
-                          password=get_password_hash("one_report")))
-        s.commit()
+def insert_admin_user(target, connection, *args, **kwargs):
+    connection.execute(target.insert().values([
+        {
+            "username": "one_report",
+            "english_name": "One Report",
+            "password": get_password_hash("one_report")
+        }
+    ]))
 
 
 def recreate_database():
