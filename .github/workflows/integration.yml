@@ -23,6 +23,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: Cache pip install
+          uses: actions/cache@v1
+          env:
+            cache-name: cache-pip
+          with:
+            path: ~/.cache/pip
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
+            restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
@@ -36,6 +47,8 @@ jobs:
       - name: Run Migrations
         run: |
           alembic upgrade head
+        env:
+          PYTHONPATH: app/backend/
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
