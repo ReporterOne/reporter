@@ -18,7 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv lock --requirements > requirements.txt
+          pip install -r requirements.txt
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
@@ -31,3 +36,4 @@ jobs:
         env:
           # pass the Dashboard record key as an environment variable
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          PYTHONPATH: app/backend/
