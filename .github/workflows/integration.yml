@@ -24,7 +24,7 @@ jobs:
         with:
           record: true
           parallel: true
-          build: npm build
+          build: npm run build:ci
           start: npm run start:backend
           wait-on: http://localhost:8443
           group: 'Integration'

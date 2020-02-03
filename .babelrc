@@ -1,4 +1,9 @@
 {
+  "env": {
+    "integration": {
+      "plugins": [ "istanbul" ]
+    }
+  },
   "presets": [
     "@babel/env",
     "@babel/preset-react"
@@ -24,6 +29,5 @@
         }
       }
     ],
-    "istanbul"
   ]
 }

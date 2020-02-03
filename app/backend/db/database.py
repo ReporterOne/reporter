@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from faker import Faker
 from passlib.context import CryptContext
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 
 from db import models
 
