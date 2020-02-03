@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v1
       - name: Install python dependencies
         run: |
+          export PATH=/home/runner/.local/bin:$PATH
           python3 -m pip install --upgrade pip
           pip3 install pipenv
           pipenv lock --requirements > requirements.txt
@@ -37,4 +38,3 @@ jobs:
           # pass the Dashboard record key as an environment variable
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           PYTHONPATH: app/backend/
-          PATH: /home/runner/.local/bin:$PATH
