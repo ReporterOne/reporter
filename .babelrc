@@ -23,6 +23,7 @@
           "@": "./app/frontend/src/screens"
         }
       }
-    ]
+    ],
+    "istanbul"
   ]
 }

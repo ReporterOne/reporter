@@ -23,6 +23,16 @@ Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify the given password with the hashed password."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Get the given password hash."""
+    return pwd_context.hash(password)
+
+
 def get_db():
     db = Session()
     try:
@@ -47,6 +57,15 @@ def transaction():
 
     finally:
         s.close()
+
+
+@event.listens_for(models.User.__table__, 'after_create')
+def insert_admin_user(*args, **kwargs):
+    with transaction() as s:
+        s.add(models.User(username='one_report',
+                          english_name="One Report",
+                          password=get_password_hash("one_report")))
+        s.commit()
 
 
 def recreate_database():

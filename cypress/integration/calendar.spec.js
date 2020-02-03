@@ -4,8 +4,8 @@ const login = () => {
     method: 'post',
     form: true,
     body: {
-      username: 'elran',
-      password: '123456'
+      username: 'one_report',
+      password: 'one_report'
     }
   }).its('body').then((data) => {
     localStorage.setItem('token', data.access_token)
