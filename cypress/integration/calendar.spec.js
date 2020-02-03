@@ -63,7 +63,9 @@ context('Calendar', () => {
   });
 
   it('swipe left', () => {
-    move(cy.get(".AttendingHandle"), 300, 0);
+    // move(cy.get(".AttendingHandle"), 300, 0);
+
+    cy.get(".AttendingHandle").swipe({x: 100, y: 0}, {smooth: false});
     // cy.get(".CalendarContainer").swipe({draw: true}, [[100, 0], [200, 0]])
     // const draggable = Cypress.$('.CalendarContainer')[0]  // Pick up this
     // console.log(draggable);
