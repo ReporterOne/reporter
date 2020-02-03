@@ -18,16 +18,16 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Cache pip install
-        uses: actions/cache@v1
-        env:
-          cache-name: cache-pip
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-pip
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

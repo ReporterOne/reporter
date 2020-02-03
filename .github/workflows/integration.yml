@@ -24,31 +24,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Cache node modules
-          uses: actions/cache@v1
-          env:
-            cache-name: cache-node-modules
-          with:
-            path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache pip install
-          uses: actions/cache@v1
-          env:
-            cache-name: cache-pip
-          with:
-            path: ~/.cache/pip
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-pip
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
