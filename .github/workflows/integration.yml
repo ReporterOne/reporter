@@ -33,6 +33,9 @@ jobs:
           pip install pipenv
           pipenv lock --requirements > requirements.txt
           pip install -r requirements.txt
+      - name: Run Migrations
+        run:
+          - pipenv run alembic upgrade head
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
