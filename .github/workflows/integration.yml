@@ -3,6 +3,11 @@ on: [push]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
     services:
       postgres:
         image: postgres:10.8
@@ -18,13 +23,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Install python dependencies
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
         run: |
-          export PATH=/home/runner/.local/bin:$PATH
-          python3 -m pip install --upgrade pip
-          pip3 install pipenv
+          python -m pip install --upgrade pip
+          pip install pipenv
           pipenv lock --requirements > requirements.txt
-          pip3 install -r requirements.txt
+          pip install -r requirements.txt
       - name: Cypress run
         uses: cypress-io/github-action@v1
         with:
