@@ -1,6 +1,12 @@
 # pylint: skip-file
+"""
+Usage:
+    database.py reset
+    database.py init
+"""
 import os
 import json
+import docopt
 from contextlib import contextmanager
 
 from faker import Faker
@@ -21,6 +27,16 @@ DATABASE_URI = f'postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify the given password with the hashed password."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Get the given password hash."""
+    return pwd_context.hash(password)
 
 
 def get_db():
@@ -49,13 +65,16 @@ def transaction():
         s.close()
 
 
-def recreate_database():
+def reset_database():
+    """Reset database"""
+    # Start DB From Scratch
+    models.Base.metadata.drop_all(engine)
+    models.Base.metadata.create_all(engine)
+
+
+def initialize_database():
     """Create database for self use."""
     with transaction() as s:
-        # Start DB From Scratch
-        models.Base.metadata.drop_all(engine)
-        models.Base.metadata.create_all(engine)
-
         # Create Madors:
         pie = models.Mador(name='Pie')
         pie_settings = models.MadorSettings(
@@ -86,18 +105,25 @@ def recreate_database():
                    reasons.values()])
 
         # Create Users:
+        one_report = models.User(english_name="One Report",
+                                 username="one_report",
+                                 password=get_password_hash("one_report"),
+                                 permissions=[
+                                     user_permission,
+                                     commander_permission,
+                                     admin_permission])
         elran = models.User(english_name='Elran Shefer', username='shobe',
-                            password=pwd_context.hash('shobe12345678'),
+                            password=get_password_hash('shobe12345678'),
                             permissions=[user_permission, commander_permission,
                                          admin_permission])
         tugy = models.User(english_name='Michael Tugy', username='tugmica',
-                           password=pwd_context.hash('tuguy12345678'),
+                           password=get_password_hash('tuguy12345678'),
                            permissions=[user_permission, commander_permission])
         domb = models.User(english_name='Ariel Domb', username='damov',
-                           password=pwd_context.hash('damovCc12345678'),
+                           password=get_password_hash('damovCc12345678'),
                            permissions=[user_permission, operator_permission])
         ido = models.User(english_name='Ido Azolay', username='ado',
-                          password=pwd_context.hash('Ido12345678'),
+                          password=get_password_hash('Ido12345678'),
                           permissions=[user_permission, operator_permission])
 
         # Create Randome Users:
@@ -110,7 +136,7 @@ def recreate_database():
                                      username=full_name.replace(" ", ""),
                                      password="Password1!"))
 
-        users += [elran, tugy, ido, domb]
+        users += [elran, tugy, ido, domb, one_report]
 
         elran.soldiers = [tugy, users[0], users[1], users[2]]
         tugy.soldiers = [ido] + [users[i] for i in range(3, 11)]
@@ -123,3 +149,12 @@ def recreate_database():
 
         s.add_all(users)
         s.commit()
+
+
+if __name__ == '__main__':
+    args = docopt.docopt(__doc__)
+    if args["reset"]:
+        reset_database()
+
+    elif args["init"]:
+        initialize_database()
