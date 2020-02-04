@@ -6,6 +6,7 @@ import {StyledApp} from '~/App';
 import {renderWithRedux} from './utils/helpers';
 import ResizeObserver from './__mocks__/ResizeObserver';
 import {createStore} from 'redux';
+import {statusList} from '~/utils/statusList';
 
 describe('Render all screens', () => {
   test('render main app', () => {
@@ -20,11 +21,13 @@ describe('Render all screens', () => {
     fetch.mockResponse(() => new Promise(() => {
       return '<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />';
     }));
+    fetch.mockResponse(() => new Promise(() => {
+      return statusList;
+    }));
     const history = createMemoryHistory();
     const {container} = renderWithRedux(<StyledApp/>, {
       history,
       store: createStore(() => ({
-        calendar: {datesLoading:true},
         general: {login: true, reasons: ["reason1", "reason2"]},
         users: {me: {english_name: "Elran Shefer"}},
       })),

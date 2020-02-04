@@ -3,7 +3,7 @@ import {UPDATE_DATES} from '~/actions/calendar';
 
 const initialState = {
   dates: [],
-  datesLoading: true,
+  loading: true,
 };
 
 
@@ -13,7 +13,7 @@ export const calendarReducer = (state = initialState, action) => {
       return {
         ...state,
         dates: action.dates,
-        datesLoading: false,
+        loading: false,
       };
 
     default: return state;

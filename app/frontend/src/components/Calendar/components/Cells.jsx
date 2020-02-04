@@ -13,7 +13,7 @@ import {
   getUnixTime,
   isSameDay,
 } from 'date-fns';
-import MoonLoader from 'react-spinners/MoonLoader';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import {Container, theme} from '~/components/common';
 import {fetchDateDate} from '~/hooks/date_datas';
@@ -93,57 +93,19 @@ const dateLabelStatus = {
   notHere: theme.notApproved,
 };
 
-const startWhen = (fetchDates, today) => {
-  let when;
-  const status = fetchDates[today-1].status;
-  if (fetchDates[today].status === status) {
-    when = 'Start';
-  } else {
-    when = 'Single';
-  }
-  return {status, when};
-};
-
-const midWhen = (fetchDates, index) => {
-  let when;
-  const status = fetchDates[index].status;
-  if (fetchDates[index-1].status === status) {
-    if (fetchDates[index+1].status === status) {
-      when = 'Mid';
-    } else {
-      when = 'End';
+export const datesformatter = (dates, today) => {
+  const dateList = iteratePrevCurrentNext(dates, today, (prev, current, next) => {
+    const dateObject = {status: current.status, when: "Single"};
+    if ((!prev || prev.status !== current.status) && (next && next.status === current.status)){
+            dateObject.when = "Start";
+    } else if ((prev && prev.status === current.status) && (next && next.status === current.status)) {
+            dateObject.when = "Mid";
+    } else if ((prev && prev.status === current.status) && (!next || next.status !== current.status)) {
+            dateObject.when = "End";
     }
-  } else {
-    if (fetchDates[index+1].status === status) {
-      when = 'Start';
-    } else {
-      when = 'Single';
-    }
-  }
-  return {status, when};
-};
-
-
-const endWhen = (fetchDates, datesInMonth) => {
-  let when;
-  const status = fetchDates[datesInMonth-1].status;
-  if (fetchDates[datesInMonth-2].status === status) {
-    when = 'End';
-  } else {
-    when = 'Single';
-  }
-  return {status, when};
-};
-
-export const datesformatter = (fetchDates, today) => {
-  const dateDict = {};
-  const datesInMonth = fetchDates.length;
-  dateDict[today] = startWhen(fetchDates, today);
-  for (let index=today; index<datesInMonth-1; index++) {
-    dateDict[index+1] = midWhen(fetchDates, index);
-  }
-  dateDict[datesInMonth] = endWhen(fetchDates, datesInMonth);
-  return dateDict;
+    return dateObject;
+  });
+  return dateList 
 };
 
 const dayRender = (dateList, dates, date, monthStart, onDateClick) => {
@@ -182,6 +144,19 @@ const dayRender = (dateList, dates, date, monthStart, onDateClick) => {
     }
   }
 };
+
+
+const iteratePrevCurrentNext = (iterator, today, callback) => {
+  const toRet = {};
+  const len = iterator.length;
+  for(let i=today-1; i < len; i++){
+      if (i === today-1) toRet[i+1] = callback(null, iterator[i], iterator[i + 1]);
+      else if (i === len - 1) toRet[i+1] = callback(iterator[i - 1], iterator[i], null);
+      else toRet[i+1] = callback(iterator[i - 1], iterator[i], iterator[i + 1]);
+  }
+  return toRet;
+}
+
 const Cells = ({currentDate, onDateClick, userIdList}) => {
   const {monthStart, monthEnd, startDate, endDate, today} = useMemo(() => {
     const dateMonthStart = startOfMonth(currentDate);
@@ -195,22 +170,24 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
       endDate: dateEndDate,
       today: dateToday,
     };
-  });
+  }, [monthStart, monthEnd, startDate, endDate, today]);
   const fetchParams = useMemo(() => {
     return (
-      {start: getUnixTime(monthStart),
+      {
+        start: getUnixTime(monthStart),
         end: getUnixTime(monthEnd),
-        userId: userIdList}
+        userId: userIdList
+      }
     );
-  });
+  }, [monthStart, monthEnd, userIdList]);
   fetchDateDate(fetchParams);
-  const datesLoading = useSelector((state) => lodash.get(state.calendar, 'datesLoading' ));
+  const datesLoading = useSelector((state) => lodash.get(state.calendar, 'loading' ));
   const dates = useSelector((state) => lodash.get(state.calendar, 'dates' ));
   const rows = useMemo(() => {
     if (datesLoading) {
       return (
         <SpinerContainer >
-          <MoonLoader />
+          <CircularProgress />
         </SpinerContainer>
       );
     }

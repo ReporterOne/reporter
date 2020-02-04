@@ -40,6 +40,7 @@ class DateStatusService {
    */
   async getDateData({start, end, userId}) {
     try {
+      //TODO: change to request to the server instead of "mocking"
       // const response = await axios.get(`${PREFIX}`,
       //     {
       //       params: {
