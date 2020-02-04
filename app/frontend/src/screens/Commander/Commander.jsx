@@ -5,7 +5,7 @@ import {Container, RoundedContainer, theme, FadeInContainer} from '~/components/
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
-import {users} from '~/utils';
+import {users} from '~/utils/users';
 import ReasonsDialog from '~/dialogs/Reasons';
 
 const Header = styled(Container)`

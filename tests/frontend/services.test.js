@@ -34,7 +34,7 @@ describe("test date_datas service", () => {
     const request = DateDatasService.getReasons();
     expectHTTP(request).get('/api/v1/dates_status/reasons').toPermissionFail();
   });
-  test("get date datas", () => {
+  test.skip("get date datas", () => {
     const data = "example data";
     const request = DateDatasService.getDateData({
       start: 0, end: 100, userId: 0

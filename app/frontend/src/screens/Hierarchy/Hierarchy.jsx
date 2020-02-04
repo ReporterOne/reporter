@@ -4,7 +4,7 @@ import lodash from 'lodash';
 
 import {AnimatePresence, motion, useMotionValue} from 'framer-motion';
 
-import {users} from '~/utils';
+import {users} from '~/utils/users';
 import {Container} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded.jsx';
