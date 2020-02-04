@@ -1,9 +1,6 @@
 import {
   getUnixTime,
 } from 'date-fns';
-
-import {PermissionsError} from './auth';
-
 import {statusList} from '~/utils/statusList';
 
 import {HttpService} from '~/services/base_service';
@@ -90,26 +87,16 @@ class DateStatusService extends HttpService {
    * @return {Promise<T>}
    */
   async getDateData({start, end, userId}) {
-    try {
-      // TODO: change to request to the server instead of "mocking"
-      // return response.data;
-      // return await this.request({
-      //   method: 'get',
-      //   url: '/',
-      //   params: {
-      //     start,
-      //     end,
-      //     user_id: userId,
-      //   },
-      // });
-      return statusList;
-    } catch (error) {
-      if (error.response.status === 401) {
-        throw new PermissionsError(error.response.data.details);
-      }
-      console.warn('couldn\'t dates', error.response.status);
-      throw error;
-    }
+    // return await this.request({
+    //   method: 'get',
+    //   url: '/',
+    //   params: {
+    //     start,
+    //     end,
+    //     user_id: userId,
+    //   },
+    // });
+    return Promise.resolve(statusList);
   }
 }
 

@@ -1,15 +1,29 @@
 import React, {useState, useCallback, useMemo, useEffect} from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {motion, AnimatePresence} from 'framer-motion';
-import {subMonths, addMonths} from 'date-fns';
+import {
+  subMonths,
+  addMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek, endOfWeek, addWeeks, getUnixTime,
+} from 'date-fns';
 import {Header, Days, Cells} from './components';
 import styled from 'styled-components';
 import {Swipeable} from 'react-swipeable';
+import {useSelector} from 'react-redux';
+import {fetchDateDate} from '~/hooks/date_datas';
 
 
 const StyledSwipeable = styled(Swipeable)`
     flex: 1;
     position: relative;
     white-space: nowrap;
+`;
+
+const SpinerContainer = styled.div`
+  align-self: center;
+  justify-self: center;
 `;
 
 const StyledContainer = styled(motion.div)`
@@ -20,21 +34,40 @@ const StyledContainer = styled(motion.div)`
   position: absolute;
 `;
 
-const Calendar = ({userIdList}) => {
+const Calendar = ({userId}) => {
   const [currentDate, setCurrentDate] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [swipedLeft, setSwipedLeft] = useState(true);
   const [mounted, setMounted] = useState(false);
-
+  const now = new Date();
   useEffect(() => {
-    const date = new Date();
-    setCurrentDate(date);
-    setSelectedDate(date);
+    setCurrentDate(now);
+    setSelectedDate(now);
     setTimeout(() => {
       // let the calendar settle.
       setMounted(true);
     }, 10);
   }, []);
+
+  const {monthStartDay, monthEndDay, startDate, endDate} = useMemo(() => {
+    const dateMonthStart = startOfMonth(currentDate);
+    const dateMonthEnd = endOfMonth(dateMonthStart);
+    const dateStartDate = startOfWeek(dateMonthStart);
+    const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
+    return {
+      monthStartDay: dateMonthStart,
+      monthEndDay: dateMonthEnd,
+      startDate: dateStartDate,
+      endDate: dateEndDate,
+    };
+  }, [currentDate]);
+
+  const {loading, dates} = useSelector((state) => state.calendar);
+  fetchDateDate({
+    start: getUnixTime(monthStartDay),
+    end: getUnixTime(monthEndDay),
+    userId: userId,
+  });
 
   const nextMonth = useCallback((e) => {
     setSwipedLeft(false);
@@ -54,8 +87,12 @@ const Calendar = ({userIdList}) => {
     return swipedLeft? -300 : 300;
   }, [swipedLeft]);
 
-  if (currentDate === null) {
-    return (<div>loading</div>);
+  if (loading || currentDate === null) {
+    return (
+      <SpinerContainer>
+        <CircularProgress/>
+      </SpinerContainer>
+    );
   }
 
   return (
@@ -71,8 +108,11 @@ const Calendar = ({userIdList}) => {
         >
           <Header currentDate={currentDate} selectedDate={selectedDate}/>
           <Days currentDate={currentDate}/>
-          <Cells currentDate={currentDate} onDateClick={onDateClick}
-            userIdList={userIdList}/>
+          <Cells onDateClick={onDateClick}
+            userId={userId} today={now} renderedMonth={monthStartDay.getMonth()}
+            dates={dates} from={startDate} to={endDate}
+
+          />
         </StyledContainer>
       </AnimatePresence>
     </StyledSwipeable>
