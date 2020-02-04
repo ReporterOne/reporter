@@ -107,7 +107,7 @@ def initialize_database():
         # Create Users:
         one_report = models.User(english_name="One Report",
                                  username="one_report",
-                                 password="one_report",
+                                 password=get_password_hash("one_report"),
                                  permissions=[
                                      user_permission,
                                      commander_permission,
