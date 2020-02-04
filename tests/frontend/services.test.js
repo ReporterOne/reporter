@@ -44,7 +44,7 @@ describe("test date_datas service", () => {
     }).toReturn(data);
   });
   test("delete today", () => {
-    mockDate.set("01/01/2020");
+    mockDate.set("01/01/2020", 0);
     const request = DateDatasService.deleteToday({
       userId: 0
     });
@@ -53,7 +53,7 @@ describe("test date_datas service", () => {
     }).toReturn({});
   });
   test("set today here", () => {
-    mockDate.set("01/01/2020");
+    mockDate.set("01/01/2020", 0);
     const request = DateDatasService.setToday({
       userId: 0,
       state: 'here'
@@ -63,7 +63,7 @@ describe("test date_datas service", () => {
     }).toReturn({});
   });
   test("set today not here", () => {
-    mockDate.set("01/01/2020");
+    mockDate.set("01/01/2020", 0);
     const request = DateDatasService.setToday({
       userId: 0,
       state: 'not_here',
