@@ -2,11 +2,9 @@ import {
   getUnixTime,
 } from 'date-fns';
 
-import AuthService, {PermissionsError} from './auth';
+import {PermissionsError} from './auth';
 
 import {statusList} from '~/utils/statusList';
-
-const PREFIX = '/api/v1/dates_status';
 
 import {HttpService} from '~/services/base_service';
 
@@ -93,7 +91,7 @@ class DateStatusService extends HttpService {
    */
   async getDateData({start, end, userId}) {
     try {
-      //TODO: change to request to the server instead of "mocking"
+      // TODO: change to request to the server instead of "mocking"
       // return response.data;
       // return await this.request({
       //   method: 'get',
@@ -112,7 +110,6 @@ class DateStatusService extends HttpService {
       console.warn('couldn\'t dates', error.response.status);
       throw error;
     }
-
   }
 }
 

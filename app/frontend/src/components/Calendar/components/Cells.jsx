@@ -95,17 +95,17 @@ const dateLabelStatus = {
 
 export const datesformatter = (dates, today) => {
   const dateList = iteratePrevCurrentNext(dates, today, (prev, current, next) => {
-    const dateObject = {status: current.status, when: "Single"};
-    if ((!prev || prev.status !== current.status) && (next && next.status === current.status)){
-            dateObject.when = "Start";
+    const dateObject = {status: current.status, when: 'Single'};
+    if ((!prev || prev.status !== current.status) && (next && next.status === current.status)) {
+      dateObject.when = 'Start';
     } else if ((prev && prev.status === current.status) && (next && next.status === current.status)) {
-            dateObject.when = "Mid";
+      dateObject.when = 'Mid';
     } else if ((prev && prev.status === current.status) && (!next || next.status !== current.status)) {
-            dateObject.when = "End";
+      dateObject.when = 'End';
     }
     return dateObject;
   });
-  return dateList 
+  return dateList;
 };
 
 const dayRender = (dateList, dates, date, monthStart, onDateClick) => {
@@ -149,17 +149,16 @@ const dayRender = (dateList, dates, date, monthStart, onDateClick) => {
 const iteratePrevCurrentNext = (iterator, today, callback) => {
   const toRet = {};
   const len = iterator.length;
-  for(let i=today-1; i < len; i++){
-      if (i === today-1) toRet[i+1] = callback(null, iterator[i], iterator[i + 1]);
-      else if (i === len - 1) toRet[i+1] = callback(iterator[i - 1], iterator[i], null);
-      else toRet[i+1] = callback(iterator[i - 1], iterator[i], iterator[i + 1]);
+  for (let i=today-1; i < len; i++) {
+    if (i === today-1) toRet[i+1] = callback(null, iterator[i], iterator[i + 1]);
+    else if (i === len - 1) toRet[i+1] = callback(iterator[i - 1], iterator[i], null);
+    else toRet[i+1] = callback(iterator[i - 1], iterator[i], iterator[i + 1]);
   }
   return toRet;
-}
+};
 
 const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
   const {monthStart, monthEnd, startDate, endDate, today} = useMemo(() => {
-
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
@@ -177,7 +176,7 @@ const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
       {
         start: getUnixTime(monthStart),
         end: getUnixTime(monthEnd),
-        userId: userIdList
+        userId: userIdList,
       }
     );
   }, [monthStart, monthEnd, userIdList]);
@@ -211,8 +210,6 @@ const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
   }, [currentDate, datesLoading]);
 
   return <Container stretched>{rows}</Container>;
-
-
 });
 
 Cells.displayName = 'Cells';
