@@ -21,13 +21,11 @@ describe('Render all screens', () => {
     fetch.mockResponse(() => new Promise(() => {
       return '<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />';
     }));
-    fetch.mockResponse(() => new Promise(() => {
-      return statusList;
-    }));
     const history = createMemoryHistory();
     const {container} = renderWithRedux(<StyledApp/>, {
       history,
       store: createStore(() => ({
+        calendar: {loading:true},
         general: {login: true, reasons: ["reason1", "reason2"]},
         users: {me: {english_name: "Elran Shefer"}},
       })),
@@ -50,5 +48,21 @@ describe('Render all screens', () => {
     const operatorButton = container.querySelector("[id='operatorButton']");
     fireEvent.click(operatorButton);
     expect(history.location.pathname).toBe("/operator");
+  });
+  test('test dashboard screen', () => {
+    fetch.mockResponse(() => new Promise(() => {
+      return '<circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />';
+    }));
+    const history = createMemoryHistory();
+    const {container} = renderWithRedux(<StyledApp/>, {
+      history,
+      store: createStore(() => ({
+        calendar: {loading:false, dates:statusList},
+        general: {login: true, reasons: ["reason1", "reason2"]},
+        users: {me: {english_name: "Elran Shefer"}},
+      })),
+    });
+
+    expect(history.location.pathname).toBe("/");
   });
 });

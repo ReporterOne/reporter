@@ -1,9 +1,9 @@
 """All routers related to api v1."""
 from fastapi import FastAPI
 
-from . import dates_data, user
+from . import dates_data, users, madors
 
-api_v1 = FastAPI(openapi_prefix="/api/v1")
+api_v1 = FastAPI(openapi_prefix="/api/v1", debug=True)
 
 api_v1.include_router(
     dates_data.router,
@@ -12,7 +12,13 @@ api_v1.include_router(
 )
 
 api_v1.include_router(
-    user.router,
+    users.router,
     tags=["Users"],
     prefix="/users"
+)
+
+api_v1.include_router(
+    madors.router,
+    tags=["Madors"],
+    prefix="/madors"
 )

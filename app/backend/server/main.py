@@ -10,7 +10,7 @@ from starlette.templating import Jinja2Templates
 from . import auth
 from .api.v1 import api_v1
 
-app = FastAPI(debug=True)  # pylint: disable=invalid-name
+app = FastAPI()  # pylint: disable=invalid-name
 
 base_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=str(base_dir / "static")),
@@ -33,4 +33,4 @@ async def index(request: Request):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8433)
+    uvicorn.run(app, host="0.0.0.0", port=8443)

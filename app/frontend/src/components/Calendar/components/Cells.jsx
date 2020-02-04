@@ -157,8 +157,9 @@ const iteratePrevCurrentNext = (iterator, today, callback) => {
   return toRet;
 }
 
-const Cells = ({currentDate, onDateClick, userIdList}) => {
+const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
   const {monthStart, monthEnd, startDate, endDate, today} = useMemo(() => {
+
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
@@ -210,6 +211,11 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
   }, [currentDate, datesLoading]);
 
   return <Container stretched>{rows}</Container>;
-};
+
+
+});
+
+Cells.displayName = 'Cells';
+
 export default Cells;
 

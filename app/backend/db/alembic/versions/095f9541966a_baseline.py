@@ -41,14 +41,14 @@ def upgrade():
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('id')
                     )
-    reasons_table = op.create_table('reasons',
-                                    sa.Column('id', sa.Integer(),
-                                              nullable=False),
-                                    sa.Column('name', sa.String(),
-                                              nullable=True),
-                                    sa.PrimaryKeyConstraint('id'),
-                                    sa.UniqueConstraint('id')
-                                    )
+    op.create_table('reasons',
+                    sa.Column('id', sa.Integer(),
+                              nullable=False),
+                    sa.Column('name', sa.String(),
+                              nullable=True),
+                    sa.PrimaryKeyConstraint('id'),
+                    sa.UniqueConstraint('id')
+                    )
     op.create_table('settings',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('key', sa.String(), nullable=True),
@@ -185,15 +185,6 @@ def upgrade():
     op.create_index(op.f('ix_repetative_datas_user_id'), 'repetative_datas',
                     ['user_id'], unique=False)
     # ### end Alembic commands ###
-
-    op.bulk_insert(
-        reasons_table,
-        [
-            {"name": "בחופשת לידה"},
-            {"name": "חופש"},
-            {"name": "חול"},
-        ]
-    )
 
 
 def downgrade():

@@ -149,7 +149,7 @@ exports[`Test Attending Button Basic tests 1`] = `
             />
           </div>
           <div
-            class="c7"
+            class="c7 AttendingHandle"
             style="transform: translateX(-27px) translateZ(0);"
           />
         </div>
@@ -324,7 +324,7 @@ exports[`Test Attending Button Test here 1`] = `
             />
           </div>
           <div
-            class="c7"
+            class="c7 AttendingHandle"
             style="transform: translateX(-57px) translateZ(0);"
           />
         </div>
@@ -499,7 +499,7 @@ exports[`Test Attending Button Test missing 1`] = `
             />
           </div>
           <div
-            class="c7"
+            class="c7 AttendingHandle"
             style="transform: translateX(3px) translateZ(0);"
           />
         </div>

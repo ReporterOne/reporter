@@ -27,7 +27,7 @@ const YearNumber = styled.span`
 const Header = (props) => {
   return (
     <Container>
-      <MonthName> {format(props.currentDate, MonthFormat)} </MonthName>
+      <MonthName role="monthName"> {format(props.currentDate, MonthFormat)} </MonthName>
       <YearNumber> {format(props.currentDate, YearFormat)} </YearNumber>
     </Container>
   );

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 import jwt
-from fastapi import (Depends, HTTPException, Security, APIRouter, Body)
+from fastapi import (Depends, HTTPException, Security, APIRouter)
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -18,7 +18,7 @@ from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from db.schemas import User
-from db.database import get_db, pwd_context
+from db.database import get_db, get_password_hash, verify_password
 from db.crud import get_user_by_username, create_user
 
 # TODO: remember in production to generate new hash using:
@@ -50,16 +50,6 @@ oauth2_scheme = OAuth2PasswordBearer(
         "personal": "main permissions.",
     },
 )
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify the given password with the hashed password."""
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password: str) -> str:
-    """Get the given password hash."""
-    return pwd_context.hash(password)
 
 
 def authenticate_user(db: Session, username: str, password: str) -> User:
@@ -164,7 +154,7 @@ async def login_for_access_token(
 @router.post("/register", response_model=User)
 def register(
     *,
-    username: str = Body(..., regex=r"^[A-Za-z0-9]+$"),
+    username: str,
     password: str,
     db: Session = Depends(get_db)
 ) -> User:

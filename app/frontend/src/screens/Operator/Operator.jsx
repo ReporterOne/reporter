@@ -38,7 +38,7 @@ const OpeningCalendar = styled(motion.div)`
   transition: 0.3s height;
   padding-bottom: 0;
   padding-top: ${HANDLE_HEIGHT}px;
-  ${({theme}) => theme.shadows[4]}
+  ${({theme}) => theme.outerShadows[4]}
 `;
 
 const CalenderContainer = styled(Container)`
