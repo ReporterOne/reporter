@@ -23,7 +23,7 @@ jobs:
         cache-name: cache-pip
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfie.lock') }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
