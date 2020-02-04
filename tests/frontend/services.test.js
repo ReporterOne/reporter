@@ -49,7 +49,7 @@ describe("test date_datas service", () => {
       userId: 0
     });
     expectHTTP(request).delete('/api/v1/dates_status/').withBody({
-      start_date: 1577829600, user_id: 0
+      start_date: 1577836800, user_id: 0
     }).toReturn({});
   });
   test("set today here", () => {
@@ -59,7 +59,7 @@ describe("test date_datas service", () => {
       state: 'here'
     });
     expectHTTP(request).post('/api/v1/dates_status/').withBody({
-      start_date: 1577829600, user_id: 0, state: 'here', reason: null
+      start_date: 1577836800, user_id: 0, state: 'here', reason: null
     }).toReturn({});
   });
   test("set today not here", () => {
@@ -70,7 +70,7 @@ describe("test date_datas service", () => {
       reason: 'Sick',
     });
     expectHTTP(request).post('/api/v1/dates_status/').withBody({
-      start_date: 1577829600, user_id: 0, state: 'not_here', reason: 'Sick'
+      start_date: 1577836800, user_id: 0, state: 'not_here', reason: 'Sick'
     }).toReturn({});
   });
   test("add datedatas here", () => {
