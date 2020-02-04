@@ -2,6 +2,7 @@
 """
 Usage:
     database.py reset
+    database.py clear
     database.py init
 """
 import os
@@ -22,6 +23,7 @@ HOST = os.environ.get('ONE_REPORT_HOST', 'localhost')
 DB = os.environ.get('ONE_REPORT_DB', 'one_report')
 PORT = os.environ.get('ONE_REPORT_PORT', '5432')
 
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 DATABASE_URI = f'postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
@@ -65,11 +67,9 @@ def transaction():
         s.close()
 
 
-def reset_database():
-    """Reset database"""
+def clear_database():
     # Start DB From Scratch
     models.Base.metadata.drop_all(engine)
-    models.Base.metadata.create_all(engine)
 
 
 def initialize_database():
@@ -98,7 +98,7 @@ def initialize_database():
         s.commit()
 
         # Create Reasons:
-        with open("./app/backend/utils/reasons.json", 'r') as f:
+        with open(f"{BASE_PATH}/fixtures/reasons.json", 'r') as f:
             reasons = json.loads(f.read())
 
         s.add_all([models.date_datas.Reason(name=reason) for reason in
@@ -151,8 +151,19 @@ def initialize_database():
         s.commit()
 
 
+def reset_database():
+    """Reset database"""
+    # Start DB From Scratch
+    models.Base.metadata.drop_all(engine)
+    models.Base.metadata.create_all(engine)
+    initialize_database()
+
+
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
+    if args["clear"]:
+        clear_database()
+
     if args["reset"]:
         reset_database()
 

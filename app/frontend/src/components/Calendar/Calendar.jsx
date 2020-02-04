@@ -24,11 +24,16 @@ const Calendar = ({userIdList}) => {
   const [currentDate, setCurrentDate] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [swipedLeft, setSwipedLeft] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const date = new Date();
     setCurrentDate(date);
     setSelectedDate(date);
+    setTimeout(() => {
+      // let the calendar settle.
+      setMounted(true);
+    }, 10);
   }, []);
 
   const nextMonth = useCallback((e) => {
@@ -60,7 +65,7 @@ const Calendar = ({userIdList}) => {
       <AnimatePresence>
         <StyledContainer
           key={currentDate}
-          initial={{x: slideAmount, opacity: 0}}
+          initial={{x: mounted? slideAmount : 0, opacity: mounted? 0 : 1}}
           animate={{x: 0, opacity: 1}}
           exit={{x: slideAmount * -1, opacity: 0}}
         >

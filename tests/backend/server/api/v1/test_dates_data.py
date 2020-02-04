@@ -2,6 +2,8 @@
 from http.client import OK
 from datetime import date, datetime
 
+from freezegun import freeze_time
+
 from db import models
 from db.crud.date_datas import set_new_date_data, get_dates_data
 from tests.backend.test_query import TestQuery
@@ -9,6 +11,7 @@ from tests.backend.utils.url_utils import URL, Query
 from tests.backend.utils.fake_users_generator import get_fake_user
 
 
+@freeze_time("2020-01-01")
 class TestDatesStatus(TestQuery):
     """Tests fot dates_data router."""
     START_DATE = date(1997, 1, 3)
@@ -19,7 +22,8 @@ class TestDatesStatus(TestQuery):
         # Create Madors:
         group = models.Mador(name='Group')
         group_settings = models.MadorSettings(
-            mador=group, key='default_reminder_time', value='09:00', type='time')
+            mador=group, key='default_reminder_time', value='09:00',
+            type='time')
         self.session.add_all([group_settings, group])
 
         # Creat Permissions:
@@ -52,15 +56,15 @@ class TestDatesStatus(TestQuery):
     def test_get_dates_status(self):
         """"Test for get_dates_status from dates_status router."""
         query = Query(
-                start=self.START_DATE,
-                end=self.END_DATE,
-                users_id=[self.user.id]
-            )
+            start=self.START_DATE,
+            end=self.END_DATE,
+            users_id=[self.user.id]
+        )
         url = URL(url='/dates_status/', query=query)
         response = self.API_V1_TEST.get(
-                url.to_text(),
-                headers={'authorization': f'bearer {self.current_user_token}'}
-            )
+            url.to_text(),
+            headers={'authorization': f'bearer {self.current_user_token}'}
+        )
         assert response.status_code == OK
         assert response.json() == [{
             'user_id': self.user.id,
@@ -74,7 +78,7 @@ class TestDatesStatus(TestQuery):
                     'date_details': {
                         'date': '1997-01-03',
                         'type': 'unknown'
-                        }
+                    }
                 }, {
                     'user_id': self.user.id,
                     'state': 'here',
@@ -84,7 +88,7 @@ class TestDatesStatus(TestQuery):
                     'date_details': {
                         'date': '1997-01-04',
                         'type': 'unknown'
-                        }
+                    }
                 }
             ]
         }]
@@ -97,13 +101,11 @@ class TestDatesStatus(TestQuery):
             url.to_text(),
             headers={'authorization': f'bearer {self.current_user_token}'},
             json={
-                    'user_id': self.user.id,
-                    'start_date': str(new_date),
-                    'state': self.state_not_here.name,
-                    'reason': self.reasons["1_abc"],
-                    'reported_by_id': self.current_user.id,
-                    'reported_time': str(self.REPORTED_TIME)
-                }
+                'user_id': self.user.id,
+                'start_date': str(new_date),
+                'state': self.state_not_here.name,
+                'reason': self.reasons["1_abc"]
+            }
         )
 
         assert response.status_code == OK
@@ -116,7 +118,7 @@ class TestDatesStatus(TestQuery):
                     'name': 'abc'
                 },
                 'reported_by_id': self.current_user.id,
-                'reported_time': '1997-01-03T12:12:12',
+                'reported_time': '2020-01-01T00:00:00',
                 'date_details': {
                     'date': '1999-01-05',
                     'type': 'unknown'
@@ -126,14 +128,14 @@ class TestDatesStatus(TestQuery):
 
     def test_delete_dates_status(self):
         """"Test for delete_dates_status from dates_status router."""
-        query = Query(
-                start=self.START_DATE,
-                end=self.END_DATE,
-                users_id=[self.user.id]
-            )
-        url = URL('/dates_status/', query=query)
+        url = URL('/dates_status/')
         response = self.API_V1_TEST.delete(
             url.to_text(),
+            json={
+                "start_date": str(self.START_DATE),
+                "end_date": str(self.END_DATE),
+                "user_id": self.user.id
+            },
             headers={'authorization': f'bearer {self.current_user_token}'}
         )
 
@@ -141,11 +143,11 @@ class TestDatesStatus(TestQuery):
 
         #  assert that the data was acctually deleted from the db.
         date_data = get_dates_data(
-                            db=self.session,
-                            user_id=self.user.id,
-                            start_date=self.START_DATE,
-                            end_date=self.END_DATE
-                        )
+            db=self.session,
+            user_id=self.user.id,
+            start_date=self.START_DATE,
+            end_date=self.END_DATE
+        )
         assert date_data == []
 
     def test_put_dates_status(self):
@@ -155,13 +157,11 @@ class TestDatesStatus(TestQuery):
             url.to_text(),
             headers={'authorization': f'bearer {self.current_user_token}'},
             json={
-                    'user_id': self.user.id,
-                    'start_date': str(self.START_DATE),
-                    'state': self.state_not_here.name,
-                    'reason': self.reasons["1_abc"],
-                    'reported_by_id': self.user.id,
-                    'reported_time': str(self.REPORTED_TIME)
-                }
+                'user_id': self.user.id,
+                'start_date': str(self.START_DATE),
+                'state': self.state_not_here.name,
+                'reason': self.reasons["1_abc"],
+            }
         )
 
         assert response.status_code == OK
@@ -171,10 +171,10 @@ class TestDatesStatus(TestQuery):
                 'user_id': self.user.id,
                 'state': 'not_here',
                 'reason': {
-                        'name': 'abc'
+                    'name': 'abc'
                 },
-                'reported_by_id': self.user.id,
-                'reported_time': '1997-01-03T12:12:12',
+                'reported_by_id': self.current_user.id,
+                'reported_time': '2020-01-01T00:00:00',
                 'date_details': {
                     'date': '1997-01-03',
                     'type': 'unknown'
@@ -186,9 +186,9 @@ class TestDatesStatus(TestQuery):
         """"Test for get_reasons from dates_status router."""
         url = URL('/dates_status/reasons')
         response = self.API_V1_TEST.get(
-                url.to_text(),
-                headers={'authorization': f'bearer {self.current_user_token}'}
-            )
+            url.to_text(),
+            headers={'authorization': f'bearer {self.current_user_token}'}
+        )
 
         assert response.status_code == OK
         assert response.json() == list(self.reasons.values())

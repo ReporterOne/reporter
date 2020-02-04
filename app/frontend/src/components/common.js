@@ -116,7 +116,7 @@ export const theme = {
   },
   main: '#4725a5',
   secondary: '#FFF',
-  shadows: shadows,
+  outerShadows: shadows,
   innerShadows: innerShaddow,
   buttons: {
     normal: '#888888',

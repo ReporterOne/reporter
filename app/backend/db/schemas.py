@@ -66,8 +66,6 @@ class PostDateDataBody(BaseModel):
     end_date: date = None
     state: AnswerStateTypes
     reason: str = None
-    reported_by_id: int
-    reported_time: datetime
 
     class Config:
         orm_mode = True
@@ -79,8 +77,6 @@ class PutDateDataBody(BaseModel):
     end_date: date = None
     state: AnswerStateTypes = None
     reason: str = None
-    reported_by_id: int = None
-    reported_time: datetime = None
 
     class Config:
         orm_mode = True

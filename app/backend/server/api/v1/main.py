@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from . import dates_data, users, madors
 
-api_v1 = FastAPI(openapi_prefix="/api/v1")
+api_v1 = FastAPI(openapi_prefix="/api/v1", debug=True)
 
 api_v1.include_router(
     dates_data.router,
