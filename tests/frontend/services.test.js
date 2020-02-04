@@ -1,5 +1,6 @@
 import React from 'react';
 import mockAxios from 'jest-mock-axios';
+import mockDate from 'mockdate';
 import AuthService from '~/services/auth';
 import DateDatasService from '~/services/date_datas';
 import expectHTTP from "./utils/expect_http";
@@ -29,7 +30,7 @@ describe("test date_datas service", () => {
     const request = DateDatasService.getReasons();
     expectHTTP(request).get('/api/v1/dates_status/reasons').toReturn(reasons);
   });
-  test("get reasons permissions error", () => {
+  test("permissions error", () => {
     const request = DateDatasService.getReasons();
     expectHTTP(request).get('/api/v1/dates_status/reasons').toPermissionFail();
   });
@@ -42,12 +43,45 @@ describe("test date_datas service", () => {
       start: 0, end: 100, user_id: 0
     }).toReturn(data);
   });
-  test("get date datas permissions error", () => {
-    const request = DateDatasService.getDateData({
-      start: 0, end: 100, userId: 0
+  test("delete today", () => {
+    mockDate.set("01/01/2020");
+    const request = DateDatasService.deleteToday({
+      userId: 0
     });
-    expectHTTP(request).get('/api/v1/dates_status/').withQuery({
-      start: 0, end: 100, user_id: 0
-    }).toPermissionFail();
+    expectHTTP(request).delete('/api/v1/dates_status/').withBody({
+      start_date: 1577829600, user_id: 0
+    }).toReturn({});
+  });
+  test("set today here", () => {
+    mockDate.set("01/01/2020");
+    const request = DateDatasService.setToday({
+      userId: 0,
+      state: 'here'
+    });
+    expectHTTP(request).post('/api/v1/dates_status/').withBody({
+      start_date: 1577829600, user_id: 0, state: 'here', reason: null
+    }).toReturn({});
+  });
+  test("set today not here", () => {
+    mockDate.set("01/01/2020");
+    const request = DateDatasService.setToday({
+      userId: 0,
+      state: 'not_here',
+      reason: 'Sick',
+    });
+    expectHTTP(request).post('/api/v1/dates_status/').withBody({
+      start_date: 1577829600, user_id: 0, state: 'not_here', reason: 'Sick'
+    }).toReturn({});
+  });
+  test("add datedatas here", () => {
+    const request = DateDatasService.addDateData({
+      userId: 0,
+      start: 0,
+      end: 100,
+      state: 'here'
+    });
+    expectHTTP(request).post('/api/v1/dates_status/').withBody({
+      start_date: 0, end_date: 100, user_id: 0, state: 'here', reason: null
+    }).toReturn({});
   });
 });
