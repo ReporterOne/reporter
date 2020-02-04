@@ -54,46 +54,21 @@ class Request {
     this._body = body;
     return this;
   }
-  get(url) {
-    this._method = 'get';
-    this._url = url;
-    return this;
+  requestMethod(method) {
+    return (url) => {
+      this._method = method;
+      this._url = url;
+      return this;
+    }
   }
-  post(url) {
-    this._method = 'post';
-    this._url = url;
-    return this;
-  }
-  put(url) {
-    this._method = 'put';
-    this._url = url;
-    return this;
-  }
-  delete(url) {
-    this._method = 'delete';
-    this._url = url;
-    return this;
-  }
-  head(url) {
-    this._method = 'head';
-    this._url = url;
-    return this;
-  }
-  trace(url) {
-    this._method = 'trace';
-    this._url = url;
-    return this;
-  }
-  patch(url) {
-    this._method = 'patch';
-    this._url = url;
-    return this;
-  }
-  connect(url) {
-    this._method = 'connect';
-    this._url = url;
-    return this;
-  }
+  get = this.requestMethod('get');
+  post = this.requestMethod('post');
+  put = this.requestMethod('put');
+  delete = this.requestMethod('delete');
+  head = this.requestMethod('head');
+  trace = this.requestMethod('trace');
+  patch = this.requestMethod('patch');
+  connect = this.requestMethod('connect');
 }
 
 export const expectHTTP = (request) => {
