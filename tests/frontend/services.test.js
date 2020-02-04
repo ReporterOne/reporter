@@ -1,7 +1,8 @@
 import React from 'react';
 import mockAxios from 'jest-mock-axios';
-import AuthService, {PermissionsError} from '~/services/auth';
+import AuthService from '~/services/auth';
 import DateDatasService from '~/services/date_datas';
+import expectHTTP from "./utils/expect_http";
 
 describe("test auth service", () => {
   test("login and logout", () => {
@@ -26,60 +27,27 @@ describe("test date_datas service", () => {
   test("get reasons", () => {
     const reasons = ["reason1", "reason2"];
     const request = DateDatasService.getReasons();
-    mockAxios.mockResponse({
-      data: reasons,
-    });
-    expect(request).resolves.toBe(reasons);
-    expect(mockAxios.get).toBeCalledWith('/api/v1/dates_status/reasons',
-      {"headers": {"Authorization": "Bearer null"}});
+    expectHTTP(request).get('/api/v1/dates_status/reasons').toReturn(reasons);
   });
   test("get reasons permissions error", () => {
     const request = DateDatasService.getReasons();
-    mockAxios.mockError({
-      response: {
-        status: 401,
-        data: {
-          details: "permission denied!"
-        }
-      },
-    });
-    expect(request).rejects.toThrow(PermissionsError);
-    expect(mockAxios.get).toBeCalledWith('/api/v1/dates_status/reasons',
-      {"headers": {"Authorization": "Bearer null"}});
+    expectHTTP(request).get('/api/v1/dates_status/reasons').toPermissionFail();
   });
   test("get date datas", () => {
     const data = "example data";
     const request = DateDatasService.getDateData({
       start: 0, end: 100, userId: 0
     });
-    mockAxios.mockResponse({
-      data: data,
-    });
-    expect(request).resolves.toBe(data);
-    expect(mockAxios.get).toBeCalledWith('/api/v1/dates_status',
-      {
-        params: {start: 0, end: 100, user_id: 0},
-        headers: {"Authorization": "Bearer null"},
-      },
-    );
+    expectHTTP(request).get('/api/v1/dates_status/').withQuery({
+      start: 0, end: 100, user_id: 0
+    }).toReturn(data);
   });
   test("get date datas permissions error", () => {
     const request = DateDatasService.getDateData({
       start: 0, end: 100, userId: 0
     });
-    mockAxios.mockError({
-      response: {
-        status: 401,
-        data: {
-          details: "permission denied!"
-        }
-      },
-    });
-    expect(request).rejects.toThrow(PermissionsError);
-    expect(mockAxios.get).toBeCalledWith('/api/v1/dates_status',
-      {
-        params: {start: 0, end: 100, user_id: 0},
-        headers: {"Authorization": "Bearer null"}
-      });
+    expectHTTP(request).get('/api/v1/dates_status/').withQuery({
+      start: 0, end: 100, user_id: 0
+    }).toPermissionFail();
   });
-})
+});

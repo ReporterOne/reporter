@@ -1,34 +1,82 @@
-import axios from 'axios';
+import {
+  getUnixTime,
+} from 'date-fns';
 
-import AuthService, {PermissionsError} from './auth';
-
-const PREFIX = '/api/v1/dates_status';
+import {HttpService} from '~/services/base_service';
 
 /** DateStatus service for requesting date statuses. */
-class DateStatusService {
+class DateStatusService extends HttpService {
   /**
    * Get all the missing reasons from the server.
    * @return {Promise<T>}
    */
   async getReasons() {
-    try {
-      const response = await axios.get(`${PREFIX}/reasons`,
-          {
-            headers: {
-              ...AuthService.getAuthHeader(),
-            },
-          },
-      );
-      return response.data;
-    } catch (error) {
-      if (error.response.status === 401) {
-        throw new PermissionsError(error.response.data.details);
-      }
-      console.warn('couldn\'t get reasons', error.response.status);
-      throw error;
-    }
+    return await this.request({
+      method: 'get',
+      url: '/reasons',
+    });
   }
 
+  /**
+   * Add new date datas to the server.
+   * @param {number} start - start timestamp
+   * @param {number} end - end timestamp
+   * @param {number} userId - relevant user id.
+   * @param {string} state - the date status (here/not_here).
+   * @param {string} reason - the reason if not here.
+   * @return {Promise<T>}
+   */
+  async addDateData({userId, state, start, end=undefined, reason=null}) {
+    return await this.request({
+      method: 'post',
+      url: '/',
+      data: {
+        start_date: start,
+        end_date: end,
+        user_id: userId,
+        state,
+        reason,
+      },
+    });
+  }
+
+  /**
+   * Set today status.
+   * @param {number} userId - relevant user id.
+   * @param {string} state - the date status (here/not_here).
+   * @param {string} reason - the reason if not here.
+   * @return {Promise<T>}
+   */
+  async setToday({userId, state, reason=null}) {
+    const date = new Date();
+    return await this.request({
+      method: 'post',
+      url: '/',
+      data: {
+        start_date: getUnixTime(date),
+        user_id: userId,
+        state,
+        reason,
+      },
+    });
+  }
+
+  /**
+   * Delete today status.
+   * @param {number} userId - relevant user id.
+   * @return {Promise<T>}
+   */
+  async deleteToday({userId}) {
+    const date = new Date();
+    return await this.request({
+      method: 'delete',
+      url: '/',
+      data: {
+        start_date: getUnixTime(date),
+        user_id: userId,
+      },
+    });
+  }
   /**
    * Get date datas from server.
    * @param {number} start - start timestamp
@@ -37,28 +85,16 @@ class DateStatusService {
    * @return {Promise<T>}
    */
   async getDateData({start, end, userId}) {
-    try {
-      const response = await axios.get(`${PREFIX}`,
-          {
-            params: {
-              start: start,
-              end: end,
-              user_id: userId,
-            },
-            headers: {
-              ...AuthService.getAuthHeader(),
-            },
-          },
-      );
-      return response.data;
-    } catch (error) {
-      if (error.response.status === 401) {
-        throw new PermissionsError(error.response.data.details);
-      }
-      console.warn('couldn\'t dates', error.response.status);
-      throw error;
-    }
+    return await this.request({
+      method: 'get',
+      url: '/',
+      params: {
+        start,
+        end,
+        user_id: userId,
+      },
+    });
   }
 }
 
-export default new DateStatusService();
+export default new DateStatusService('/api/v1/dates_status');

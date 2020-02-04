@@ -1,11 +1,13 @@
 """Crud Utils"""
 
 
-def put_values_if_not_none(db, obj, **kwargs):
-    """Put value from kwargs in obj if not none."""
+def put_values(db, obj, should_commit=False, **kwargs):
+    """Put values in a given object."""
     for attr, value in kwargs.items():
-        if value is not None:
-            setattr(obj, attr, value)
+        setattr(obj, attr, value)
 
-    db.commit()
-    db.refresh(obj)
+    if should_commit:
+        db.commit()
+        db.refresh(obj)
+
+    return obj

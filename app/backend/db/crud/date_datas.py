@@ -1,14 +1,36 @@
 """Dates datas api with db."""
+from http import HTTPStatus
 from typing import List
 from datetime import date, datetime
 
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from db import schemas
 from db.models import DateData, DateDetails, Reason
 from utils.datetime_utils import daterange
 from .reasons import get_reason_by_name
-from .crud_utils import put_values_if_not_none
+from .crud_utils import put_values
+
+
+def _get_single_date(
+    db: Session,
+    user_id: int,
+    start_date: date,
+) -> DateData:
+    """Get single date data from the db.
+
+    Args:
+        user_id: the relevant user id.
+        start_date: the date that is looked for.
+
+    Returns:
+        the wanted date data of the user.
+    """
+    return db.query(DateData).filter(
+        DateData.user_id == user_id,
+        start_date == DateData.date
+    ).first()
 
 
 def get_dates_data(
@@ -35,10 +57,7 @@ def get_dates_data(
             DateData.date <= end_date
         ).all()
 
-    return db.query(DateData).filter(
-        DateData.user_id == user_id,
-        start_date == DateData.date
-    ).all()
+    return [_get_single_date(db, user_id, start_date)]
 
 
 def get_multiple_users_dates_data(
@@ -70,7 +89,8 @@ def get_multiple_users_dates_data(
 def _get_date_details(
     db: Session,
     day: date,
-    make_if_not_exists: bool = False
+    make_if_not_exists: bool = False,
+    should_commit: bool = False,
 ) -> DateDetails:
     """Get date details from a specific date.
 
@@ -79,6 +99,7 @@ def _get_date_details(
         date: date for the details.
         make_if_not_exists: a flag, if True will create date
                             details if the date was not found.
+        should_commit: a flag, if True commit, else dont commit.
 
     Returns:
         date details of the specified date.
@@ -88,8 +109,9 @@ def _get_date_details(
     if make_if_not_exists and date_details is None:
         date_details = DateDetails(date=day)
         db.add(date_details)
-        db.commit()
-        db.refresh(date_details)
+        if should_commit:
+            db.commit()
+            db.refresh(date_details)
 
     return date_details
 
@@ -122,33 +144,49 @@ def set_new_date_data(
     if reason is not None:
         reason = get_reason_by_name(db, reason)
 
-    elif state.name == Reason.NOT_HERE:
-        raise RuntimeError('Cannot sign as "not_here"'
-                           'with no reason.')
+    elif reason is None and state.name == Reason.NOT_HERE:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST,
+                            detail='Cannot sign as "not_here" with no reason.')
 
     dates_data = []
     for day in daterange(start_date, end_date):
-        date_details = _get_date_details(
-            db=db,
-            day=day,
-            make_if_not_exists=True
-        )
-        dates_data.append(DateData(
+        date_data = _get_single_date(db, user_id, day)
+        if date_data:
+            # modify existing one
+            data = put_values(
+                db=db,
+                obj=date_data,
+                state=state,
+                reason=reason,
+                reported_by_id=reported_by_id,
+                reported_time=reported_time
+            )
+
+        else:
+            # create new one if not exists
+            date_details = _get_date_details(
+                db=db,
+                day=day,
+                make_if_not_exists=True
+            )
+            data = DateData(
                 user_id=user_id,
                 state=state.name,
                 reason=reason,
                 reported_by_id=reported_by_id,
                 reported_time=reported_time,
                 date_details=date_details
-            ))
-    db.add_all(dates_data)
+            )
+            db.add(data)
+
+        dates_data.append(data)
     db.commit()
     return dict(user_id=user_id, data=dates_data)
 
 
 def delete_users_dates_data(
     db: Session,
-    users_id: List[int],
+    user_id: int,
     start_date: date,
     end_date: date = None
 ):
@@ -160,63 +198,14 @@ def delete_users_dates_data(
         start_date: date of the start range.
         end_date: date of the end range (default: None).
     """
-    for user_id in users_id:
-        dates_data_to_remove = get_dates_data(
-                db=db,
-                user_id=user_id,
-                start_date=start_date,
-                end_date=end_date
-            )
+    dates_data_to_remove = get_dates_data(
+        db=db,
+        user_id=user_id,
+        start_date=start_date,
+        end_date=end_date
+    )
 
-        for date_data in dates_data_to_remove:
-            db.delete(date_data)
+    for date_data in dates_data_to_remove:
+        db.delete(date_data)
 
     db.commit()
-
-
-def put_date_data_to_user(
-    db: Session,
-    user_id: int,
-    start_date: date,
-    end_date: date = None,
-    state: schemas.AnswerStateTypes = None,
-    reason: str = None,
-    reported_by_id: int = None,
-    reported_time: datetime = None
-) -> schemas.RangeDatesResponse:
-    """Put Date Data to user.
-
-    Args:
-        db: db session.
-        user_id: user id to put date datas to.
-        start_date: date of the start range.
-        end_date: date of the end range (default: None).
-        state: the state of this day - here/ not here. (default: None).
-        reason: reason that you are not here/ here. (default: None).
-        reported_by_id: the id of the reporter of this status. (default: None).
-        reported_time: the time that the status was posted. (default: None).
-
-    Returns:
-        date datas between start_date and end_date.
-    """
-    if reason is not None:
-        reason = get_reason_by_name(db, reason)
-
-    dates_data = get_dates_data(
-            db=db,
-            user_id=user_id,
-            start_date=start_date,
-            end_date=end_date
-        )
-
-    for datedata in dates_data:
-        put_values_if_not_none(
-                db=db,
-                obj=datedata,
-                state=state,
-                reason=reason,
-                reported_by_id=reported_by_id,
-                reported_time=reported_time
-            )
-
-    return dict(user_id=user_id, date=dates_data)

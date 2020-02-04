@@ -11,6 +11,7 @@ flake8 = "*"
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"
+freezegun = "*"
 
 [packages]
 fastapi = "*"

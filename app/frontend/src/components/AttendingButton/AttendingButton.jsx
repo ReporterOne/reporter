@@ -117,7 +117,7 @@ const attendenceStatus = {
   notDecided: '',
 };
 const ANIMATION_TIME = 0.5;
-const DEACCELERATION = -0.5;
+const DEACCELERATION = -1;
 
 const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) => {
   const [pose, changePose] = useState(initialState);
@@ -131,7 +131,8 @@ const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) =
   }, [changePose, onChange]);
 
   const onDragEnd = useCallback((containerWidth) => (event, info) => {
-    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*DEACCELERATION*0.5;
+    const deaccle = info.velocity.x > 0 ? DEACCELERATION : - DEACCELERATION;
+    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*deaccle*0.5;
 
     let state = 'notDecided';
     if (endPos >= ((containerWidth - circleDiameter) * 0.5) + 70) {

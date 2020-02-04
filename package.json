@@ -8,7 +8,7 @@
     "lint:py": "flake8 app/backend/;pylint app/backend/",
     "requirements": "npm install; pipenv install --dev",
     "start:frontend": "webpack-dev-server --config webpack.dev.js",
-    "start:backend": "cd app/backend/; uvicorn server.main:app --reload --host '0.0.0.0' --port 8443",
+    "start:backend": "cd app/backend/; uvicorn server.main:app --reload --host '0.0.0.0' --port 8443 --debug",
     "start:db": "docker-compose up db",
     "db:migrate": "alembic stamp head;alembic upgrade head",
     "build:ci": "BABEL_ENV=integration webpack --config webpack.prod.js && cp -r app/frontend/dist/static/* app/backend/server/static && cp app/frontend/dist/index.html app/backend/server/templates/index.html",

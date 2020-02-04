@@ -77,7 +77,7 @@ const dateLabelStatus = {
   yes: theme.white,
 };
 
-const Cells = ({currentDate, onDateClick, userIdList}) => {
+const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
   const {monthStart, monthEnd, startDate, endDate} = useMemo(() => {
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
@@ -98,7 +98,7 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
         userId: userIdList,
       }
     );
-  });
+  }, [monthStart, monthEnd, userIdList]);
   fetchDateDate(fetchParams);
   const dates = useSelector((state) => lodash.get(state.general.dates, 'data'));
   dates; // TODO: delete when actually used.
@@ -133,6 +133,8 @@ const Cells = ({currentDate, onDateClick, userIdList}) => {
   }, [currentDate]);
 
   return <Container stretched>{rows}</Container>;
-};
+});
+
+Cells.displayName = 'Cells';
 
 export default Cells;
