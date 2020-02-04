@@ -58,6 +58,7 @@ jobs:
       - name: Run Migrations
         run: |
           alembic upgrade head
+          python -m db.database init
         env:
           PYTHONPATH: app/backend/
       - name: Cypress run

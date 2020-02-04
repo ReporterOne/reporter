@@ -29,6 +29,7 @@ gunicorn = "*"
 psycopg2-binary = "*"
 boltons = "*"
 pytest = "*"
+docopt = "*"
 
 [requires]
 python_version = "3.7"
