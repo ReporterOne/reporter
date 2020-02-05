@@ -1,32 +1,19 @@
 import React, {useMemo} from 'react';
 import {
-  startOfWeek,
   format,
-  addWeeks,
-  startOfMonth,
-  endOfMonth,
   endOfWeek,
-  isSameMonth,
   eachWeekOfInterval,
   eachDayOfInterval,
   isPast,
-  getUnixTime,
   isSameDay,
 } from 'date-fns';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import {Container, theme} from '~/components/common';
-import {fetchDateDate} from '~/hooks/date_datas';
-import {useSelector} from 'react-redux';
-import lodash from 'lodash';
+import {iteratePrevCurrentNext} from '~/utils/utils';
 
 
 const CellsDateFormat = 'd';
 
-const SpinerContainer = styled.div`
-  align-self: center;
-  justify-self: center;
-`;
 const Week = styled.div`
   margin: 0;
   padding: 0;
@@ -37,20 +24,24 @@ const Week = styled.div`
   width: 100%;
   min-height: 30px;
 `;
-const Day = styled.div`
+const StyledDay = styled.div`
   display: flex;
   flex:1;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   background-color: ${(props) => dayColor(props)};
-  ${({when}) => dayWhen[when]}
+  ${({type}) => dayTypes[type]}
 `;
 const DateLabel = styled.span`
   line-height: 1;
   font-weight: bold;
-  color: ${(props) => dayLabelIsPased(props) };
-  opacity: ${(props) => props.isSameMonth ? 1 : 0.2};
+  color: ${({isPast, isSameMonth, status}) => dayLabelIsPased({
+    isPast,
+    isSameMonth,
+    status,
+  })};
+  opacity: ${({isSameMonth}) => isSameMonth ? 1 : 0.2};
 `;
 
 const dayColor = ({isPast, isSameMonth, status}) => {
@@ -74,7 +65,7 @@ const dayLabelIsPased = ({isPast, isSameMonth, status}) => {
   }
   return dateLabelStatus[status];
 };
-const dayWhen = {
+const dayTypes = {
   Start: 'border-top-left-radius:100px;border-bottom-left-radius:100px;margin: 1px 0px; margin-left: 1px;',
   Mid: 'margin: 1px 0px;',
   End: 'border-top-right-radius:100px; border-bottom-right-radius:100px; margin: 1px 0px; margin-right: 1px;',
@@ -93,121 +84,68 @@ const dateLabelStatus = {
   notHere: theme.notApproved,
 };
 
-export const datesformatter = (dates, today) => {
-  const dateList = iteratePrevCurrentNext(dates, today, (prev, current, next) => {
-    const dateObject = {status: current.status, when: 'Single'};
+export const datesFormatter = (dates, today, isSameMonth) => {
+  const dateList = iteratePrevCurrentNext(dates, ({prev, current, next}, index) => {
+    const dateObject = {status: current.status, type: 'Single'};
+    if (isSameMonth && index < today.getDate() - 1) return dateObject;
+
     if ((!prev || prev.status !== current.status) && (next && next.status === current.status)) {
-      dateObject.when = 'Start';
+      dateObject.type = 'Start';
     } else if ((prev && prev.status === current.status) && (next && next.status === current.status)) {
-      dateObject.when = 'Mid';
+      dateObject.type = 'Mid';
     } else if ((prev && prev.status === current.status) && (!next || next.status !== current.status)) {
-      dateObject.when = 'End';
+      dateObject.type = 'End';
     }
     return dateObject;
   });
   return dateList;
 };
 
-const dayRender = (dateList, dates, date, monthStart, onDateClick) => {
-  const isDatePast = !isSameDay(date, new Date()) && isPast(date);
-  if (!isSameMonth(date, monthStart)) {
-    return (
-      <Day status={'notDecided'} isPast={isDatePast} when={'single'} isSameMonth={false}
-        key={date} onClick={() => onDateClick(date)}>
-        <DateLabel status={'no'} isPast={isDatePast} isSameMonth={false}>
-          {format(date, CellsDateFormat)}
-        </DateLabel>
-      </Day>
-    );
-  } else {
-    if (isDatePast) {
-      const dateStatus = dates[date.getDate()-1].status;
-      return (
-        <Day status={dateStatus} isPast={isDatePast} when={'single'} isSameMonth={true}
-          key={date} onClick={() => onDateClick(date)}>
-          <DateLabel status={dateStatus} isPast={isDatePast} isSameMonth={true}>
-            {format(date, CellsDateFormat)}
-          </DateLabel>
-        </Day>
-      );
-    } else {
-      const dateStatus = dateList[date.getDate()].status;
-      const dateWhen = dateList[date.getDate()].when;
-      return (
-        <Day status={dateStatus} isPast={isDatePast} when={dateWhen} isSameMonth={true}
-          key={date} onClick={() => onDateClick(date)}>
-          <DateLabel status={dateStatus} isPast={isDatePast} isSameMonth={true}>
-            {format(date, CellsDateFormat)}
-          </DateLabel>
-        </Day>
-      );
-    }
-  }
-};
+const Day = React.memo(({date, onDateClick, isRenderedMonth}) => {
+  return (
+    <StyledDay status={date.status} isPast={date.isPast} type={date.type}
+      isSameMonth={isRenderedMonth} key={date}
+      onClick={() => onDateClick(date)}>
+      <DateLabel status={date.status} isPast={date.isPast}
+        isSameMonth={isRenderedMonth}>
+        {format(date.date, CellsDateFormat)}
+      </DateLabel>
+    </StyledDay>
+  );
+});
+
+Day.displayName = 'Day';
 
 
-const iteratePrevCurrentNext = (iterator, today, callback) => {
-  const toRet = {};
-  const len = iterator.length;
-  for (let i=today-1; i < len; i++) {
-    if (i === today-1) toRet[i+1] = callback(null, iterator[i], iterator[i + 1]);
-    else if (i === len - 1) toRet[i+1] = callback(iterator[i - 1], iterator[i], null);
-    else toRet[i+1] = callback(iterator[i - 1], iterator[i], iterator[i + 1]);
-  }
-  return toRet;
-};
-
-const Cells = React.memo(({currentDate, onDateClick, userIdList}) => {
-  const {monthStart, monthEnd, startDate, endDate, today} = useMemo(() => {
-    const dateMonthStart = startOfMonth(currentDate);
-    const dateMonthEnd = endOfMonth(dateMonthStart);
-    const dateStartDate = startOfWeek(dateMonthStart);
-    const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
-    const dateToday = new Date().getDate();
-    return {monthStart: dateMonthStart,
-      monthEnd: dateMonthEnd,
-      startDate: dateStartDate,
-      endDate: dateEndDate,
-      today: dateToday,
-    };
-  }, [monthStart, monthEnd, startDate, endDate, today]);
-  const fetchParams = useMemo(() => {
-    return (
-      {
-        start: getUnixTime(monthStart),
-        end: getUnixTime(monthEnd),
-        userId: userIdList,
-      }
-    );
-  }, [monthStart, monthEnd, userIdList]);
-  fetchDateDate(fetchParams);
-  const datesLoading = useSelector((state) => lodash.get(state.calendar, 'loading' ));
-  const dates = useSelector((state) => lodash.get(state.calendar, 'dates' ));
+const Cells = React.memo(({onDateClick, today, from, to, dates, renderedMonth}) => {
   const rows = useMemo(() => {
-    if (datesLoading) {
-      return (
-        <SpinerContainer >
-          <CircularProgress />
-        </SpinerContainer>
-      );
-    }
-    const dateList = datesformatter(dates, today);
+    const dateList = datesFormatter(dates, today, today.getMonth() === renderedMonth);
     return eachWeekOfInterval({
-      start: startDate,
-      end: endDate,
-    }).slice(0, 6).map((date) => {
-      return (
-        <Week key={date}>
-          {
-            eachDayOfInterval({
-              start: date,
-              end: endOfWeek(date),
-            }).map((date) => dayRender(dateList, dates, date, monthStart, onDateClick))
-          }
-        </Week>
-      );
-    });
-  }, [currentDate, datesLoading]);
+      start: from,
+      end: to,
+    }).slice(0, 6).map(
+        (date) => (
+          <Week key={date}>
+            {
+              eachDayOfInterval({
+                start: date,
+                end: endOfWeek(date),
+              }).map((date) =>
+                <Day
+                  key={date}
+                  date={{
+                    ...dateList[date.getDate()],
+                    isPast: !isSameDay(date, today) && isPast(date),
+                    date: date, // TODO: replace with real data
+                  }}
+                  isRenderedMonth={date.getMonth() === renderedMonth}
+                  onDateClick={onDateClick}
+                />)
+            }
+          </Week>
+        ),
+    );
+  }, [renderedMonth, from, to, today]);
 
   return <Container stretched>{rows}</Container>;
 });

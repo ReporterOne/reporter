@@ -23,15 +23,12 @@ export const fetchReasons = () => {
   }, [isLoggedIn, dispatch]);
 };
 
-export const fetchDateDate = (params) => {
+export const fetchDateDate = ({start, end, userId}) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.general.login);
 
   useEffect(() => {
     (async () => {
-      const start = params.start;
-      const end = params.end;
-      const userId = params.userId;
       if (isLoggedIn) {
         await logoutIfNoPermission(async () => {
           const dateData = await DateStatusService.getDateData({start, end, userId});
@@ -39,6 +36,6 @@ export const fetchDateDate = (params) => {
         }, dispatch);
       }
     })();
-  }, [isLoggedIn, dispatch, params]);
+  }, [isLoggedIn, dispatch, start, end, userId]);
 };
 

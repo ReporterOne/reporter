@@ -72,7 +72,7 @@ const Dashboard = React.memo((props) => {
         <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender userIdList={[id]}/>
+        <Calender userId={id}/>
       </RoundedContainer>
       <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
     </Container>
