@@ -1,6 +1,7 @@
 import React from 'react';
 import {render, fireEvent, wait} from '@testing-library/react';
 import {createStore} from 'redux';
+import ResizeObserver from './__mocks__/ResizeObserver';
 import {renderWithRedux} from './utils/helpers';
 
 import Calendar from '~/components/Calendar/Calendar';

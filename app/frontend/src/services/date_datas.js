@@ -75,7 +75,7 @@ class DateStatusService extends HttpService {
       method: 'delete',
       url: '/',
       data: {
-        start_date: getUnixTime(date),
+        start_date: formatDate(date),
         user_id: userId,
       },
     });

@@ -470,7 +470,7 @@ exports[`Test Attending Button Test missing 1`] = `
         >
           <div
             class="c3"
-            style="height: 0px; width: 0px; background-color: rgb(241, 90, 36);"
+            style="height: 0px; width: 0px;"
           >
             <div
               class="c4"
@@ -484,9 +484,7 @@ exports[`Test Attending Button Test missing 1`] = `
             />
             <span
               class="c6"
-            >
-              testing
-            </span>
+            />
             <div
               class="c4"
             />
@@ -500,7 +498,6 @@ exports[`Test Attending Button Test missing 1`] = `
           </div>
           <div
             class="c7 AttendingHandle"
-            style="transform: translateX(3px) translateZ(0);"
           />
         </div>
       </div>
