@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {AutoSizer} from 'react-virtualized';
 
 import styled from 'styled-components';
@@ -12,6 +12,7 @@ import {
 
 import posed from 'react-pose';
 import {motion, useAnimation} from 'framer-motion';
+import {ANSWERED, HERE, NOT_ANSWERED, NOT_HERE} from "~/utils/utils";
 
 const ContainerHeight = 60;
 const rectangleMargin = 15;
@@ -20,20 +21,20 @@ const circleDiameter = ContainerHeight - outlinePadding * 2;
 
 
 const PosedRRoundedRectangle = posed.div({
-  notHere: {
+  [NOT_HERE]: {
     backgroundColor: theme.notApproved,
   },
-  here: {
+  [HERE]: {
     backgroundColor: theme.approved,
   },
-  notDecided: {
+  [NOT_ANSWERED]: {
     backgroundColor: theme.main,
   },
 });
 
 const PosedArrowsContainer = posed.div({
-  decided: {scale: 0},
-  notDecided: {scale: 1},
+  [ANSWERED]: {scale: 0},
+  [NOT_ANSWERED]: {scale: 1},
 });
 
 const Container = styled.div`
@@ -112,16 +113,21 @@ const AttendenceValue = styled.span`
 
 
 const attendenceStatus = {
-  here: 'Attending',
-  notHere: 'Missing',
-  notDecided: '',
+  [HERE]: 'Attending',
+  [NOT_HERE]: 'Missing',
+  [NOT_ANSWERED]: '',
 };
 const ANIMATION_TIME = 0.5;
 const DEACCELERATION = -1;
 
-const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) => {
+const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED}) => {
   const [pose, changePose] = useState(initialState);
   const controls = useAnimation();
+
+  useEffect(() => {
+    changePose(initialState);
+    controls.start(initialState)
+  }, [initialState, changePose, controls]);
 
   const handleChange = useCallback((state) => {
     changePose(state);
@@ -131,19 +137,18 @@ const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) =
   }, [changePose, onChange]);
 
   const onDragEnd = useCallback((containerWidth) => (event, info) => {
-    const deaccle = info.velocity.x > 0 ? DEACCELERATION : - DEACCELERATION;
-    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME*ANIMATION_TIME*deaccle*0.5;
+    const deaccle = info.velocity.x > 0 ? DEACCELERATION : -DEACCELERATION;
+    const endPos = info.point.x + info.velocity.x * ANIMATION_TIME + ANIMATION_TIME * ANIMATION_TIME * deaccle * 0.5;
 
-    let state = 'notDecided';
+    let state = NOT_ANSWERED;
     if (endPos >= ((containerWidth - circleDiameter) * 0.5) + 70) {
-      state = 'here';
+      state = HERE;
     } else if (endPos <= ((containerWidth - circleDiameter) * 0.5) - 70) {
-      state = 'notHere';
+      state = NOT_HERE;
     }
     controls.start(state);
     handleChange(state);
   });
-
 
   return (
     <Container>
@@ -152,32 +157,38 @@ const AttendingButton = ({missingReason, onChange, initialState='notDecided'}) =
           {({height, width}) => (
             <InnerContainer style={{height, width}}>
               <RoundedRectangle pose={pose} style={{height, width}}>
-                <Spacer />
-                <ArrowsContainer pose={pose === 'notDecided' ? 'notDecided' : 'decided'}>
-                  <ArrowsLeft src={Arrows} />
+                <Spacer/>
+                <ArrowsContainer
+                  pose={pose === NOT_ANSWERED ? NOT_ANSWERED : ANSWERED}>
+                  <ArrowsLeft src={Arrows}/>
                 </ArrowsContainer>
-                <Spacer />
+                <Spacer/>
                 <AttendenceValue>
-                  {pose === 'notHere' ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
+                  {pose === NOT_HERE ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
                 </AttendenceValue>
-                <Spacer />
-                <ArrowsContainer pose={pose === 'notDecided' ? 'notDecided' : 'decided'}>
-                  <ArrowsRight src={Arrows} />
+                <Spacer/>
+                <ArrowsContainer
+                  pose={pose === NOT_ANSWERED ? NOT_ANSWERED : ANSWERED}>
+                  <ArrowsRight src={Arrows}/>
                 </ArrowsContainer>
-                <Spacer />
+                <Spacer/>
               </RoundedRectangle>
               <Circle key={width}
-                className="AttendingHandle"
-                drag={'x'} dragConstraints={{left: outlinePadding, right: width - circleDiameter - outlinePadding}}
-                variants={{
-                  notHere: {x: outlinePadding},
-                  here: {x: width - circleDiameter - outlinePadding},
-                  notDecided: {x: ((width - circleDiameter) * 0.5)},
-                }}
-                initial={pose}
-                dragElastic={false}
-                animate={controls}
-                onDragEnd={onDragEnd(width)}
+                      className="AttendingHandle"
+                      drag={'x'}
+                      dragConstraints={{
+                        left: outlinePadding,
+                        right: width - circleDiameter - outlinePadding
+                      }}
+                      variants={{
+                        [NOT_HERE]: {x: outlinePadding},
+                        [HERE]: {x: width - circleDiameter - outlinePadding},
+                        [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
+                      }}
+                      initial={initialState}
+                      dragElastic={false}
+                      animate={controls}
+                      onDragEnd={onDragEnd(width)}
               />
             </InnerContainer>
           )

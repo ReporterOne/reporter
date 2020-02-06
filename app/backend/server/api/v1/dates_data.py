@@ -1,6 +1,6 @@
 # pylint: disable=unused-argument
 """Dates data api requests."""
-from typing import List
+from typing import List, Dict
 from datetime import date, datetime
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Query, Depends, Security, Body
@@ -42,7 +42,7 @@ async def delete_dates_status(
                                  user_id=user_id)
 
 
-@router.post("/", response_model=schemas.RangeDatesResponse)
+@router.post("/", response_model=Dict[date, schemas.DateDataResponse])
 async def post_dates_status(
     body: schemas.PostDateDataBody,
     db: Session = Depends(get_db),

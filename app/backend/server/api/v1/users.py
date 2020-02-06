@@ -1,14 +1,16 @@
 # pylint: disable=unused-argument
 """Users api requests."""
-from typing import List
+from typing import List, Dict
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, Security
+from fastapi import APIRouter, Depends, Security, Body
+from datetime import date, datetime
 
 from server import auth
 
 from db import crud
 from db import schemas
 from db.database import get_db
+from utils.datetime_utils import as_dict, fill_missing
 
 router = APIRouter()
 
@@ -70,3 +72,92 @@ async def get_subjects(
             db=db,
             commander_id=user_id
         )
+
+
+def get_calendar_of_user(db, user_id, start, end):
+    date_details = crud.get_dates_data_of(db, [user_id], start, end)
+    details = as_dict(date_details)
+
+    if end is None:
+        end = start
+
+    return fill_missing(details, [user_id], start, end, flat=True)
+
+
+def post_calendar_of_user(db, user_id, start, end, state, reason,
+                          current_user):
+    response = crud.set_new_date_data(
+        db=db,
+        user_id=user_id,
+        start_date=start,
+        end_date=end,
+        state=state,
+        reason=reason,
+        reported_by_id=current_user.id,
+        reported_time=datetime.now()
+    )
+    return response
+
+
+@router.get("/me/statuses",
+            response_model=List[schemas.CalendarResponseSingle])
+async def get_calendar_me(
+    start: date,
+    end: date = None,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    """Get calendar data of user."""
+    user_id = current_user.id
+    return get_calendar_of_user(user_id=user_id, start=start, end=end, db=db)
+
+
+@router.post("/me/statuses",
+             response_model=Dict[date, schemas.DateDataResponse])
+async def post_calendar_me(
+    start: date = Body(...),
+    end: date = Body(None),
+    state: schemas.AnswerStateTypes = Body(...),
+    reason: str = Body(None),
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    """Get calendar data of user."""
+    user_id = current_user.id
+    return post_calendar_of_user(user_id=user_id, start=start, end=end,
+                                 reason=reason, state=state,
+                                 db=db, current_user=current_user)
+
+
+@router.get("/{user_id}/statuses",
+            response_model=List[schemas.CalendarResponseSingle])
+async def get_calendar(
+    user_id: int,
+    start: date,
+    end: date = None,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    """Get calendar data of user."""
+    return get_calendar_of_user(user_id=user_id, start=start, end=end, db=db)
+
+
+@router.post("/{user_id}/statuses",
+             response_model=Dict[date, schemas.DateDataResponse])
+async def post_user_calendar(
+    user_id: int,
+    start: date = Body(...),
+    end: date = Body(None),
+    state: schemas.AnswerStateTypes = Body(...),
+    reason: str = Body(None),
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"])
+):
+    """Get calendar data of user."""
+    return post_calendar_of_user(user_id=user_id, start=start, end=end,
+                                 reason=reason, state=state,
+                                 db=db, current_user=current_user)

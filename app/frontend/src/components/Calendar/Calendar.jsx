@@ -11,8 +11,11 @@ import {
 import {Header, Days, Cells} from './components';
 import styled from 'styled-components';
 import {Swipeable} from 'react-swipeable';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {fetchDateDate} from '~/hooks/date_datas';
+import {formatDate} from "~/components/Calendar/components/utils";
+import {iteratePrevCurrentNext} from "~/utils/utils";
+import {updateRenderedMonth} from "~/actions/calendar";
 
 
 const StyledSwipeable = styled(Swipeable)`
@@ -22,8 +25,10 @@ const StyledSwipeable = styled(Swipeable)`
 `;
 
 const SpinerContainer = styled.div`
-  align-self: center;
-  justify-self: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledContainer = styled(motion.div)`
@@ -34,20 +39,13 @@ const StyledContainer = styled(motion.div)`
   position: absolute;
 `;
 
-const Calendar = ({userId}) => {
-  const [currentDate, setCurrentDate] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [swipedLeft, setSwipedLeft] = useState(true);
-  const [mounted, setMounted] = useState(false);
+
+const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
   const now = new Date();
-  useEffect(() => {
-    setCurrentDate(now);
-    setSelectedDate(now);
-    setTimeout(() => {
-      // let the calendar settle.
-      setMounted(true);
-    }, 10);
-  }, []);
+  const [currentDate, setCurrentDate] = useState(now);
+  const [loading, setLoading] = useState(false);
+  const [swipedLeft, setSwipedLeft] = useState(true);
+  const dispatch = useDispatch();
 
   const {monthStartDay, monthEndDay, startDate, endDate} = useMemo(() => {
     const dateMonthStart = startOfMonth(currentDate);
@@ -62,12 +60,16 @@ const Calendar = ({userId}) => {
     };
   }, [currentDate]);
 
-  const {loading, dates} = useSelector((state) => state.calendar);
-  fetchDateDate({
-    start: getUnixTime(monthStartDay),
-    end: getUnixTime(monthEndDay),
-    userId: userId,
-  });
+  useEffect(() => {
+    (async () => {
+      if (fetchData) {
+        dispatch(updateRenderedMonth(monthStartDay.getMonth()));
+        setLoading(true);
+        await fetchData(formatDate(startDate), formatDate(endDate), now);
+        setLoading(false);
+      }
+    })();
+  }, [startDate, endDate, fetchData, dispatch]);
 
   const nextMonth = useCallback((e) => {
     setSwipedLeft(false);
@@ -80,7 +82,7 @@ const Calendar = ({userId}) => {
   });
 
   const onDateClick = useCallback((day) => {
-    setSelectedDate(day);
+    if (setSelectedDate) setSelectedDate(day);
   });
 
   const slideAmount = useMemo(() => {
@@ -102,16 +104,16 @@ const Calendar = ({userId}) => {
       <AnimatePresence>
         <StyledContainer
           key={currentDate}
-          initial={{x: mounted? slideAmount : 0, opacity: mounted? 0 : 1}}
+          initial={{x: slideAmount, opacity: 1}}
           animate={{x: 0, opacity: 1}}
-          exit={{x: slideAmount * -1, opacity: 0}}
+          exit={{x: -slideAmount, opacity: 0}}
         >
-          <Header currentDate={currentDate} selectedDate={selectedDate}/>
+          <Header currentDate={currentDate}/>
           <Days currentDate={currentDate}/>
           <Cells onDateClick={onDateClick}
-            userId={userId} today={now} renderedMonth={monthStartDay.getMonth()}
-            dates={dates} from={startDate} to={endDate}
-
+                 selectedDate={selectedDate}
+            today={now} renderedMonth={monthStartDay.getMonth()}
+            from={startDate} to={endDate}
           />
         </StyledContainer>
       </AnimatePresence>

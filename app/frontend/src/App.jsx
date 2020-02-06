@@ -16,7 +16,7 @@ import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
-import {fetchReasons} from '~/hooks/date_datas';
+import {fetchMyToday, fetchReasons} from '~/hooks/date_datas';
 import {fetchCurrentUser} from '~/hooks/users';
 import store from './store';
 
@@ -26,6 +26,7 @@ export const App = (props) => {
 
   fetchReasons();
   fetchCurrentUser();
+  fetchMyToday();
 
   const onDrawerDrag = useCallback(({data, drawer}) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;

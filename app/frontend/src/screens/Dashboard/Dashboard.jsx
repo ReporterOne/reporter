@@ -7,8 +7,24 @@ import {Container, RoundedContainer, theme} from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import ReasonsDialog from '~/dialogs/Reasons';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import DateStatusService from '~/services/date_datas';
+import {
+  deepCopy,
+  HERE,
+  iteratePrevCurrentNext,
+  NOT_ANSWERED,
+  NOT_HERE
+} from "~/utils/utils";
+import {logoutIfNoPermission} from "~/hooks/utils";
+import UsersService from "~/services/users";
+import {
+  updateDates,
+  updateDay,
+  updateToday,
+  updateTodayData
+} from "~/actions/calendar";
+import {formatDate} from "~/components/Calendar/components/utils";
 
 
 const HeaderWelcome = styled.h2`
@@ -31,33 +47,59 @@ const WelcomeMessage = styled(Container)`
 `;
 
 
+
 const Dashboard = React.memo((props) => {
+  const dispatch = useDispatch();
   const {english_name = undefined, id = undefined} = useSelector((state) => state.users.me || {});
   const [openDialog, changeOpenDialog] = useState(false);
-  const [selectedValue, changeSelectedValue] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+
+  const {state: todayState = NOT_ANSWERED, reason: todayReason = null} = useSelector(state => state.calendar.dates?.[selectedDate]?.data ?? {});
+
+  const changeSelectedDate = useCallback((data) => {
+    setSelectedDate(data.date);
+  });
+  const fetchDates = useCallback(async (start, end, today) => {
+    await logoutIfNoPermission(async () => {
+      const data = await UsersService.getMyCalendar({start, end});
+      dispatch(updateDates(data));
+      const todayData = lodash.find(data, {date: formatDate(today)});
+      if (todayData) {
+        dispatch(updateToday(todayData));
+      }
+    }, dispatch);
+  }, [dispatch]);
 
   const handleClose = useCallback((value) => {
     changeOpenDialog(false);
-    changeSelectedValue(value);
-    DateStatusService.setToday({
-      userId: id,
-      state: 'not_here',
+    UsersService.setMyCalendar({
+      state: NOT_HERE,
       reason: value,
-    });
+      start: selectedDate
+    }).then(data => {
+      const key = Object.keys(data)[0];
+      const value = Object.values(data)[0];
+      dispatch(updateDay(key, value));
+    })
   });
 
   const handleOnChange = useCallback((state) => {
-    if (state === 'notHere') {
+    if (state === NOT_HERE) {
       changeOpenDialog(true);
     } else {
-      changeSelectedValue(null);
-      if (state === 'here') {
-        DateStatusService.setToday({
-          userId: id,
-          state: 'here',
-        });
+      if (state === HERE) {
+        UsersService.setMyCalendar({
+          start: selectedDate,
+          state: HERE
+        }).then(data => {
+          const key = Object.keys(data)[0];
+          const value = Object.values(data)[0];
+          dispatch(updateDay(key, value));
+        })
       } else {
-        DateStatusService.deleteToday({userId: id});
+        DateStatusService.deleteToday({userId: id}).then(() => {
+          dispatch(updateDay(formatDate(new Date()), null));
+        });
       }
     }
   });
@@ -69,12 +111,12 @@ const Dashboard = React.memo((props) => {
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{lodash.capitalize(english_name)}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
+        <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender userId={id}/>
+        <Calender fetchData={fetchDates} selectedDate={selectedDate} setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>
-      <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
+      <ReasonsDialog open={openDialog} selectedValue={todayReason?.name} onClose={handleClose}/>
     </Container>
   );
 });

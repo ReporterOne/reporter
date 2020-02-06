@@ -3,7 +3,7 @@ import AuthService, {PermissionsError} from '~/services/auth';
 
 export const logoutIfNoPermission = async (callback, dispatch) => {
   try {
-    await callback();
+    return await callback();
   } catch (e) {
     if (e instanceof PermissionsError) {
       await AuthService.logout();

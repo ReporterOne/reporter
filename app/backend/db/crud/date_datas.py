@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 from db import schemas
 from db.models import DateData, DateDetails, Reason
-from utils.datetime_utils import daterange
+from utils.datetime_utils import daterange, as_dict
 from .reasons import get_reason_by_name
 from .crud_utils import put_values
 
@@ -31,6 +31,57 @@ def _get_single_date(
         DateData.user_id == user_id,
         start_date == DateData.date
     ).first()
+
+
+def _get_single_date_of(
+    db: Session,
+    user_ids: List[int],
+    start_date: date,
+) -> DateData:
+    """Get single date data from the db.
+
+    Args:
+        user_ids: the relevant user id.
+        start_date: the date that is looked for.
+
+    Returns:
+        the wanted date data of the user.
+    """
+    return db.query(DateDetails).join(DateData).filter(
+        DateData.user_id.in_(user_ids),
+        start_date == DateDetails.date
+    ).first()
+
+
+def get_dates_data_of(
+    db: Session,
+    user_ids: List[int],
+    start_date: date,
+    end_date: date = None
+) -> List[DateDetails]:
+    """Get date details from the db.
+
+    Args:
+        db: db session.
+        user_ids: list of relavent user id.
+        start_date: date of the start range.
+        end_date: date of the end range (default: None).
+
+    Returns:
+        list of date details between start_date and end_date.
+    """
+    if end_date:
+        return db.query(DateDetails).join(DateData).filter(
+            DateData.user_id.in_(user_ids),
+            start_date <= DateDetails.date,
+            DateDetails.date <= end_date
+        ).all()
+
+    date = _get_single_date_of(db, user_ids, start_date)
+    if date:
+        return [date]
+
+    return []
 
 
 def get_dates_data(
@@ -57,7 +108,11 @@ def get_dates_data(
             DateData.date <= end_date
         ).all()
 
-    return [_get_single_date(db, user_id, start_date)]
+    date = _get_single_date(db, user_id, start_date)
+    if date:
+        return [date]
+
+    return []
 
 
 def get_multiple_users_dates_data(
@@ -149,10 +204,12 @@ def set_new_date_data(
                             detail='Cannot sign as "not_here" with no reason.')
 
     dates_data = []
+    db_query = get_dates_data(db, user_id, start_date, end_date)
+    db_query = as_dict(db_query)
     for day in daterange(start_date, end_date):
-        date_data = _get_single_date(db, user_id, day)
-        if date_data:
+        if day in db_query:
             # modify existing one
+            date_data = db_query[day]
             data = put_values(
                 db=db,
                 obj=date_data,
@@ -181,7 +238,7 @@ def set_new_date_data(
 
         dates_data.append(data)
     db.commit()
-    return dict(user_id=user_id, data=dates_data)
+    return as_dict(dates_data)
 
 
 def delete_users_dates_data(

@@ -24,11 +24,11 @@ const YearNumber = styled.span`
   /* letter-spacing: 0.1rem; */
 `;
 
-const Header = (props) => {
+const Header = ({currentDate}) => {
   return (
     <Container>
-      <MonthName role="monthName"> {format(props.currentDate, MonthFormat)} </MonthName>
-      <YearNumber> {format(props.currentDate, YearFormat)} </YearNumber>
+      <MonthName role="monthName"> {format(currentDate, MonthFormat)} </MonthName>
+      <YearNumber> {format(currentDate, YearFormat)} </YearNumber>
     </Container>
   );
 };

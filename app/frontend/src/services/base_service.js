@@ -1,6 +1,10 @@
 import axios from 'axios';
 import AuthService, {PermissionsError} from '~/services/auth';
 
+
+class CanceledError extends Error {}
+
+
 /**
  * Base Http service.
  * Every service should inherit from this base class and use request method.
@@ -29,11 +33,13 @@ export class HttpService {
         url: `${this.prefix}${config.url}`,
         headers: {
           ...AuthService.getAuthHeader(),
-        },
-      },
-      );
+        }
+      });
       return response.data;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        throw new CanceledError(error.message);
+      }
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
       }

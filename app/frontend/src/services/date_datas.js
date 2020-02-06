@@ -4,6 +4,7 @@ import {
 import {statusList} from '~/utils/statusList';
 
 import {HttpService} from '~/services/base_service';
+import {formatDate} from "~/components/Calendar/components/utils";
 
 
 /** DateStatus service for requesting date statuses. */
@@ -55,7 +56,7 @@ class DateStatusService extends HttpService {
       method: 'post',
       url: '/',
       data: {
-        start_date: getUnixTime(date),
+        start_date: formatDate(date),
         user_id: userId,
         state,
         reason,

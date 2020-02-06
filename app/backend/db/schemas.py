@@ -1,7 +1,7 @@
 # pylint: disable=missing-class-docstring
 """Schemes for db responses."""
 from enum import Enum
-from typing import List, Any
+from typing import List, Any, Type
 from datetime import date, time, datetime
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
@@ -9,7 +9,6 @@ from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 class Mador(BaseModel):
     name: str
-    manager: int = None
 
     class Config:
         orm_mode = True
@@ -21,7 +20,8 @@ class User(BaseModel):
     reminder_time: time = None
     english_name: str = None
     mador: Mador = None
-    operators_id: List[int] = None
+    manages_mador_name: str = None
+    operates: List[Mador] = None
 
     class Config:
         orm_mode = True
@@ -104,6 +104,24 @@ class DateDataResponse(BaseModel):
 class RangeDatesResponse(BaseModel):
     user_id: int
     data: List[DateDataResponse]
+
+    class Config:
+        orm_mode = True
+
+
+class CalendarResponse(BaseModel):
+    date: date
+    type: str
+    data: List[DateDataResponse]
+
+    class Config:
+        orm_mode = True
+
+
+class CalendarResponseSingle(BaseModel):
+    date: date
+    type: str
+    data: DateDataResponse = None
 
     class Config:
         orm_mode = True

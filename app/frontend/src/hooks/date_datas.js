@@ -2,8 +2,9 @@ import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import DateStatusService from '~/services/date_datas';
+import UsersService from '~/services/users';
 import {updateReasons} from '~/actions/general';
-import {updateDates} from '~/actions/calendar';
+import {updateDates, updateToday} from '~/actions/calendar';
 import {logoutIfNoPermission} from '~/hooks/utils';
 
 
@@ -23,7 +24,7 @@ export const fetchReasons = () => {
   }, [isLoggedIn, dispatch]);
 };
 
-export const fetchDateDate = ({start, end, userId}) => {
+export const fetchDateDate = ({start, end}) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.general.login);
 
@@ -31,11 +32,26 @@ export const fetchDateDate = ({start, end, userId}) => {
     (async () => {
       if (isLoggedIn) {
         await logoutIfNoPermission(async () => {
-          const dateData = await DateStatusService.getDateData({start, end, userId});
+          const dateData = await UsersService.getMyCalendar({start, end});
           dispatch(updateDates(dateData));
         }, dispatch);
       }
     })();
-  }, [isLoggedIn, dispatch, start, end, userId]);
+  }, [isLoggedIn, dispatch, start, end]);
 };
 
+export const fetchMyToday = () => {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.general.login);
+
+  useEffect(() => {
+    (async () => {
+      if (isLoggedIn) {
+        await logoutIfNoPermission(async () => {
+          const dateData = await UsersService.getMyToday();
+          dispatch(updateToday(dateData));
+        }, dispatch);
+      }
+    })();
+  }, [isLoggedIn, dispatch]);
+};
