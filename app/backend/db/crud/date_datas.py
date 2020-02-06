@@ -1,6 +1,6 @@
 """Dates datas api with db."""
 from http import HTTPStatus
-from typing import List
+from typing import List, Dict
 from datetime import date, datetime
 
 from sqlalchemy.orm import Session

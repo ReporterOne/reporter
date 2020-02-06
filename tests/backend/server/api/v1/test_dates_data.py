@@ -9,6 +9,7 @@ from db.crud.date_datas import set_new_date_data, get_dates_data
 from tests.backend.test_query import TestQuery
 from tests.backend.utils.url_utils import URL, Query
 from tests.backend.utils.fake_users_generator import get_fake_user
+from tests.backend.utils.snapshot import response_snapshot
 
 
 @freeze_time("2020-01-01")
@@ -65,33 +66,8 @@ class TestDatesStatus(TestQuery):
             url.to_text(),
             headers={'authorization': f'bearer {self.current_user_token}'}
         )
-        assert response.status_code == OK
-        assert response.json() == [{
-            'user_id': self.user.id,
-            'data': [
-                {
-                    'user_id': self.user.id,
-                    'state': 'here',
-                    'reason': None,
-                    'reported_by_id': self.current_user.id,
-                    'reported_time': '1997-01-03T12:12:12',
-                    'date_details': {
-                        'date': '1997-01-03',
-                        'type': 'unknown'
-                    }
-                }, {
-                    'user_id': self.user.id,
-                    'state': 'here',
-                    'reason': None,
-                    'reported_by_id': self.current_user.id,
-                    'reported_time': '1997-01-03T12:12:12',
-                    'date_details': {
-                        'date': '1997-01-04',
-                        'type': 'unknown'
-                    }
-                }
-            ]
-        }]
+        self.assertEqual(response.status_code, OK)
+        self.assertTrue(response_snapshot(0, response.json()))
 
     def test_post_dates_status(self):
         """"Test for post_dates_status from dates_status router."""
@@ -108,23 +84,8 @@ class TestDatesStatus(TestQuery):
             }
         )
 
-        assert response.status_code == OK
-        assert response.json() == {
-            'user_id': self.user.id,
-            'data': [{
-                'user_id': self.user.id,
-                'state': 'not_here',
-                'reason': {
-                    'name': 'abc'
-                },
-                'reported_by_id': self.current_user.id,
-                'reported_time': '2020-01-01T00:00:00',
-                'date_details': {
-                    'date': '1999-01-05',
-                    'type': 'unknown'
-                }
-            }]
-        }
+        self.assertEqual(response.status_code, OK)
+        self.assertTrue(response_snapshot(0, response.json()))
 
     def test_delete_dates_status(self):
         """"Test for delete_dates_status from dates_status router."""
@@ -148,7 +109,7 @@ class TestDatesStatus(TestQuery):
             start_date=self.START_DATE,
             end_date=self.END_DATE
         )
-        assert date_data == []
+        self.assertEqual(date_data, [])
 
     def test_put_dates_status(self):
         """"Test for put_dates_status from dates_status router."""
@@ -164,23 +125,8 @@ class TestDatesStatus(TestQuery):
             }
         )
 
-        assert response.status_code == OK
-        assert response.json() == {
-            'user_id': self.user.id,
-            'data': [{
-                'user_id': self.user.id,
-                'state': 'not_here',
-                'reason': {
-                    'name': 'abc'
-                },
-                'reported_by_id': self.current_user.id,
-                'reported_time': '2020-01-01T00:00:00',
-                'date_details': {
-                    'date': '1997-01-03',
-                    'type': 'unknown'
-                }
-            }]
-        }
+        self.assertEqual(response.status_code, OK)
+        self.assertTrue(response_snapshot(0, response.json()))
 
     def test_get_reasons(self):
         """"Test for get_reasons from dates_status router."""
@@ -190,5 +136,5 @@ class TestDatesStatus(TestQuery):
             headers={'authorization': f'bearer {self.current_user_token}'}
         )
 
-        assert response.status_code == OK
-        assert response.json() == list(self.reasons.values())
+        self.assertEqual(response.status_code, OK)
+        self.assertTrue(response_snapshot(0, response.json()))

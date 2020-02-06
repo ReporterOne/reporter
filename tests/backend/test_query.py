@@ -28,7 +28,7 @@ class TestQuery(unittest.TestCase):
         """Sets up consts from the db."""
         # Create Reasons:
         self.current_user, self.current_user_token = \
-            get_fake_current_user(self.APP_TEST, self.session)
+            get_fake_current_user(self.APP_TEST, self.session, "one report")
 
         self.reasons = {"1_abc": "abc", "2_bcd": "bcd", "3_efg": "efg"}
         self.session.add_all([models.date_datas.Reason(name=reason)
@@ -43,15 +43,13 @@ class TestQuery(unittest.TestCase):
         raise NotImplementedError
 
     def setUp(self):
-        self.engine = create_engine('sqlite:///:memory:',
+        self.engine = create_engine('sqlite://',
                                     connect_args={'check_same_thread': False})
         self.session = Session(self.engine)
+        models.Base.metadata.drop_all(self.engine)
         models.Base.metadata.create_all(self.engine)
         app.dependency_overrides[get_db] = self.get_test_db
         api_v1.dependency_overrides[get_db] = self.get_test_db
 
         self.set_up_db_consts()
         self.set_up_fake_db()
-
-    def tearDown(self):
-        models.Base.metadata.drop_all(self.engine)
