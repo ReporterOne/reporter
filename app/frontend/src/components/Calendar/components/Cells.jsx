@@ -7,6 +7,7 @@ import {
   isPast,
   isSameDay,
 } from 'date-fns';
+import lodash from 'lodash';
 import styled, {css} from 'styled-components';
 import {Container, theme} from '~/components/common';
 import {
@@ -125,25 +126,65 @@ const dateLabelColor = {
   today: theme.grey,
 };
 
+const isEqual = (a, b, fields) => {
+  return fields.every((field) => lodash.get(a, field) === lodash.get(b, field));
+};
 
-const Day = ({date, onDateClick, isRenderedMonth, today, cellWidth, cellHeight, selectedDate}) => {
+const isDiff = (a, b, fields) => !isEqual(a, b, fields);
+
+const getRangeType = (prev, current, next, renderedMonth, userId) => {
+  const isSameMonth = new Date().getMonth() === renderedMonth;
+  if (isSameMonth && index < today.getDate() - 1) return 'Single';
+
+  prev = lodash.find(prev?.data, {user_id: userId});
+  current = lodash.find(current?.data, {user_id: userId});
+  next = lodash.find(next?.data, {user_id: userId});
+  if (!prev && !current && !prev) {
+    return 'Single';
+  }
+
+  if ((!prev || isDiff(prev, current, [`state`, `reason.name`]) &&
+    (next && isEqual(next, current, [`state`, `reason.name`])))) {
+    return 'Start';
+  } else if ((prev && isEqual(prev, current, [`state`, `reason.name`])) &&
+    (next && isEqual(next, current, [`state`, `reason.name`]))) {
+    return 'Mid';
+  } else if ((prev && isEqual(prev, current, [`state`, `reason.name`])) &&
+    (!next || isDiff(next, current, [`state`, `reason.name`]))) {
+    return 'End';
+  }
+  return 'Single';
+};
+
+const Day = ({date, onDateClick, renderedMonth, today, cellWidth, cellHeight, selectedDate, userId}) => {
   const dayRef = useRef(null);
   const dayLabelRef = useRef(null);
+
+  const beforeDay = new Date(date);
+  beforeDay.setDate(date.getDate() - 1);
+  const afterDay = new Date(date);
+  afterDay.setDate(date.getDate() + 1);
+  const isRenderedMonth = renderedMonth === date.getMonth();
+
+  const renderPrev = useSelector((state) => state.calendar.dates?.[formatDate(beforeDay)]);
+  const renderNext = useSelector((state) => state.calendar.dates?.[formatDate(afterDay)]);
   const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
     date: date,
-    _range_type: 'Single',
   });
+  const range_type = getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId);
+
+  const data = lodash.find(render.data, {user_id: userId});
 
   const dateStr = formatDate(date);
   const isToday = isSameDay(date, today);
   const isPast_ = !isToday && isPast(date);
   return (
-    <StyledDay status={render.data?.state ?? NOT_ANSWERED} isPast={isPast_}
-      type={render._range_type}
+    <StyledDay status={data?.state ?? NOT_ANSWERED} isPast={isPast_}
+      type={range_type}
       isSameMonth={isRenderedMonth} key={dateStr} ref={dayRef}
       onClick={() => onDateClick(render)} cellWidth={cellWidth}
       cellHeight={cellHeight}>
-      <DateLabel status={render.data?.state ?? NOT_ANSWERED} isPast={isPast_}
+      <DateLabel status={data?.state ?? NOT_ANSWERED} isPast={isPast_}
         isSelected={selectedDate === dateStr} cellHeight={cellHeight}
         cellWidth={cellWidth}
         isToday={isToday} isSameMonth={isRenderedMonth}
@@ -157,7 +198,7 @@ const Day = ({date, onDateClick, isRenderedMonth, today, cellWidth, cellHeight, 
 Day.displayName = 'Day';
 
 
-const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selectedDate}) => {
+const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selectedDate, userId}) => {
   const cells = useRef(null);
   const [cell, setCell] = useState({width: 0, height: 0});
   useEffect(() => {
@@ -190,8 +231,9 @@ const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selected
                   cellHeight={cell.height}
                   date={date}
                   today={today}
+                  userId={userId}
                   selectedDate={selectedDate}
-                  isRenderedMonth={date.getMonth() === renderedMonth}
+                  renderedMonth={renderedMonth}
                   onDateClick={onDateClick}
                 />)
             }

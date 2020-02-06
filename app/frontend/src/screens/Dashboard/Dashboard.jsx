@@ -53,7 +53,7 @@ const Dashboard = React.memo((props) => {
   const {
     state: todayState = NOT_ANSWERED,
     reason: todayReason = null,
-  } = useSelector((state) => state.calendar.dates?.[selectedDate]?.data ?? {});
+  } = useSelector((state) => lodash.find(state.calendar.dates?.[selectedDate]?.data, {user_id: id}) ?? {});
 
   const changeSelectedDate = useCallback((data) => {
     setSelectedDate(data.date);
@@ -113,7 +113,7 @@ const Dashboard = React.memo((props) => {
         <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender fetchData={fetchDates} selectedDate={selectedDate} setSelectedDate={changeSelectedDate}/>
+        <Calender userId={id} fetchData={fetchDates} selectedDate={selectedDate} setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>
       <ReasonsDialog open={openDialog} selectedValue={todayReason?.name} onClose={handleClose}/>
     </Container>

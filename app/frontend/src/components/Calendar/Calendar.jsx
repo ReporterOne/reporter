@@ -38,7 +38,7 @@ const StyledContainer = styled(motion.div)`
 `;
 
 
-const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
+const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
   const now = new Date();
   const [currentDate, setCurrentDate] = useState(now);
   const [loading, setLoading] = useState(false);
@@ -84,7 +84,7 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
   });
 
   const slideAmount = useMemo(() => {
-    return swipedLeft? -300 : 300;
+    return swipedLeft ? -300 : 300;
   }, [swipedLeft]);
 
   if (loading || currentDate === null) {
@@ -96,7 +96,8 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
   }
 
   return (
-    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} trackMouse={true}
+    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}
+      trackMouse={true}
       className="CalendarContainer"
     >
       <AnimatePresence>
@@ -109,6 +110,7 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
           <Header currentDate={currentDate}/>
           <Days currentDate={currentDate}/>
           <Cells onDateClick={onDateClick}
+            userId={userId}
             selectedDate={selectedDate}
             today={now} renderedMonth={renderedMonth}
             from={startDate} to={endDate}

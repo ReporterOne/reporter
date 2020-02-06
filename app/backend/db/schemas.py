@@ -117,11 +117,3 @@ class CalendarResponse(BaseModel):
     class Config:
         orm_mode = True
 
-
-class CalendarResponseSingle(BaseModel):
-    date: date
-    type: str
-    data: DateDataResponse = None
-
-    class Config:
-        orm_mode = True

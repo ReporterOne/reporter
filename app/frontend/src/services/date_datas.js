@@ -1,6 +1,3 @@
-import {
-  getUnixTime,
-} from 'date-fns';
 import {statusList} from '~/utils/statusList';
 
 import {HttpService} from '~/services/base_service';

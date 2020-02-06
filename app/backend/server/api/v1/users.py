@@ -82,7 +82,7 @@ def get_calendar_of_user(db, user_id, start, end):
     if end is None:
         end = start
 
-    return fill_missing(details, [user_id], start, end, flat=True)
+    return fill_missing(details, [user_id], start, end)
 
 
 def post_calendar_of_user(db, user_id, start, end, state, reason,
@@ -101,7 +101,7 @@ def post_calendar_of_user(db, user_id, start, end, state, reason,
 
 
 @router.get("/me/statuses",
-            response_model=List[schemas.CalendarResponseSingle])
+            response_model=List[schemas.CalendarResponse])
 async def get_calendar_me(
     start: date,
     end: date = None,
@@ -133,7 +133,7 @@ async def post_calendar_me(
 
 
 @router.get("/{user_id}/statuses",
-            response_model=List[schemas.CalendarResponseSingle])
+            response_model=List[schemas.CalendarResponse])
 async def get_calendar(
     user_id: int,
     start: date,
