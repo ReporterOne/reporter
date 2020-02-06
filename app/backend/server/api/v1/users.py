@@ -1,9 +1,10 @@
 # pylint: disable=unused-argument
 """Users api requests."""
 from typing import List, Dict
-from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, Security, Body
 from datetime import date, datetime
+
+from fastapi import APIRouter, Depends, Security, Body
+from sqlalchemy.orm import Session
 
 from server import auth
 

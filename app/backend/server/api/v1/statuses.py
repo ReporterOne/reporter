@@ -1,9 +1,9 @@
 # pylint: disable=unused-argument
 """Dates data api requests."""
-from typing import List, Dict
-from datetime import date, datetime
+from typing import List
+from datetime import date
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Query, Depends, Security, Body
+from fastapi import APIRouter, Query, Depends, Security
 
 from db import crud, schemas
 from db.database import get_db

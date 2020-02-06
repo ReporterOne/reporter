@@ -12,7 +12,7 @@ import {
 
 import posed from 'react-pose';
 import {motion, useAnimation} from 'framer-motion';
-import {ANSWERED, HERE, NOT_ANSWERED, NOT_HERE} from "~/utils/utils";
+import {ANSWERED, HERE, NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
 
 const ContainerHeight = 60;
 const rectangleMargin = 15;
@@ -126,7 +126,7 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED})
 
   useEffect(() => {
     changePose(initialState);
-    controls.start(initialState)
+    controls.start(initialState);
   }, [initialState, changePose, controls]);
 
   const handleChange = useCallback((state) => {
@@ -174,21 +174,21 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED})
                 <Spacer/>
               </RoundedRectangle>
               <Circle key={width}
-                      className="AttendingHandle"
-                      drag={'x'}
-                      dragConstraints={{
-                        left: outlinePadding,
-                        right: width - circleDiameter - outlinePadding
-                      }}
-                      variants={{
-                        [NOT_HERE]: {x: outlinePadding},
-                        [HERE]: {x: width - circleDiameter - outlinePadding},
-                        [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
-                      }}
-                      initial={initialState}
-                      dragElastic={false}
-                      animate={controls}
-                      onDragEnd={onDragEnd(width)}
+                className="AttendingHandle"
+                drag={'x'}
+                dragConstraints={{
+                  left: outlinePadding,
+                  right: width - circleDiameter - outlinePadding,
+                }}
+                variants={{
+                  [NOT_HERE]: {x: outlinePadding},
+                  [HERE]: {x: width - circleDiameter - outlinePadding},
+                  [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
+                }}
+                initial={initialState}
+                dragElastic={false}
+                animate={controls}
+                onDragEnd={onDragEnd(width)}
               />
             </InnerContainer>
           )

@@ -1,5 +1,5 @@
 import {HttpService} from '~/services/base_service';
-import {formatDate} from "~/components/Calendar/components/utils";
+import {formatDate} from '~/components/Calendar/components/utils';
 
 /** Service for handling users requests */
 class UsersService extends HttpService {
@@ -31,8 +31,8 @@ class UsersService extends HttpService {
         start: start,
         end: end,
         state,
-        reason
-      }
+        reason,
+      },
     });
   }
 
@@ -52,8 +52,8 @@ class UsersService extends HttpService {
         start,
         end,
         state,
-        reason
-      }
+        reason,
+      },
     });
   }
 
@@ -71,8 +71,8 @@ class UsersService extends HttpService {
       data: {
         start: formatDate(date),
         state,
-        reason
-      }
+        reason,
+      },
     });
   }
 
@@ -84,8 +84,8 @@ class UsersService extends HttpService {
       method: 'get',
       url: '/me/statuses',
       params: {
-        start: formatDate(new Date())
-      }
+        start: formatDate(new Date()),
+      },
     }))[0];
   }
 
@@ -100,8 +100,8 @@ class UsersService extends HttpService {
       url: '/me/statuses',
       params: {
         start: start,
-        end: end
-      }
+        end: end,
+      },
     });
   }
 }

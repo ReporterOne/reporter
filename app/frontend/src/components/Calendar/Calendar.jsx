@@ -6,16 +6,14 @@ import {
   addMonths,
   startOfMonth,
   endOfMonth,
-  startOfWeek, endOfWeek, addWeeks, getUnixTime,
+  startOfWeek, endOfWeek, addWeeks,
 } from 'date-fns';
 import {Header, Days, Cells} from './components';
 import styled from 'styled-components';
 import {Swipeable} from 'react-swipeable';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchDateDate} from '~/hooks/date_datas';
-import {formatDate} from "~/components/Calendar/components/utils";
-import {iteratePrevCurrentNext} from "~/utils/utils";
-import {updateRenderedMonth} from "~/actions/calendar";
+import {useDispatch} from 'react-redux';
+import {formatDate} from '~/components/Calendar/components/utils';
+import {updateRenderedMonth} from '~/actions/calendar';
 
 
 const StyledSwipeable = styled(Swipeable)`
@@ -47,14 +45,14 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
   const [swipedLeft, setSwipedLeft] = useState(true);
   const dispatch = useDispatch();
 
-  const {monthStartDay, monthEndDay, startDate, endDate} = useMemo(() => {
+  const {renderedMonth, startDate, endDate} = useMemo(() => {
+    const renderedMonth = currentDate.getMonth();
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
     const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
     return {
-      monthStartDay: dateMonthStart,
-      monthEndDay: dateMonthEnd,
+      renderedMonth: renderedMonth,
       startDate: dateStartDate,
       endDate: dateEndDate,
     };
@@ -63,13 +61,13 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
   useEffect(() => {
     (async () => {
       if (fetchData) {
-        dispatch(updateRenderedMonth(monthStartDay.getMonth()));
+        dispatch(updateRenderedMonth(renderedMonth));
         setLoading(true);
         await fetchData(formatDate(startDate), formatDate(endDate), now);
         setLoading(false);
       }
     })();
-  }, [startDate, endDate, fetchData, dispatch]);
+  }, [startDate, endDate, fetchData, dispatch, renderedMonth]);
 
   const nextMonth = useCallback((e) => {
     setSwipedLeft(false);
@@ -111,8 +109,8 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate}) => {
           <Header currentDate={currentDate}/>
           <Days currentDate={currentDate}/>
           <Cells onDateClick={onDateClick}
-                 selectedDate={selectedDate}
-            today={now} renderedMonth={monthStartDay.getMonth()}
+            selectedDate={selectedDate}
+            today={now} renderedMonth={renderedMonth}
             from={startDate} to={endDate}
           />
         </StyledContainer>

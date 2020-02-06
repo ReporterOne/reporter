@@ -1,7 +1,7 @@
 # pylint: disable=missing-class-docstring
 """Schemes for db responses."""
 from enum import Enum
-from typing import List, Any, Type
+from typing import List, Any
 from datetime import date, time, datetime
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module

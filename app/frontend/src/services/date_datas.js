@@ -4,7 +4,7 @@ import {
 import {statusList} from '~/utils/statusList';
 
 import {HttpService} from '~/services/base_service';
-import {formatDate} from "~/components/Calendar/components/utils";
+import {formatDate} from '~/components/Calendar/components/utils';
 
 
 /** DateStatus service for requesting date statuses. */

@@ -1,17 +1,17 @@
 import {
   UPDATE_DATES,
   UPDATE_DAY,
-  UPDATE_RENDERED_MONTH, UPDATE_TODAY, UPDATE_TODAY_DATA
+  UPDATE_RENDERED_MONTH, UPDATE_TODAY, UPDATE_TODAY_DATA,
 } from '~/actions/calendar';
 import lodash from 'lodash';
-import {deepCopy, iteratePrevCurrentNext} from "~/utils/utils";
+import {deepCopy, iteratePrevCurrentNext} from '~/utils/utils';
 
 
 const initialState = {
   dates: {},
   loading: true,
   renderedMonth: null,
-  today: {}
+  today: {},
 };
 
 const isEqual = (a, b, fields) => {
@@ -27,11 +27,14 @@ export const datesFormatter = (dates, today, isSameMonth) => {
     const dateObject = {...current, _range_type: 'Single'};
     if (isSameMonth && index < today.getDate() - 1) return dateObject;
 
-    if ((!prev || isDiff(prev?.data, current?.data, ['state', 'reason.name']) && (next && isEqual(next?.data, current?.data, ['state', 'reason.name'])))) {
+    if ((!prev || isDiff(prev?.data, current?.data, ['state', 'reason.name']) &&
+      (next && isEqual(next?.data, current?.data, ['state', 'reason.name'])))) {
       dateObject._range_type = 'Start';
-    } else if ((prev && isEqual(prev?.data, current?.data, ['state', 'reason.name'])) && (next && isEqual(next?.data, current?.data, ['state', 'reason.name']))) {
+    } else if ((prev && isEqual(prev?.data, current?.data, ['state', 'reason.name'])) &&
+      (next && isEqual(next?.data, current?.data, ['state', 'reason.name']))) {
       dateObject._range_type = 'Mid';
-    } else if ((prev && isEqual(prev?.data, current?.data, ['state', 'reason.name'])) && (!next || isDiff(next?.data, current?.data, ['state', 'reason.name']))) {
+    } else if ((prev && isEqual(prev?.data, current?.data, ['state', 'reason.name'])) &&
+      (!next || isDiff(next?.data, current?.data, ['state', 'reason.name']))) {
       dateObject._range_type = 'End';
     }
     return dateObject;
@@ -44,9 +47,9 @@ export const datesFormatter = (dates, today, isSameMonth) => {
 };
 
 const byDate = (a, b) => {
-    if (a.date < b.date) return -1;
-    if (a.date > b.date) return 1;
-    return 0;
+  if (a.date < b.date) return -1;
+  if (a.date > b.date) return 1;
+  return 0;
 };
 
 const reduceDates = (dates, renderedMonth) => {
@@ -74,27 +77,27 @@ export const calendarReducer = (state = initialState, action) => {
       return {
         ...state,
         dates: reduceDay(state.dates, action.key, action.data,
-          state.renderedMonth)
+            state.renderedMonth),
       };
 
     case UPDATE_RENDERED_MONTH:
       return {
         ...state,
-        renderedMonth: action.month
+        renderedMonth: action.month,
       };
 
     case UPDATE_TODAY:
       return {
         ...state,
-        today: action.data
+        today: action.data,
       };
     case UPDATE_TODAY_DATA:
       return {
         ...state,
         today: {
           ...state.today,
-          data: action.data
-        }
+          data: action.data,
+        },
       };
 
     default: return state;

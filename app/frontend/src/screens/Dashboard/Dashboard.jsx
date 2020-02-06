@@ -10,21 +10,18 @@ import ReasonsDialog from '~/dialogs/Reasons';
 import {useDispatch, useSelector} from 'react-redux';
 import DateStatusService from '~/services/date_datas';
 import {
-  deepCopy,
   HERE,
-  iteratePrevCurrentNext,
   NOT_ANSWERED,
-  NOT_HERE
-} from "~/utils/utils";
-import {logoutIfNoPermission} from "~/hooks/utils";
-import UsersService from "~/services/users";
+  NOT_HERE,
+} from '~/utils/utils';
+import {logoutIfNoPermission} from '~/hooks/utils';
+import UsersService from '~/services/users';
 import {
   updateDates,
   updateDay,
   updateToday,
-  updateTodayData
-} from "~/actions/calendar";
-import {formatDate} from "~/components/Calendar/components/utils";
+} from '~/actions/calendar';
+import {formatDate} from '~/components/Calendar/components/utils';
 
 
 const HeaderWelcome = styled.h2`
@@ -47,14 +44,16 @@ const WelcomeMessage = styled(Container)`
 `;
 
 
-
 const Dashboard = React.memo((props) => {
   const dispatch = useDispatch();
-  const {english_name = undefined, id = undefined} = useSelector((state) => state.users.me || {});
+  const {english_name: englishName = undefined, id = undefined} = useSelector((state) => state.users.me || {});
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 
-  const {state: todayState = NOT_ANSWERED, reason: todayReason = null} = useSelector(state => state.calendar.dates?.[selectedDate]?.data ?? {});
+  const {
+    state: todayState = NOT_ANSWERED,
+    reason: todayReason = null,
+  } = useSelector((state) => state.calendar.dates?.[selectedDate]?.data ?? {});
 
   const changeSelectedDate = useCallback((data) => {
     setSelectedDate(data.date);
@@ -75,12 +74,12 @@ const Dashboard = React.memo((props) => {
     UsersService.setMyCalendar({
       state: NOT_HERE,
       reason: value,
-      start: selectedDate
-    }).then(data => {
+      start: selectedDate,
+    }).then((data) => {
       const key = Object.keys(data)[0];
       const value = Object.values(data)[0];
       dispatch(updateDay(key, value));
-    })
+    });
   });
 
   const handleOnChange = useCallback((state) => {
@@ -90,12 +89,12 @@ const Dashboard = React.memo((props) => {
       if (state === HERE) {
         UsersService.setMyCalendar({
           start: selectedDate,
-          state: HERE
-        }).then(data => {
+          state: HERE,
+        }).then((data) => {
           const key = Object.keys(data)[0];
           const value = Object.values(data)[0];
           dispatch(updateDay(key, value));
-        })
+        });
       } else {
         DateStatusService.deleteToday({userId: id}).then(() => {
           dispatch(updateDay(formatDate(new Date()), null));
@@ -109,7 +108,7 @@ const Dashboard = React.memo((props) => {
       <Container flex={2} style={{padding: '15px'}}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
-          <HeaderName mode="single" max={45}>{lodash.capitalize(english_name)}</HeaderName>
+          <HeaderName mode="single" max={45}>{lodash.capitalize(englishName)}</HeaderName>
         </WelcomeMessage>
         <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState}/>
       </Container>

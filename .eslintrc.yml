@@ -7,7 +7,10 @@ extends:
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
+parser: babel-eslint
 parserOptions:
+  babelOptions:
+    configFile: .babelrc
   ecmaFeatures:
     jsx: true
   ecmaVersion: 2018
@@ -19,7 +22,9 @@ overrides:
       - app/frontend/src/**/*.js
       - app/frontend/src/**/*.jsx
 rules:
+  strict: 0
   react/prop-types: off
+  camelcase: off
   max-len:
     - error
     - 120  # max len

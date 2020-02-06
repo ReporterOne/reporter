@@ -7,7 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import {DialogContent} from "@material-ui/core";
+import {DialogContent} from '@material-ui/core';
 
 
 const RTLListItemText = styled(ListItemText)`
@@ -22,13 +22,13 @@ export const ReasonsDialog = ({onClose, selectedValue, open}) => {
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title"
-            scroll={"paper"} open={open}>
+      scroll={'paper'} open={open}>
       <DialogTitle id="simple-dialog-title">Set Missing Reason</DialogTitle>
       <DialogContent dividers={true} dir="rtl">
         <List>
           {reasons.map((reason) => (
             <ListItem button onClick={() => handleListItemClick(reason)}
-                      key={reason}>
+              key={reason}>
               <RTLListItemText primary={reason}/>
             </ListItem>
           ))}

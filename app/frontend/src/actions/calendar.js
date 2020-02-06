@@ -12,7 +12,7 @@ export const updateDates = (dates) => ({
 
 export const updateRenderedMonth = (month) => ({
   type: UPDATE_RENDERED_MONTH,
-  month
+  month,
 });
 
 export const updateDay = (key, data) => ({
@@ -23,10 +23,10 @@ export const updateDay = (key, data) => ({
 
 export const updateToday = (data) => ({
   type: UPDATE_TODAY,
-  data: data
+  data: data,
 });
 
 export const updateTodayData = (data) => ({
   type: UPDATE_TODAY_DATA,
-  data: data
+  data: data,
 });

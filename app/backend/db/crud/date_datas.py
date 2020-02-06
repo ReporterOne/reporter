@@ -77,9 +77,9 @@ def get_dates_data_of(
             DateDetails.date <= end_date
         ).all()
 
-    date = _get_single_date_of(db, user_ids, start_date)
-    if date:
-        return [date]
+    data = _get_single_date_of(db, user_ids, start_date)
+    if data:
+        return [data]
 
     return []
 
@@ -108,9 +108,9 @@ def get_dates_data(
             DateData.date <= end_date
         ).all()
 
-    date = _get_single_date(db, user_id, start_date)
-    if date:
-        return [date]
+    data = _get_single_date(db, user_id, start_date)
+    if data:
+        return [data]
 
     return []
 
@@ -180,7 +180,7 @@ def set_new_date_data(
     start_date: date,
     end_date: date = None,
     reason: str = None
-) -> schemas.RangeDatesResponse:
+) -> Dict[date, schemas.DateDataResponse]:
     """Set Date Data to user.
 
     Args:

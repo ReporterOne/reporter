@@ -1,7 +1,9 @@
 import axios from 'axios';
 import AuthService, {PermissionsError} from '~/services/auth';
 
-
+/**
+ * Raise when axios request is canceled
+ */
 class CanceledError extends Error {}
 
 
@@ -33,7 +35,7 @@ export class HttpService {
         url: `${this.prefix}${config.url}`,
         headers: {
           ...AuthService.getAuthHeader(),
-        }
+        },
       });
       return response.data;
     } catch (error) {

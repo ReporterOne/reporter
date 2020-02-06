@@ -4,8 +4,8 @@ from datetime import date, time
 
 from sqlalchemy.orm import Session
 
-from db.models import User
 from db import schemas
+from db.models import User
 
 
 def create_user(
