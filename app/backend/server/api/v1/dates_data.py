@@ -8,11 +8,22 @@ from fastapi import APIRouter, Query, Depends, Security, Body
 from db import crud, schemas
 from db.database import get_db
 from server.auth import get_current_user
+from utils.datetime_utils import as_dict, fill_missing
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.RangeDatesResponse])
+def get_calendar_of_users(db, users_id, start, end):
+    date_details = crud.get_dates_data_of(db, users_id, start, end)
+    details = as_dict(date_details)
+
+    if end is None:
+        end = start
+
+    return fill_missing(details, users_id, start, end)
+
+
+@router.get("/", response_model=List[schemas.CalendarResponse])
 async def get_dates_status(
     start: date,
     end: date = None,
@@ -22,10 +33,8 @@ async def get_dates_status(
                                           scopes=["personal"])
 ):
     """Get dates status."""
-    return crud.get_multiple_users_dates_data(db=db,
-                                              start_date=start,
-                                              end_date=end,
-                                              users_id=users_id)
+    return get_calendar_of_users(db=db, users_id=users_id, start=start,
+                                 end=end)
 
 
 @router.delete("/")

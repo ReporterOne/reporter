@@ -13,6 +13,16 @@ class UsersService extends HttpService {
       url: '/me',
     });
   }
+  /**
+   * Get all allowed users.
+   * @return {Promise<T>}
+   */
+  async getAllowedUsers() {
+    return await this.request({
+      method: 'get',
+      url: '/me/allowed_users',
+    });
+  }
 
   /**
    * Set calendar of user.

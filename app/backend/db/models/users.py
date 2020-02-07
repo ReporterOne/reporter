@@ -66,6 +66,9 @@ class User(Base):
     permissions = relationship('Permission', secondary=permission_map,
                                backref='users')
 
+    def __hash__(self):
+        return hash(self.id)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         mador_name = self.mador.name if self.mador else self.mador_name

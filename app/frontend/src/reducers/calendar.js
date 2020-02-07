@@ -36,12 +36,19 @@ const reduceDay = (dates, key, value, userId) => {
   return reduceDates(datesList);
 };
 
+const mergeData = (obj, src) => {
+  if (!obj) return src;
+  const clone = deepCopy(obj);
+  clone.data = lodash.unionBy(clone.data ?? [], src.data ?? [], 'user_id');
+  return clone;
+};
+
 export const calendarReducer = (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_DATES:
       return {
         ...state,
-        dates: lodash.merge({...state.dates}, reduceDates(action.dates)),
+        dates: lodash.mergeWith(state.dates, reduceDates(action.dates), mergeData),
         loading: false,
       };
 

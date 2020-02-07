@@ -41,6 +41,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Token data model."""
     username: str = None
+    user_id: int = None
     scopes: List[str] = []
 
 
@@ -95,8 +96,12 @@ async def get_current_user(
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
+        user_id: int = payload.get("id")
+        if user_id is None:
+            raise credentials_exception
         token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(scopes=token_scopes, username=username,
+                               user_id=user_id)
     except ExpiredSignatureError:
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
@@ -141,7 +146,7 @@ async def login_for_access_token(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     # TODO: give only possible scopes
     access_token = create_access_token(
-        data={"sub": user.username, "scopes": ["personal"]},
+        data={"sub": user.username, "id": user.id, "scopes": ["personal"]},
         expires_delta=access_token_expires,
     )
     return {

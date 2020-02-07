@@ -1,5 +1,6 @@
 import qs from 'qs';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 const PREFIX = '/api';
 
@@ -44,6 +45,19 @@ class AuthService {
    */
   isLoggedIn() {
     return this.getToken() !== null;
+  }
+
+  /**
+   * Get user id from token.
+   */
+  getUserId() {
+    try {
+      const token = this.getToken();
+      const decoded = jwt_decode(token);
+      return decoded.id;
+    } catch (e) {
+      return null;
+    }
   }
 
   /**

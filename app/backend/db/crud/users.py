@@ -5,7 +5,7 @@ from datetime import date, time
 from sqlalchemy.orm import Session
 
 from db import schemas
-from db.models import User
+from db.models import User, Permission
 
 
 def create_user(
@@ -61,6 +61,43 @@ def delete_user(
     user = get_user(db=db, user_id=user_id)
     db.delete(user)
     db.commit()
+
+
+def is_admin(db: Session, user: User) -> bool:
+    """Check if user is admin."""
+    admin_permission = db.query(Permission).filter(
+        Permission.type == 'admin').one()
+    return admin_permission in user.permissions
+
+
+def add_permission(db: Session, user: User, permission: str,
+                   create_if_missing=False):
+    """Add user permission and create if missing"""
+    if create_if_missing:  # create new if not exists
+        permission = db.query(Permission).filter(
+            Permission.type == permission).first()
+        if permission is None:
+            permission = Permission(type=permission)
+
+    else:
+        permission = db.query(Permission).filter(
+            Permission.type == permission).one()
+
+    if permission in user.permissions:
+        return
+
+    user.permissions += permission
+    db.commit()
+
+
+def set_admin(db: Session, user: User):
+    """Add admin permission for a user."""
+    return add_permission(db, user, 'admin')
+
+
+def get_all_users(db: Session) -> List[User]:
+    """In-case of admin get all users."""
+    return db.query(User).all()
 
 
 def get_users(

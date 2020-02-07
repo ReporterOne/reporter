@@ -22,6 +22,7 @@ class User(BaseModel):
     mador: Mador = None
     manages_mador_name: str = None
     operates: List[Mador] = None
+    icon_path: str = None
 
     class Config:
         orm_mode = True

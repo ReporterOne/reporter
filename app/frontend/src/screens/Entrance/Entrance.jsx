@@ -14,6 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {AccountCircle} from '@material-ui/icons';
+import {updateCurrentUser} from "~/actions/users";
 
 const EntrancePage = styled(Container)`
   background-color: ${({theme}) => theme.main};
@@ -213,6 +214,7 @@ const Entrance = React.memo(({location, history}) => {
     (async () => {
       await AuthService.login(username, password);
       dispatch(updateLogin(true));
+      dispatch(updateCurrentUser(AuthService.getUserId()));
     })();
     e.preventDefault();
   });

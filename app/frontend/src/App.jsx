@@ -17,7 +17,7 @@ import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
 import {fetchMyToday, fetchReasons} from '~/hooks/date_datas';
-import {fetchCurrentUser} from '~/hooks/users';
+import {fetchAllowedUsers} from '~/hooks/users';
 import store from './store';
 
 export const App = (props) => {
@@ -25,7 +25,7 @@ export const App = (props) => {
   const avatarRef = useRef(null);
 
   fetchReasons();
-  fetchCurrentUser();
+  fetchAllowedUsers();
   fetchMyToday();
 
   const onDrawerDrag = useCallback(({data, drawer}) => {

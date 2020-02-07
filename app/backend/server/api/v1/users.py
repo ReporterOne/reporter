@@ -11,7 +11,7 @@ from server import auth
 from db import crud
 from db import schemas
 from db.database import get_db
-from utils.datetime_utils import as_dict, fill_missing
+from .dates_data import get_calendar_of_users
 
 router = APIRouter()
 
@@ -23,6 +23,38 @@ async def get_current_user(
 ):
     """Get current user."""
     return current_user
+
+
+def get_all_users_in_tree(user):
+    to_ret = [user]
+    current_soldiers = user.soldiers
+    to_ret += current_soldiers
+    for soldier in current_soldiers:
+        to_ret += get_all_users_in_tree(soldier)
+
+    return to_ret
+
+
+def get_all_allowed_users_of(db, user):
+    if crud.users.is_admin(db, user):
+        return crud.users.get_all_users(db)
+
+    allowed_users = get_all_users_in_tree(user)
+    operates_madors = user.operates
+    for mador in operates_madors:
+        allowed_users += mador.users
+
+    return list(set(allowed_users))
+
+
+@router.get("/me/allowed_users", response_model=List[schemas.User])
+async def get_current_user(
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"]),
+    db: Session = Depends(get_db),
+):
+    """Get current user."""
+    return get_all_allowed_users_of(db, current_user)
 
 
 @router.get("/{user_id}", response_model=schemas.User)
@@ -75,16 +107,6 @@ async def get_subjects(
         )
 
 
-def get_calendar_of_user(db, user_id, start, end):
-    date_details = crud.get_dates_data_of(db, [user_id], start, end)
-    details = as_dict(date_details)
-
-    if end is None:
-        end = start
-
-    return fill_missing(details, [user_id], start, end)
-
-
 def post_calendar_of_user(db, user_id, start, end, state, reason,
                           current_user):
     response = crud.set_new_date_data(
@@ -111,7 +133,8 @@ async def get_calendar_me(
 ):
     """Get calendar data of user."""
     user_id = current_user.id
-    return get_calendar_of_user(user_id=user_id, start=start, end=end, db=db)
+    return get_calendar_of_users(users_id=[user_id],
+                                 start=start, end=end, db=db)
 
 
 @router.post("/me/statuses",
@@ -143,7 +166,8 @@ async def get_calendar(
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
-    return get_calendar_of_user(user_id=user_id, start=start, end=end, db=db)
+    return get_calendar_of_users(users_id=[user_id],
+                                 start=start, end=end, db=db)
 
 
 @router.post("/{user_id}/statuses",

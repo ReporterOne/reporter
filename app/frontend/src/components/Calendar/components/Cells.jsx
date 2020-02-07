@@ -197,7 +197,7 @@ const useRangeType = (date, userId, isRenderedMonth) => {
   const renderPrev = useSelector((state) => state.calendar.dates?.[formatDate(beforeDay)]);
   const renderNext = useSelector((state) => state.calendar.dates?.[formatDate(afterDay)]);
   const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
-    date: date,
+    date: formatDate(date),
   });
   return useMemo(
     () => getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId),
@@ -213,10 +213,11 @@ const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userI
 
   const isRenderedMonth = useMemo(
     () => renderedMonth === date.getMonth(),
-    [renderedMonth, date]);
+    [renderedMonth,date]);
 
-  const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
-    date: date,
+  const dateStr = formatDate(date);
+  const render = useSelector((state) => state.calendar.dates?.[dateStr] ?? {
+    date: dateStr,
   });
   const rangeType = useRangeType(date, userId, isRenderedMonth);
 
@@ -224,7 +225,6 @@ const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userI
     () => lodash.find(render.data, {user_id: userId}),
     [render, userId]);
 
-  const dateStr = formatDate(date);
   const isToday = isSameDay(date, today);
   const isPast_ = !isToday && isPast(date);
   const status = data?.state ?? NOT_ANSWERED;

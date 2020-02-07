@@ -81,20 +81,20 @@ class DateStatusService extends HttpService {
    * Get date datas from server.
    * @param {number} start - start timestamp
    * @param {number} end - end timestamp
-   * @param {number} userId - relevant user id.
+   * @param {number} usersId - relevant users id.
    * @return {Promise<T>}
    */
-  async getDateData({start, end, userId}) {
-    // return await this.request({
-    //   method: 'get',
-    //   url: '/',
-    //   params: {
-    //     start,
-    //     end,
-    //     user_id: userId,
-    //   },
-    // });
-    return Promise.resolve(statusList);
+  async getDateData({start, end, usersId}) {
+    return await this.request({
+      method: 'get',
+      url: '/',
+      params: {
+        start,
+        end,
+        users_id: usersId,
+      },
+    });
+    // return Promise.resolve(statusList);
   }
 }
 

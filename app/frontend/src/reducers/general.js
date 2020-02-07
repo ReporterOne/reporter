@@ -5,7 +5,6 @@ import AuthService from '~/services/auth';
 const initialState = {
   reasons: [],
   login: AuthService.isLoggedIn(),
-
 };
 
 

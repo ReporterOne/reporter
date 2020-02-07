@@ -1,10 +1,12 @@
 import axios from 'axios';
+import qs from 'qs';
 import AuthService, {PermissionsError} from '~/services/auth';
 
 /**
  * Raise when axios request is canceled
  */
-class CanceledError extends Error {}
+class CanceledError extends Error {
+}
 
 
 /**
@@ -36,6 +38,9 @@ export class HttpService {
         headers: {
           ...AuthService.getAuthHeader(),
         },
+        paramsSerializer: params => {
+          return qs.stringify(params, {indices: false})
+        }
       });
       return response.data;
     } catch (error) {

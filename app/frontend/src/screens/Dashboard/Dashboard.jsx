@@ -46,7 +46,7 @@ const WelcomeMessage = styled(Container)`
 
 const Dashboard = React.memo((props) => {
   const dispatch = useDispatch();
-  const {english_name: englishName = undefined, id = undefined} = useSelector((state) => state.users.me || {});
+  const {english_name: englishName = undefined, id = undefined} = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 
