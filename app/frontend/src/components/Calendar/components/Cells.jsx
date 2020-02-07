@@ -22,32 +22,64 @@ import {useSelector} from 'react-redux';
 
 const CellsDateFormat = 'd';
 
+
+const Month = styled(Container)`
+  justify-content: space-between;
+`;
 const Week = styled.div`
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction:row;
-  flex-wrap: wrap;
+  justify-content: space-between;
   flex:1;
   width: 100%;
   min-height: 30px;
+  overflow: hidden;
 `;
 const StyledDay = styled.div`
+  position: relative;
   display: flex;
-  flex:1;
-  flex-wrap: wrap;
+  //flex:1;
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
   align-items: center;
   justify-content: center;
+`;
+const Background = styled.div`
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
+  position: absolute;
+  top: 0;
+  left: 0;
   background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
     isPast,
     isSameMonth,
     status,
   })};
-  ${({type, cellWidth, cellHeight}) => dayTypes(Math.max(cellWidth, cellHeight) / 2)[type]}
+  margin: ${({margin}) => margin}px;
+  ${({type}) => dayTypes[type]};
+`;
+
+const Filler = styled.div`
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(50%);
+  background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
+    isPast,
+    isSameMonth,
+    status,
+  })};
+  margin: ${({margin}) => margin}px;
 `;
 const DateLabel = styled.div`
+  position: relative;
   line-height: 1;
   font-weight: bold;
+  z-index: 1;
   background-color: ${({isToday, isSelected}) => getDateLabelBackgroundColor({
     isSelected,
     isToday,
@@ -56,8 +88,10 @@ const DateLabel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({cellHeight, cellWidth}) => Math.min(cellHeight, cellWidth) * 0.7}px;
-  height: ${({cellHeight, cellWidth}) => Math.min(cellHeight, cellWidth) * 0.7}px;
+  width: ${({backgroundSize}) => backgroundSize}px;
+  height: ${({backgroundSize}) => backgroundSize}px;
+  box-sizing: border-box;
+  border: ${({isToday}) => isToday && '1px solid rgba(0, 0, 0, 0.5)'};
   color: ${({isPast, isSameMonth, status, isToday, isSelected}) => getDateLabelColor({
     isPast, isSameMonth, status, isToday, isSelected,
   })};
@@ -72,13 +106,11 @@ const getDateBackgroundColor = ({isPast, isSameMonth, status}) => {
   }
 };
 const getDateLabelBackgroundColor = ({isToday, isSelected}) => {
-  if (isSelected) return theme.main;
-  if (isToday) return theme.lightgray;
+  if (isSelected) return 'rgba(255, 255, 255, 0.5)';
   return 'transparent';
 };
 const getDateLabelColor = ({isPast, isSameMonth, status, isToday, isSelected}) => {
   if (isSelected) return dateLabelColor.selected;
-  if (isToday) return dateLabelColor.today;
   if (!isPast) {
     if (isSameMonth) {
       if (status === NOT_ANSWERED) {
@@ -92,25 +124,21 @@ const getDateLabelColor = ({isPast, isSameMonth, status, isToday, isSelected}) =
   }
   return dateLabelColor[status];
 };
-const dayTypes = (cellWidth) => ({
+const dayTypes = {
   Start: css`
-    border-top-left-radius: ${cellWidth}px;
-    border-bottom-left-radius: ${cellWidth}px;
-    margin: 1px 0px 1px 1px;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
   `,
   Mid: css`
-    margin: 1px 0px;
   `,
   End: css`
-    border-top-right-radius: ${cellWidth}px; 
-    border-bottom-right-radius: ${cellWidth}px; 
-    margin: 1px 0px; 
-    margin-right: 1px;`,
-  Single: css`
-    border-radius: ${cellWidth}px; 
-    margin: 0px 1px 1px 0px;
+    border-top-right-radius: 50%; 
+    border-bottom-right-radius: 50%;
   `,
-});
+  Single: css`
+    border-radius: 50%; 
+  `,
+};
 
 const dayStatusBackgroundColor = {
   [HERE]: theme.approved,
@@ -122,8 +150,7 @@ const dateLabelColor = {
   [ANSWERED]: theme.white,
   [HERE]: theme.approved,
   [NOT_HERE]: theme.notApproved,
-  selected: theme.white,
-  today: theme.grey,
+  selected: theme.black,
 };
 
 const isEqual = (a, b, fields) => {
@@ -133,9 +160,8 @@ const isEqual = (a, b, fields) => {
 const isDiff = (a, b, fields) => !isEqual(a, b, fields);
 
 const getRangeType = (prev, current, next, renderedMonth, userId) => {
-  const isSameMonth = new Date().getMonth() === renderedMonth;
-  if (isSameMonth && index < today.getDate() - 1) return 'Single';
-
+  const today = formatDate(new Date());
+  const prevDate = prev?.date;
   prev = lodash.find(prev?.data, {user_id: userId});
   current = lodash.find(current?.data, {user_id: userId});
   next = lodash.find(next?.data, {user_id: userId});
@@ -143,8 +169,8 @@ const getRangeType = (prev, current, next, renderedMonth, userId) => {
     return 'Single';
   }
 
-  if ((!prev || isDiff(prev, current, [`state`, `reason.name`]) &&
-    (next && isEqual(next, current, [`state`, `reason.name`])))) {
+  if ((!prev || isDiff(prev, current, [`state`, `reason.name`]) || today > prevDate) &&
+    (next && isEqual(next, current, [`state`, `reason.name`]))) {
     return 'Start';
   } else if ((prev && isEqual(prev, current, [`state`, `reason.name`])) &&
     (next && isEqual(next, current, [`state`, `reason.name`]))) {
@@ -156,7 +182,7 @@ const getRangeType = (prev, current, next, renderedMonth, userId) => {
   return 'Single';
 };
 
-const Day = ({date, onDateClick, renderedMonth, today, cellWidth, cellHeight, selectedDate, userId}) => {
+const Day = ({date, onDateClick, renderedMonth, today, size, selectedDate, userId}) => {
   const dayRef = useRef(null);
   const dayLabelRef = useRef(null);
 
@@ -171,26 +197,34 @@ const Day = ({date, onDateClick, renderedMonth, today, cellWidth, cellHeight, se
   const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
     date: date,
   });
-  const range_type = getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId);
+  const rangeType = getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId);
 
   const data = lodash.find(render.data, {user_id: userId});
 
   const dateStr = formatDate(date);
   const isToday = isSameDay(date, today);
   const isPast_ = !isToday && isPast(date);
+  const status = data?.state ?? NOT_ANSWERED;
+  const margin = 2;
+  const backgroundSize = size - (margin * 2);
   return (
-    <StyledDay status={data?.state ?? NOT_ANSWERED} isPast={isPast_}
-      type={range_type}
+    <StyledDay status={status} isPast={isPast_}
       isSameMonth={isRenderedMonth} key={dateStr} ref={dayRef}
-      onClick={() => onDateClick(render)} cellWidth={cellWidth}
-      cellHeight={cellHeight}>
-      <DateLabel status={data?.state ?? NOT_ANSWERED} isPast={isPast_}
-        isSelected={selectedDate === dateStr} cellHeight={cellHeight}
-        cellWidth={cellWidth}
+      onClick={() => onDateClick(render)} size={size}>
+      <Background size={backgroundSize} margin={margin} isPast={isPast_}
+        isSameMonth={isRenderedMonth} status={status} type={rangeType}/>
+      <DateLabel status={status} isPast={isPast_}
+        isSelected={selectedDate === dateStr}
+        size={size} backgroundSize={backgroundSize}
         isToday={isToday} isSameMonth={isRenderedMonth}
         ref={dayLabelRef}>
         <span>{format(date, CellsDateFormat)}</span>
       </DateLabel>
+      {
+        (rangeType === 'Mid' || rangeType === 'Start') &&
+        <Filler size={backgroundSize} isPast={isPast_}
+          isSameMonth={isRenderedMonth} status={status} margin={margin} />
+      }
     </StyledDay>
   );
 };
@@ -200,12 +234,13 @@ Day.displayName = 'Day';
 
 const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selectedDate, userId}) => {
   const cells = useRef(null);
-  const [cell, setCell] = useState({width: 0, height: 0});
+  const [cell, setCell] = useState(0);
   useEffect(() => {
     const resizeObserve = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width / 7;
       const height = entries[0].contentRect.height / 6;
-      setCell({width, height});
+      console.log(width, height);
+      setCell(Math.min(width, height));
     });
     resizeObserve.observe(cells.current);
     return () => {
@@ -227,8 +262,7 @@ const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selected
               }).map((date) =>
                 <Day
                   key={date}
-                  cellWidth={cell.width}
-                  cellHeight={cell.height}
+                  size={cell}
                   date={date}
                   today={today}
                   userId={userId}
@@ -242,7 +276,7 @@ const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selected
     );
   });
 
-  return <Container stretched ref={cells}>{rows}</Container>;
+  return <Month stretched ref={cells}>{rows}</Month>;
 });
 
 Cells.displayName = 'Cells';

@@ -128,6 +128,7 @@ export const theme = {
   grey: 'rgb(120, 120, 120)',
   lightgray: 'rgb(200, 200, 200)',
   white: 'rgb(255, 255, 255)',
+  black: '#000',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,

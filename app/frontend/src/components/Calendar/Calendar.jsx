@@ -34,7 +34,8 @@ const StyledContainer = styled(motion.div)`
   height: 100%;
   display: inline-flex;
   flex-direction: column;
-  position: absolute;
+  //position: absolute;
+  min-height: 0;
 `;
 
 
