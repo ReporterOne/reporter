@@ -53,26 +53,27 @@ const Background = styled.div`
   top: 0;
   left: 0;
   background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
-    isPast,
-    isSameMonth,
-    status,
-  })};
+  isPast,
+  isSameMonth,
+  status,
+})};
   margin: ${({margin}) => margin}px;
   ${({type}) => dayTypes[type]};
 `;
 
 const Filler = styled.div`
-  width: ${({size}) => size}px;
+  width: ${({width}) => width}px;
   height: ${({size}) => size}px;
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateX(50%);
+  transform: translateX(${({size}) => size}px);
   background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
-    isPast,
-    isSameMonth,
-    status,
-  })};
+  isPast,
+  isSameMonth,
+  status,
+})};
+  padding: 0 ${({margin}) => margin}px;
   margin: ${({margin}) => margin}px;
 `;
 const DateLabel = styled.div`
@@ -81,9 +82,9 @@ const DateLabel = styled.div`
   font-weight: bold;
   z-index: 1;
   background-color: ${({isToday, isSelected}) => getDateLabelBackgroundColor({
-    isSelected,
-    isToday,
-  })};
+  isSelected,
+  isToday,
+})};
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -93,8 +94,8 @@ const DateLabel = styled.div`
   box-sizing: border-box;
   border: ${({isToday}) => isToday && '1px solid rgba(0, 0, 0, 0.5)'};
   color: ${({isPast, isSameMonth, status, isToday, isSelected}) => getDateLabelColor({
-    isPast, isSameMonth, status, isToday, isSelected,
-  })};
+  isPast, isSameMonth, status, isToday, isSelected,
+})};
   opacity: ${({isSameMonth}) => isSameMonth ? 1 : 0.2};
 `;
 
@@ -182,9 +183,11 @@ const getRangeType = (prev, current, next, renderedMonth, userId) => {
   return 'Single';
 };
 
-const Day = ({date, onDateClick, renderedMonth, today, size, selectedDate, userId}) => {
+const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userId}) => {
   const dayRef = useRef(null);
   const dayLabelRef = useRef(null);
+  const size = cell.size;
+  const gapSize = cell.gapSize;
 
   const beforeDay = new Date(date);
   beforeDay.setDate(date.getDate() - 1);
@@ -209,21 +212,22 @@ const Day = ({date, onDateClick, renderedMonth, today, size, selectedDate, userI
   const backgroundSize = size - (margin * 2);
   return (
     <StyledDay status={status} isPast={isPast_}
-      isSameMonth={isRenderedMonth} key={dateStr} ref={dayRef}
-      onClick={() => onDateClick(render)} size={size}>
+               isSameMonth={isRenderedMonth} key={dateStr} ref={dayRef}
+               onClick={() => onDateClick(render)} size={size}>
       <Background size={backgroundSize} margin={margin} isPast={isPast_}
-        isSameMonth={isRenderedMonth} status={status} type={rangeType}/>
+                  isSameMonth={isRenderedMonth} status={status}
+                  type={rangeType}/>
       <DateLabel status={status} isPast={isPast_}
-        isSelected={selectedDate === dateStr}
-        size={size} backgroundSize={backgroundSize}
-        isToday={isToday} isSameMonth={isRenderedMonth}
-        ref={dayLabelRef}>
+                 isSelected={selectedDate === dateStr}
+                 size={size} backgroundSize={backgroundSize}
+                 isToday={isToday} isSameMonth={isRenderedMonth}
+                 ref={dayLabelRef}>
         <span>{format(date, CellsDateFormat)}</span>
       </DateLabel>
       {
         (rangeType === 'Mid' || rangeType === 'Start') &&
-        <Filler size={backgroundSize} isPast={isPast_}
-          isSameMonth={isRenderedMonth} status={status} margin={margin} />
+        <Filler size={backgroundSize} isPast={isPast_} width={gapSize}
+                isSameMonth={isRenderedMonth} status={status} margin={margin}/>
       }
     </StyledDay>
   );
@@ -232,14 +236,20 @@ const Day = ({date, onDateClick, renderedMonth, today, size, selectedDate, userI
 Day.displayName = 'Day';
 
 
-const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selectedDate, userId}) => {
+const Cells = React.memo(({
+                            onDateClick, today, from, to, renderedMonth,
+                            selectedDate, userId, updateCellSize
+                          }) => {
   const cells = useRef(null);
-  const [cell, setCell] = useState(0);
+  const [cell, setCell] = useState({size: 0, gapSize: 0});
   useEffect(() => {
     const resizeObserve = new ResizeObserver((entries) => {
-      const width = entries[0].contentRect.width / 7;
-      const height = entries[0].contentRect.height / 6;
-      setCell(Math.min(width, height));
+      const width = Math.ceil(entries[0].contentRect.width / 7);
+      const height = Math.ceil(entries[0].contentRect.height / 6);
+      const size = Math.min(width, height);
+      const gapSize = Math.ceil((entries[0].contentRect.width - (size * 7)) / 6);
+      setCell({size, gapSize});
+      updateCellSize({size, gapSize})
     });
     resizeObserve.observe(cells.current);
     return () => {
@@ -252,26 +262,26 @@ const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selected
       start: from,
       end: to,
     }).slice(0, 6).map(
-        (date) => (
-          <Week key={date}>
-            {
-              eachDayOfInterval({
-                start: date,
-                end: endOfWeek(date),
-              }).map((date) =>
-                <Day
-                  key={date}
-                  size={cell}
-                  date={date}
-                  today={today}
-                  userId={userId}
-                  selectedDate={selectedDate}
-                  renderedMonth={renderedMonth}
-                  onDateClick={onDateClick}
-                />)
-            }
-          </Week>
-        ),
+      (date) => (
+        <Week key={date}>
+          {
+            eachDayOfInterval({
+              start: date,
+              end: endOfWeek(date),
+            }).map((date) =>
+              <Day
+                key={date}
+                cell={cell}
+                date={date}
+                today={today}
+                userId={userId}
+                selectedDate={selectedDate}
+                renderedMonth={renderedMonth}
+                onDateClick={onDateClick}
+              />)
+          }
+        </Week>
+      ),
     );
   });
 

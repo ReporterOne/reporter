@@ -44,6 +44,7 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
   const [currentDate, setCurrentDate] = useState(now);
   const [loading, setLoading] = useState(false);
   const [swipedLeft, setSwipedLeft] = useState(true);
+  const [cellSize, updateCellSize] = useState({size: 0, gapSize: 0});
   const dispatch = useDispatch();
 
   const {renderedMonth, startDate, endDate} = useMemo(() => {
@@ -109,9 +110,9 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
           exit={{x: -slideAmount, opacity: 0}}
         >
           <Header currentDate={currentDate}/>
-          <Days currentDate={currentDate}/>
+          <Days currentDate={currentDate} cellSize={cellSize}/>
           <Cells onDateClick={onDateClick}
-            userId={userId}
+            userId={userId} updateCellSize={updateCellSize}
             selectedDate={selectedDate}
             today={now} renderedMonth={renderedMonth}
             from={startDate} to={endDate}
