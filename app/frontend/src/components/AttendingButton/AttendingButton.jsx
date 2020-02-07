@@ -11,7 +11,7 @@ import {
 } from '~/components/common';
 
 import posed from 'react-pose';
-import {motion, useAnimation} from 'framer-motion';
+import {AnimatePresence, motion, useAnimation} from 'framer-motion';
 import {ANSWERED, HERE, NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
 
 const ContainerHeight = 60;
@@ -53,9 +53,22 @@ const RoundedRectangle = styled(PosedRRoundedRectangle)`
   ${innerShaddow[4]}
 `;
 
+const DisabledCover = styled(motion.div)`
+  align-items: center;
+  position: absolute;
+  display: flex;
+  flex: 1;
+  border-radius: ${ContainerHeight / 2}px;
+  background-color: rgba(150, 150, 150, 0.5);
+  z-index: 1;
+  ${innerShaddow[4]}
+`;
+
 const InnerContainer = styled.div`
   display: flex;
   align-items: center;
+  overflow: hidden;
+  border-radius: ${ContainerHeight / 2}px;
 `;
 
 const OuterContainer = styled.div`
@@ -120,7 +133,7 @@ const attendenceStatus = {
 const ANIMATION_TIME = 0.5;
 const DEACCELERATION = -1;
 
-const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED}) => {
+const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, isDisabled=false}) => {
   const [pose, changePose] = useState(initialState);
   const controls = useAnimation();
 
@@ -190,6 +203,14 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED})
                 animate={controls}
                 onDragEnd={onDragEnd(width)}
               />
+              <AnimatePresence>
+              { isDisabled &&
+              <DisabledCover
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+                style={{width, height}}/>}
+              </AnimatePresence>
             </InnerContainer>
           )
           }

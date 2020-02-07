@@ -111,7 +111,7 @@ const Dashboard = React.memo((props) => {
           <HeaderWelcome>Welcome,</HeaderWelcome>
           <HeaderName mode="single" max={45}>{lodash.capitalize(englishName)}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState}/>
+        <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState} isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
         <Calender userId={id} fetchData={fetchDates} selectedDate={selectedDate} setSelectedDate={changeSelectedDate}/>

@@ -79,9 +79,8 @@ const DateLabel = styled.div`
   line-height: 1;
   font-weight: bold;
   z-index: 1;
-  background-color: ${({isToday, isSelected}) => getDateLabelBackgroundColor({
-  isSelected,
-  isToday,
+  background-color: ${({isToday, isSelected, status, isPast, isSameMonth}) => getDateLabelBackgroundColor({
+  isSelected, isToday, status, isPast, isSameMonth
 })};
   border-radius: 50%;
   display: flex;
@@ -105,21 +104,23 @@ const getDateBackgroundColor = ({isPast, isSameMonth, status}) => {
     return theme.white;
   }
 };
-const getDateLabelBackgroundColor = ({isToday, isSelected}) => {
-  if (isSelected) return 'rgba(255, 255, 255, 0.5)';
+const getDateLabelBackgroundColor = ({isToday, isSelected, status, isPast, isSameMonth}) => {
+  if (status === NOT_ANSWERED || isPast) {
+    if (isSelected) return 'rgba(140, 140, 140, 0.5)';
+  } else {
+    if (isSelected) return 'rgba(255, 255, 255, 0.5)';
+  }
   return 'transparent';
 };
 const getDateLabelColor = ({isPast, isSameMonth, status, isToday, isSelected}) => {
-  if (isSelected) return dateLabelColor.selected;
   if (!isPast) {
     if (isSameMonth) {
+      if (isSelected) return dateLabelColor.selected;
       if (status === NOT_ANSWERED) {
         return dateLabelColor[NOT_ANSWERED];
       } else {
         return dateLabelColor[ANSWERED];
       }
-    } else {
-      return dateLabelColor[status];
     }
   }
   return dateLabelColor[status];
