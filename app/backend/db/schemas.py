@@ -116,4 +116,3 @@ class CalendarResponse(BaseModel):
 
     class Config:
         orm_mode = True
-
