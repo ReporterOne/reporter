@@ -34,7 +34,7 @@ const StyledContainer = styled(motion.div)`
   height: 100%;
   display: inline-flex;
   flex-direction: column;
-  //position: absolute;
+  position: absolute;
   min-height: 0;
 `;
 
@@ -62,10 +62,10 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
 
   useEffect(() => {
     (async () => {
+      dispatch(updateRenderedMonth(renderedMonth));
       if (fetchData) {
-        dispatch(updateRenderedMonth(renderedMonth));
         setLoading(true);
-        await fetchData(formatDate(startDate), formatDate(endDate), now);
+        await fetchData(formatDate(startDate), formatDate(endDate));
         setLoading(false);
       }
     })();

@@ -58,7 +58,8 @@ const Dashboard = React.memo((props) => {
   const changeSelectedDate = useCallback((data) => {
     setSelectedDate(data.date);
   });
-  const fetchDates = useCallback(async (start, end, today) => {
+  const fetchDates = useCallback(async (start, end) => {
+    const today = new Date();
     await logoutIfNoPermission(async () => {
       const data = await UsersService.getMyCalendar({start, end});
       dispatch(updateDates(data));
