@@ -87,8 +87,8 @@ const DateLabel = styled.div`
   margin: auto;
   justify-content: center;
   align-items: center;
-  width: ${({backgroundSize}) => Math.ceil(backgroundSize * 0.9)}px;
-  height: ${({backgroundSize}) => Math.ceil(backgroundSize * 0.9)}px;
+  width: ${({backgroundSize}) => Math.round(backgroundSize)}px;
+  height: ${({backgroundSize}) => Math.round(backgroundSize)}px;
   box-sizing: border-box;
   border: ${({isToday}) => isToday && '1px solid rgba(0, 0, 0, 0.5)'};
   color: ${({isPast, isSameMonth, status, isToday, isSelected}) => getDateLabelColor({
