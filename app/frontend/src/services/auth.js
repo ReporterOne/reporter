@@ -30,6 +30,63 @@ class AuthService {
   }
 
   /**
+   * Register to the server.
+   * @param {string} username - username to login with
+   * @param {string} password - password to login with
+   * @return {Promise<*>}
+   */
+  async register(username, password) {
+    const response = await axios.post(`${PREFIX}/login`, qs.stringify({
+        username, password,
+      }),
+      {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      },
+    );
+    return response;
+  }
+
+  /**
+   * register using google.
+   * @param {string} token
+   * @returns {Promise<*>}
+   */
+  async googleRegister(token) {
+    const response = await axios.request(
+      {
+        url: `${PREFIX}/register/google`,
+        method: 'post',
+        data: {
+          google_token: token
+        }
+      },
+    );
+    // localStorage.setItem('token', response.data.access_token);
+    return response;
+  }
+
+  /**
+   * Login using google.
+   * @param {string} token
+   * @returns {Promise<*>}
+   */
+  async googleLogin(token) {
+    const response = await axios.request(
+      {
+        url: `${PREFIX}/login/google`,
+        method: 'post',
+        data: {
+          google_token: token
+        }
+      },
+    );
+    localStorage.setItem('token', response.data.access_token);
+    return response.data.user_id;
+  }
+
+  /**
    * Logout from the server and remove token from the localstorage.
    * @return {Promise<void>}
    */

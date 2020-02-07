@@ -6,12 +6,22 @@ from sqlalchemy.orm import Session
 
 from db import schemas
 from db.models import User, Permission
+from .crud_utils import put_values
+
+def update_user(
+    db: Session,
+    user: User,
+    **kwargs
+) -> User:
+    """Update user with the given details."""
+    return put_values(db, user, should_commit=True, **kwargs)
 
 
 def create_user(
     db: Session,
     username: str,
-    password: str
+    password: str = None,
+    account_type: str = 'local'
 ) -> User:
     """Create new user in db.
 
@@ -19,13 +29,16 @@ def create_user(
         db: the related db session.
         username: the required username.
         password: the required password.
+        account_type: type of the account.
 
     Returns:
         the newly created user.
     """
-    new_user = User(english_name=username,
+    new_user = User(english_name=name,
                     username=username,
-                    password=password)
+                    email=email,
+                    password=password,
+                    type=account_type)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

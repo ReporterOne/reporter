@@ -117,3 +117,15 @@ class CalendarResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class GoogleToken(BaseModel):
+    google_token: str
+
+
+class UpdateUserDetails(BaseModel):
+    id: int
+    to_change: dict = {}
+
+    class Config:
+        orm_mode = True

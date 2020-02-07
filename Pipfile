@@ -32,6 +32,7 @@ psycopg2-binary = "*"
 boltons = "*"
 pytest = "*"
 docopt = "*"
+google-auth = "*"
 
 [requires]
 python_version = "3.7"

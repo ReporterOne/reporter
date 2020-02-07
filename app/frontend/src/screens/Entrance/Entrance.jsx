@@ -1,4 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import GoogleLogin from 'react-google-login';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MUIButton from '@material-ui/core/Button';
 import {Textfit} from 'react-textfit';
@@ -15,6 +17,10 @@ import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {AccountCircle} from '@material-ui/icons';
 import {updateCurrentUser} from "~/actions/users";
+
+
+const GOOGLE_CLIENT_ID = '623244279739-lrqk7n917mpnuqbmnkgbv8l4o73tjiek.apps.googleusercontent.com';
+
 
 const EntrancePage = styled(Container)`
   background-color: ${({theme}) => theme.main};
@@ -192,6 +198,7 @@ const BackForm = styled(motion.div)`
 const INNER_RING_DISTANCE = 75;
 const OUTER_RING_DISTANCE = 150;
 
+
 const Entrance = React.memo(({location, history}) => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.general.login);
@@ -208,6 +215,23 @@ const Entrance = React.memo(({location, history}) => {
       password.length > 3
     );
   }, [username, password]);
+
+
+
+  const googleResponse = useCallback((response) => {
+    console.log("GOOGLE 2RESPONSE");
+    console.log(response);
+  });
+
+  const googleLogin = useCallback((response) => {
+    const id_token = response.tokenObj.id_token;
+    (async () => {
+      await AuthService.googleLogin(id_token);
+      dispatch(updateLogin(true));
+      dispatch(updateCurrentUser(AuthService.getUserId()));
+    })();
+
+  });
 
 
   const onSend = useCallback((e) => {
@@ -248,41 +272,48 @@ const Entrance = React.memo(({location, history}) => {
           <ForeGround>
             <Spacer enabled={!isOpen}/>
             <Content radius={size} enabled={isOpen} size={size}
-              initialized={initialized}>
+                     initialized={initialized}>
               <ConstantSpacer size={isOpen ? 50 : 0}/>
               <Title key={size} mode="single" max={42}>Reporter</Title>
               <AnimatePresence>
                 {
                   isOpen && (
                     <LoginFormWrapper exit={{opacity: 0}}
-                      animate={{opacity: 1}}
-                      initial={{opacity: 0}}>
+                                      animate={{opacity: 1}}
+                                      initial={{opacity: 0}}>
                       <LoginForm id="loginForm" onSubmit={onSend}>
                         <FormControl>
                           <InputLabel
                             htmlFor="username-field">Username</InputLabel>
                           <Input id="username-field"
-                            onChange={(event) => setUsername(event.target.value)}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <AccountCircle/>
-                              </InputAdornment>
-                            }
+                                 onChange={(event) => setUsername(event.target.value)}
+                                 endAdornment={
+                                   <InputAdornment position="end">
+                                     <AccountCircle/>
+                                   </InputAdornment>
+                                 }
                           />
                         </FormControl>
                         <FormControl>
                           <InputLabel
                             htmlFor="password-field">Password</InputLabel>
                           <Input type="password" id="password-field"
-                            onChange={(event) => setPassword(event.target.value)}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <AccountCircle/>
-                              </InputAdornment>
-                            }
+                                 onChange={(event) => setPassword(event.target.value)}
+                                 endAdornment={
+                                   <InputAdornment position="end">
+                                     <AccountCircle/>
+                                   </InputAdornment>
+                                 }
                           />
                         </FormControl>
                       </LoginForm>
+                      <GoogleLogin
+                        clientId={GOOGLE_CLIENT_ID}
+                        buttonText="Login"
+                        onSuccess={googleLogin}
+                        onFailure={googleResponse}
+                        cookiePolicy={'single_host_origin'}
+                      />
                     </LoginFormWrapper>
                   )
                 }
@@ -290,22 +321,22 @@ const Entrance = React.memo(({location, history}) => {
             </Content>
             <BackGround>
               <Ring size={size + INNER_RING_DISTANCE} opacity={0.3}
-                animate={{rotate: 360}}
-                transition={{
-                  loop: Infinity,
-                  ease: 'linear',
-                  duration: Math.random() * 5 + 5,
-                }}
+                    animate={{rotate: 360}}
+                    transition={{
+                      loop: Infinity,
+                      ease: 'linear',
+                      duration: Math.random() * 5 + 5,
+                    }}
               >
                 <Moon/>
               </Ring>
               <Ring size={size + OUTER_RING_DISTANCE} opacity={0.1}
-                animate={{rotate: 360}}
-                transition={{
-                  loop: Infinity,
-                  ease: 'linear',
-                  duration: Math.random() * 5 + 5,
-                }}
+                    animate={{rotate: 360}}
+                    transition={{
+                      loop: Infinity,
+                      ease: 'linear',
+                      duration: Math.random() * 5 + 5,
+                    }}
               >
                 <Moon/>
               </Ring>
@@ -317,7 +348,7 @@ const Entrance = React.memo(({location, history}) => {
               {
                 isOpen && (
                   <BackForm exit={{opacity: 0}} animate={{opacity: 1}}
-                    initial={{opacity: 0}}>
+                            initial={{opacity: 0}}>
                     <BackButton
                       onClick={() => setIsOpen(false)}>back</BackButton>
                   </BackForm>

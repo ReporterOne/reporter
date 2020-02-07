@@ -3,14 +3,15 @@
 from typing import List, Dict
 from datetime import date, datetime
 
-from fastapi import APIRouter, Depends, Security, Body
+from fastapi import APIRouter, Depends, Security, Body, HTTPException
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_400_BAD_REQUEST
 
 from server import auth
 
 from db import crud
 from db import schemas
-from db.database import get_db
+from db.database import get_db, get_password_hash
 from .dates_data import get_calendar_of_users
 
 router = APIRouter()
@@ -19,10 +20,40 @@ router = APIRouter()
 @router.get("/me", response_model=schemas.User)
 async def get_current_user(
     current_user: schemas.User = Security(auth.get_current_user,
-                                          scopes=["personal"])
+                                          scopes=["personal"]),
+
 ):
     """Get current user."""
     return current_user
+
+
+@router.put("/me")
+async def update_current_user(
+    body: schemas.UpdateUserDetails,
+    current_user: schemas.User = Security(auth.get_current_user,
+                                          scopes=["personal"]),
+    db: Session = Depends(get_db),
+):
+    if body.id != current_user.id:
+        raise HTTPException(
+            status_code=HTTP_400_BAD_REQUEST,
+            detail="Given user id isn't current user."
+        )
+
+    changeable = ["english_name", "icon_path", "password", "reminder_time"]
+    for want_to_change in body.to_change:
+        if want_to_change not in changeable:
+            raise HTTPException(
+                status_code=HTTP_400_BAD_REQUEST,
+                detail=f"Can't change field '{want_to_change}'"
+            )
+
+    if "password" in body.to_change:
+        body.to_change["password"] = get_password_hash(
+            body.to_change["password"])
+
+    return crud.users.update_user(db, user=current_user,
+                                  **body.to_change)
 
 
 def get_all_users_in_tree(user):
