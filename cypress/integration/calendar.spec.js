@@ -18,7 +18,7 @@ context('Calendar', () => {
     cy.visit('/');
   });
 
-  it('swipe left', () => {
+  it.skip('swipe left', () => {
     cy.get(".AttendingHandle")
       .swipe("right");
 
