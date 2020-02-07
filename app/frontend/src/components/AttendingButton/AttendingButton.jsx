@@ -115,13 +115,19 @@ const ArrowsRight = styled(SVGIcon)`
   height: 60%;
 
 `;
-const AttendenceValue = styled.span`
+const AttendenceValue = styled.div`
   color: white;
   display: flex;
   font-weight: normal;
   font-size: 20px;
   white-space: nowrap;
   text-align: center;
+  position:relative;
+`;
+
+const AttendenceText = styled(motion.span)`
+  position: absolute;
+  transform: translate(-50%, -50%);
 `;
 
 
@@ -133,7 +139,7 @@ const attendenceStatus = {
 const ANIMATION_TIME = 0.5;
 const DEACCELERATION = -1;
 
-const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, isDisabled=false}) => {
+const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, isDisabled = false}) => {
   const [pose, changePose] = useState(initialState);
   const controls = useAnimation();
 
@@ -177,7 +183,16 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, 
                 </ArrowsContainer>
                 <Spacer/>
                 <AttendenceValue>
-                  {pose === NOT_HERE ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
+                  <AnimatePresence>
+                    <AttendenceText
+                      key={`${missingReason}_${pose}`}
+                      initial={{opacity: 0}}
+                      animate={{opacity: 1}}
+                      exit={{opacity: 0}}
+                    >
+                      {pose === NOT_HERE ? missingReason || attendenceStatus[pose] : attendenceStatus[pose]}
+                    </AttendenceText>
+                  </AnimatePresence>
                 </AttendenceValue>
                 <Spacer/>
                 <ArrowsContainer
@@ -187,29 +202,29 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, 
                 <Spacer/>
               </RoundedRectangle>
               <Circle key={width}
-                className="AttendingHandle"
-                drag={'x'}
-                dragConstraints={{
-                  left: outlinePadding,
-                  right: width - circleDiameter - outlinePadding,
-                }}
-                variants={{
-                  [NOT_HERE]: {x: outlinePadding},
-                  [HERE]: {x: width - circleDiameter - outlinePadding},
-                  [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
-                }}
-                initial={initialState}
-                dragElastic={false}
-                animate={controls}
-                onDragEnd={onDragEnd(width)}
+                      className="AttendingHandle"
+                      drag={'x'}
+                      dragConstraints={{
+                        left: outlinePadding,
+                        right: width - circleDiameter - outlinePadding,
+                      }}
+                      variants={{
+                        [NOT_HERE]: {x: outlinePadding},
+                        [HERE]: {x: width - circleDiameter - outlinePadding},
+                        [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
+                      }}
+                      initial={initialState}
+                      dragElastic={false}
+                      animate={controls}
+                      onDragEnd={onDragEnd(width)}
               />
               <AnimatePresence>
-              { isDisabled &&
-              <DisabledCover
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                exit={{opacity: 0}}
-                style={{width, height}}/>}
+                {isDisabled &&
+                <DisabledCover
+                  initial={{opacity: 0}}
+                  animate={{opacity: 1}}
+                  exit={{opacity: 0}}
+                  style={{width, height}}/>}
               </AnimatePresence>
             </InnerContainer>
           )
