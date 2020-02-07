@@ -43,8 +43,6 @@ const StyledDay = styled.div`
   //flex:1;
   width: ${({size}) => size}px;
   height: ${({size}) => size}px;
-  align-items: center;
-  justify-content: center;
 `;
 const Background = styled.div`
   width: ${({size}) => size}px;
@@ -87,10 +85,11 @@ const DateLabel = styled.div`
 })};
   border-radius: 50%;
   display: flex;
+  margin: auto;
   justify-content: center;
   align-items: center;
-  width: ${({backgroundSize}) => backgroundSize}px;
-  height: ${({backgroundSize}) => backgroundSize}px;
+  width: ${({backgroundSize}) => Math.ceil(backgroundSize * 0.9)}px;
+  height: ${({backgroundSize}) => Math.ceil(backgroundSize * 0.9)}px;
   box-sizing: border-box;
   border: ${({isToday}) => isToday && '1px solid rgba(0, 0, 0, 0.5)'};
   color: ${({isPast, isSameMonth, status, isToday, isSelected}) => getDateLabelColor({
@@ -183,26 +182,46 @@ const getRangeType = (prev, current, next, renderedMonth, userId) => {
   return 'Single';
 };
 
+const useDay = (date, delta) => {
+  return useMemo(() => {
+    const toRet = new Date(date);
+    toRet.setDate(date.getDate() + delta);
+    return toRet;
+  }, [date, delta]);
+};
+
+const useRangeType = (date, userId, isRenderedMonth) => {
+  const beforeDay = useDay(date, -1);
+  const afterDay = useDay(date, 1);
+  const renderPrev = useSelector((state) => state.calendar.dates?.[formatDate(beforeDay)]);
+  const renderNext = useSelector((state) => state.calendar.dates?.[formatDate(afterDay)]);
+  const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
+    date: date,
+  });
+  return useMemo(
+    () => getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId),
+    [render, renderPrev, renderNext, isRenderedMonth, userId]);
+
+};
+
 const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userId}) => {
   const dayRef = useRef(null);
   const dayLabelRef = useRef(null);
   const size = cell.size;
   const gapSize = cell.gapSize;
 
-  const beforeDay = new Date(date);
-  beforeDay.setDate(date.getDate() - 1);
-  const afterDay = new Date(date);
-  afterDay.setDate(date.getDate() + 1);
-  const isRenderedMonth = renderedMonth === date.getMonth();
+  const isRenderedMonth = useMemo(
+    () => renderedMonth === date.getMonth(),
+    [renderedMonth, date]);
 
-  const renderPrev = useSelector((state) => state.calendar.dates?.[formatDate(beforeDay)]);
-  const renderNext = useSelector((state) => state.calendar.dates?.[formatDate(afterDay)]);
   const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
     date: date,
   });
-  const rangeType = getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId);
+  const rangeType = useRangeType(date, userId, isRenderedMonth);
 
-  const data = lodash.find(render.data, {user_id: userId});
+  const data = useMemo(
+    () => lodash.find(render.data, {user_id: userId}),
+    [render, userId]);
 
   const dateStr = formatDate(date);
   const isToday = isSameDay(date, today);
