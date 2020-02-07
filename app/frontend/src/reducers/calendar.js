@@ -27,9 +27,11 @@ const reduceDates = (dates) => {
   }, {});
 };
 
-const reduceDay = (dates, key, value) => {
+const reduceDay = (dates, key, value, userId) => {
   const clone = deepCopy(dates);
-  clone[key].data = value;
+  const data = lodash.reject(clone[key].data, {user_id: userId}, []);
+  if (value) data.push(value);
+  clone[key].data = data;
   const datesList = Object.values(clone).sort(byDate);
   return reduceDates(datesList);
 };
@@ -46,7 +48,7 @@ export const calendarReducer = (state = initialState, action) => {
     case UPDATE_DAY:
       return {
         ...state,
-        dates: reduceDay(state.dates, action.key, action.data,
+        dates: reduceDay(state.dates, action.key, action.data, action.userId,
             state.renderedMonth),
       };
 

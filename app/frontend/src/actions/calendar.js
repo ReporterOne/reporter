@@ -15,10 +15,11 @@ export const updateRenderedMonth = (month) => ({
   month,
 });
 
-export const updateDay = (key, data) => ({
+export const updateDay = (key, data, userId) => ({
   type: UPDATE_DAY,
   key,
   data,
+  userId
 });
 
 export const updateToday = (data) => ({

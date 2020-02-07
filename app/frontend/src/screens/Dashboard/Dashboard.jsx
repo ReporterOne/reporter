@@ -78,7 +78,7 @@ const Dashboard = React.memo((props) => {
     }).then((data) => {
       const key = Object.keys(data)[0];
       const value = Object.values(data)[0];
-      dispatch(updateDay(key, value));
+      dispatch(updateDay(key, value, id));
     });
   });
 
@@ -93,11 +93,11 @@ const Dashboard = React.memo((props) => {
         }).then((data) => {
           const key = Object.keys(data)[0];
           const value = Object.values(data)[0];
-          dispatch(updateDay(key, value));
+          dispatch(updateDay(key, value, id));
         });
       } else {
         DateStatusService.deleteToday({userId: id}).then(() => {
-          dispatch(updateDay(formatDate(new Date()), null));
+          dispatch(updateDay(selectedDate, null, id));
         });
       }
     }

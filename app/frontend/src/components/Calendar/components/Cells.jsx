@@ -239,7 +239,6 @@ const Cells = React.memo(({onDateClick, today, from, to, renderedMonth, selected
     const resizeObserve = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width / 7;
       const height = entries[0].contentRect.height / 6;
-      console.log(width, height);
       setCell(Math.min(width, height));
     });
     resizeObserve.observe(cells.current);
