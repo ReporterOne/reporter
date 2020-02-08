@@ -32,10 +32,13 @@ export const Icon = styled.img`
   height: 30px;
 `;
 
-export const SVGIcon = styled(SVG)`
+export const SVGIcon = styled(({isCentered, ...props}) => <SVG {...props}/>)`
+  fill: ${({color}) => color};
   width: ${({size = 30}) => size}px;
   height: ${({size = 30}) => size}px;
-  margin: auto;
+  margin: ${({isCentered = true}) => isCentered && 'auto'};
+  position: ${({position = 'relative'}) => position};
+  opacity: 1;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -115,6 +118,7 @@ export const theme = {
     },
   },
   main: '#4725a5',
+  primary: '#4725a5',
   secondary: '#FFF',
   outerShadows: shadows,
   innerShadows: innerShaddow,

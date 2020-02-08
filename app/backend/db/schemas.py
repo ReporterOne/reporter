@@ -127,9 +127,39 @@ class FacebookToken(BaseModel):
     facebook_token: str
 
 
+class GoogleRegister(BaseModel):
+    google_token: str
+    email: str
+    name: str
+    avatar: str
+
+
+class FacebookRegister(BaseModel):
+    facebook_token: str
+    email: str
+    name: str
+    avatar: str
+
+
+class RegisterForm(BaseModel):
+    username: str
+    password: str
+    email: str
+    name: str
+    avatar: str
+
+
 class UpdateUserDetails(BaseModel):
     id: int
     to_change: dict = {}
+
+    class Config:
+        orm_mode = True
+
+
+class IsUserFree(BaseModel):
+    type: str
+    value: str
 
     class Config:
         orm_mode = True

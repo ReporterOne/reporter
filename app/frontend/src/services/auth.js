@@ -33,32 +33,51 @@ class AuthService {
    * Register to the server.
    * @param {string} username - username to login with
    * @param {string} password - password to login with
+   * @param {string} email - email to login with
+   * @param {string} name - name to login with
    * @return {Promise<*>}
    */
-  async register(username, password) {
-    const response = await axios.post(`${PREFIX}/login`, qs.stringify({
-        username, password,
-      }),
-      {
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        },
-      },
-    );
+  async register(username, password, email, name, avatar) {
+    const response = await axios.request({
+        url: `${PREFIX}/register`,
+        method: 'post',
+        data: {
+          username, password, email, name, avatar
+        }
+      });
     return response;
   }
+
   /**
-   * register using facebook.
-   * @param {string} token
-   * @returns {Promise<*>}
+   * Check if user free.
    */
-  async facebookRegister(token) {
+  async isFree(value, type='local') {
+    return await axios.request({
+      url: `${PREFIX}/is_free`,
+      method: 'post',
+      data: {
+        value,
+        type
+      }
+    })
+  }
+
+  /**
+   * Register with facebook.
+   * @param {string} token
+   * @param {string} email
+   * @param {string} name
+   * @param {string} avatar
+   * @returns {Promise<AxiosResponse<T>>}
+   */
+  async facebookRegister(token, email, name, avatar) {
     const response = await axios.request(
       {
         url: `${PREFIX}/register/facebook`,
         method: 'post',
         data: {
-          facebook_token: token
+          facebook_token: token,
+          email, name, avatar
         }
       },
     );
@@ -87,15 +106,19 @@ class AuthService {
   /**
    * register using google.
    * @param {string} token
+   * @param {string} email
+   * @param {string} name
+   * @param {string} avatar
    * @returns {Promise<*>}
    */
-  async googleRegister(token) {
+  async googleRegister(token, email, name, avatar) {
     const response = await axios.request(
       {
         url: `${PREFIX}/register/google`,
         method: 'post',
         data: {
-          google_token: token
+          google_token: token,
+          email, name, avatar
         }
       },
     );

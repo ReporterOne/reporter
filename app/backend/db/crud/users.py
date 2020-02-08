@@ -20,6 +20,9 @@ def update_user(
 def create_user(
     db: Session,
     username: str,
+    email: str,
+    english_name: str,
+    icon_path: str = None,
     password: str = None,
     google_id: str = None,
     facebook_id: str = None,
@@ -31,6 +34,9 @@ def create_user(
         db: the related db session.
         username: the required username.
         password: the required password.
+        email: the required email.
+        english_name: the required english name.
+        icon_path: the required icon path.
         google_id: google id of the user.
         facebook_id: facebook id of the user.
         account_type: type of the account.
@@ -38,7 +44,9 @@ def create_user(
     Returns:
         the newly created user.
     """
-    new_user = User(english_name=username,
+    new_user = User(english_name=english_name,
+                    email=email,
+                    icon_path=icon_path,
                     username=username,
                     google_id=google_id,
                     facebook_id=facebook_id,

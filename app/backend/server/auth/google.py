@@ -82,7 +82,7 @@ async def login_using_google(
 @router.post("/register/google", response_model=User)
 def register_google(
     *,
-    body: schemas.GoogleToken = Body(...),
+    body: schemas.GoogleRegister = Body(...),
     db: Session = Depends(get_db)
 ) -> User:
     """Register to application and return the created user."""
@@ -92,7 +92,12 @@ def register_google(
         raise HTTPException(status_code=400,
                             detail="Username already taken!")
 
-    created_user = create_user(db, username, google_id=username,
+    created_user = create_user(db,
+                               username=username,
+                               google_id=username,
+                               email=body.email,
+                               icon_path=body.avatar,
+                               english_name=body.name,
                                account_type='google')
 
     return created_user

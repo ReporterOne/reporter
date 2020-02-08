@@ -60,7 +60,7 @@ async def login_using_facebook(
 @router.post("/register/facebook", response_model=schemas.User)
 def register_facebook(
     *,
-    body: schemas.FacebookToken = Body(...),
+    body: schemas.FacebookRegister = Body(...),
     db: Session = Depends(get_db)
 ):
     """Register to application and return the created user."""
@@ -71,7 +71,12 @@ def register_facebook(
         raise HTTPException(status_code=400,
                             detail="Username already taken!")
 
-    created_user = crud.users.create_user(db, username, facebook_id=username,
+    created_user = crud.users.create_user(db,
+                                          username=username,
+                                          facebook_id=username,
+                                          email=body.email,
+                                          icon_path=body.avatar,
+                                          english_name=body.name,
                                           account_type='facebook')
 
     return created_user

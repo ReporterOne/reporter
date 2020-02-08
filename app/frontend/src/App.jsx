@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useRef} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {ThemeProvider} from 'styled-components';
 import {ThemeProvider as MUIThemeProvider} from '@material-ui/styles';
 import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';

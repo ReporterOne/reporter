@@ -55,7 +55,9 @@ module.exports = {
         loader: 'svg-url-loader',
         options: {
           limit: 10000,
-          name: '/static/[name].[ext]',
+          name: '[name].[ext]',
+          outputPath: 'static/avatars/',
+          publicPath: '/static/avatars/',
         },
       },
       {

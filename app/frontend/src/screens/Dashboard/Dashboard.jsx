@@ -12,7 +12,7 @@ import DateStatusService from '~/services/date_datas';
 import {
   HERE,
   NOT_ANSWERED,
-  NOT_HERE,
+  NOT_HERE, titleCase,
 } from '~/utils/utils';
 import {logoutIfNoPermission} from '~/hooks/utils';
 import UsersService from '~/services/users';
@@ -109,7 +109,7 @@ const Dashboard = React.memo((props) => {
       <Container flex={2} style={{padding: '15px'}}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
-          <HeaderName mode="single" max={45}>{lodash.capitalize(englishName)}</HeaderName>
+          <HeaderName mode="single" max={45}>{titleCase(englishName)}</HeaderName>
         </WelcomeMessage>
         <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState} isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>
