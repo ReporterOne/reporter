@@ -8,6 +8,7 @@
     "lint:py": "flake8 app/backend/;pylint app/backend/",
     "requirements": "npm install; pipenv install --dev",
     "start:frontend": "webpack-dev-server --config webpack.dev.js",
+    "start:frontend:secured": "npm run start:frontend -- --https --key ${PWD}/secrets/server.key --cert ${PWD}/secrets/server.crt --cacert ${PWD}/secrets/cacert.crt",
     "start:backend": "cd app/backend/; uvicorn server.main:app --reload --host '0.0.0.0' --port 8443 --debug",
     "start:db": "docker-compose up db",
     "db:migrate": "alembic stamp head;alembic upgrade head",
