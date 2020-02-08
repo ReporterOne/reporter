@@ -138,11 +138,9 @@ export const Operator = React.memo((props) => {
     return users.map(user => user.id);
   }, [users]);
 
-  const [selectedMador, changeSelectedMador] = useState('Pie');
+  const [selectedMador, changeSelectedMador] = useState('Unity');
 
   const [notHereStatuses, restStatuses] = useMadorStatuses(selectedDate, usersDict, selectedMador);
-
-  console.log(notHereStatuses, restStatuses);
 
 
   const changeSelectedDate = useCallback((data) => {
@@ -186,7 +184,7 @@ export const Operator = React.memo((props) => {
                 const user = usersDict[status.user_id];
                 return (
                   <AnimatedReason index={animationIndex++} key={`${index}${selectedDate}${selectedMador}`}>
-                    <AvatarExpanded kind={user?.avatar?.kind ?? 0} name={user.english_name}
+                    <AvatarExpanded kind={user?.icon_path} name={user.english_name}
                                     delay={animationIndex} details={status.reason.name}
                                     status={status.state}/>
                   </AnimatedReason>
@@ -202,7 +200,7 @@ export const Operator = React.memo((props) => {
                 const user = usersDict[status.user_id];
                 return (
                     <AnimatedReason index={animationIndex++} key={`${index}${selectedDate}${selectedMador}`}>
-                      <AvatarDetails key={index} kind={user?.avatar?.kind ?? 0}
+                      <AvatarDetails key={index} kind={user?.icon_path}
                                      name={user.english_name} status={status.state}/>
                     </AnimatedReason>
                 );

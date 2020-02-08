@@ -138,7 +138,7 @@ export const Avatar = (
                             size={style.backgroundSize} squared={squared}>
         <BackgroundTopHalf size={style.backgroundSize}
                            color={background} avatarSize={style.avatarSize}/>
-        <AvatarImage src={avatarsAvailable[kind]} size={style.avatarSize}
+        <AvatarImage src={avatarsAvailable[parseInt(kind)]} size={style.avatarSize}
           ref={innerRef}
           backgroundSize={style.backgroundSize}
           className={manual ? 'avatarManual' : 'avatarAutomatic'}
