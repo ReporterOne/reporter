@@ -1,5 +1,4 @@
 """All models related to user, mador."""
-from sqlalchemy.dialects.postgresql import TIME
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import (Integer,
                         String,
@@ -45,7 +44,7 @@ class User(Base):
                           index=True)
     soldiers = relationship('User',
                             backref=backref('commander', remote_side=[id]))
-    reminder_time = Column(TIME)
+    reminder_time = Column(String)
     last_reminded_date = Column(Date)
     english_name = Column(String)
     type = Column(Enum('facebook', 'google', 'local', name='user_type'),
@@ -75,9 +74,10 @@ class User(Base):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         mador_name = self.mador.name if self.mador else self.mador_name
-
+        print(mador_name)
         if mador_name:
             self.reminder_time = select([MadorSettings.value]).where(
-                mador_name == MadorSettings.mador_name and
+                MadorSettings.mador_name == mador_name and
                 MadorSettings.key == 'default_reminder_time'
             )
+            print(self.reminder_time)

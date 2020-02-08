@@ -5,8 +5,9 @@ from datetime import date, time
 from sqlalchemy.orm import Session
 
 from db import schemas
-from db.models import User, Permission
+from db.models import User, Permission, Mador, MadorSettings
 from .crud_utils import put_values
+
 
 def update_user(
     db: Session,
@@ -15,6 +16,32 @@ def update_user(
 ) -> User:
     """Update user with the given details."""
     return put_values(db, user, should_commit=True, **kwargs)
+
+
+def _get_mador(
+    db: Session,
+    name: str,
+    make_if_not_exists: bool = False,
+) -> Mador:
+    """Get mador.
+
+    Args:
+        db: the related db session.
+        name: date for the details.
+        make_if_not_exists: a flag, if True will create mador
+                            if the mador was not found.
+    """
+    mador = db.query(Mador).filter(
+        Mador.name == name).first()
+    if make_if_not_exists and mador is None:
+        mador = Mador(name=name)
+        mador_settings = MadorSettings(
+            mador=mador, key='default_reminder_time', value='09:00',
+            type='time')
+        db.add_all([mador, mador_settings])
+        db.commit()
+
+    return mador
 
 
 def create_user(
@@ -44,8 +71,10 @@ def create_user(
     Returns:
         the newly created user.
     """
+    mador = _get_mador(db, name="Unity", make_if_not_exists=True)
     new_user = User(english_name=english_name,
                     email=email,
+                    mador=mador,
                     icon_path=icon_path,
                     username=username,
                     google_id=google_id,
