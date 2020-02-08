@@ -47,6 +47,42 @@ class AuthService {
     );
     return response;
   }
+  /**
+   * register using facebook.
+   * @param {string} token
+   * @returns {Promise<*>}
+   */
+  async facebookRegister(token) {
+    const response = await axios.request(
+      {
+        url: `${PREFIX}/register/facebook`,
+        method: 'post',
+        data: {
+          facebook_token: token
+        }
+      },
+    );
+    return response;
+  }
+
+  /**
+   * Login using google.
+   * @param {string} token
+   * @returns {Promise<*>}
+   */
+  async facebookLogin(token) {
+    const response = await axios.request(
+      {
+        url: `${PREFIX}/login/facebook`,
+        method: 'post',
+        data: {
+          facebook_token: token
+        }
+      },
+    );
+    localStorage.setItem('token', response.data.access_token);
+    return response.data.user_id;
+  }
 
   /**
    * register using google.
@@ -63,7 +99,6 @@ class AuthService {
         }
       },
     );
-    // localStorage.setItem('token', response.data.access_token);
     return response;
   }
 

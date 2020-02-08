@@ -7,7 +7,7 @@ from fastapi import APIRouter, Query, Depends, Security, Body
 
 from db import crud, schemas
 from db.database import get_db
-from server.auth import get_current_user
+from server.auth.utils import get_current_user
 from utils.datetime_utils import as_dict, fill_missing
 
 router = APIRouter()

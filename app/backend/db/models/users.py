@@ -53,6 +53,8 @@ class User(Base):
     username = Column(String, index=True, unique=True)
     password = Column(String)
     email = Column(String)
+    google_id = Column(String)
+    facebook_id = Column(String)
     mador_name = Column(String, ForeignKey('madors.name', ondelete='SET NULL'),
                         index=True)
     mador = relationship('Mador', backref='users', foreign_keys=[mador_name])

@@ -123,6 +123,10 @@ class GoogleToken(BaseModel):
     google_token: str
 
 
+class FacebookToken(BaseModel):
+    facebook_token: str
+
+
 class UpdateUserDetails(BaseModel):
     id: int
     to_change: dict = {}

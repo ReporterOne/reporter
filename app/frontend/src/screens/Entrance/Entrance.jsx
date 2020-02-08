@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MUIButton from '@material-ui/core/Button';
@@ -20,6 +21,7 @@ import {updateCurrentUser} from "~/actions/users";
 
 
 const GOOGLE_CLIENT_ID = '623244279739-lrqk7n917mpnuqbmnkgbv8l4o73tjiek.apps.googleusercontent.com';
+const FACEBOOK_APP_ID = "861853434255614";
 
 
 const EntrancePage = styled(Container)`
@@ -204,7 +206,13 @@ const Entrance = React.memo(({location, history}) => {
   const isLoggedIn = useSelector((state) => state.general.login);
   const [size, setSize] = useState(0);
   const containerRef = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const shouldBeOpen = useMemo(() => {
+    // redirected from facebook
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('state') === 'facebookdirect') return true;
+    return false;
+  }, []);
+  const [isOpen, setIsOpen] = useState(shouldBeOpen);
   const [initialized, setInitialized] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -217,7 +225,14 @@ const Entrance = React.memo(({location, history}) => {
   }, [username, password]);
 
 
-
+  const facebookResponse = useCallback((response) => {
+    const id_token = response.accessToken;
+    (async () => {
+      await AuthService.facebookLogin(id_token);
+      dispatch(updateLogin(true));
+      dispatch(updateCurrentUser(AuthService.getUserId()));
+    })();
+  });
   const googleResponse = useCallback((response) => {
     console.log("GOOGLE 2RESPONSE");
     console.log(response);
@@ -314,6 +329,11 @@ const Entrance = React.memo(({location, history}) => {
                         onFailure={googleResponse}
                         cookiePolicy={'single_host_origin'}
                       />
+                      <FacebookLogin
+                        appId={FACEBOOK_APP_ID}
+                        fields="name,email,picture"
+                        redirectUri={window.location.href.split('?')[0]}
+                        callback={facebookResponse}/>
                     </LoginFormWrapper>
                   )
                 }

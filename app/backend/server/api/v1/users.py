@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Security, Body, HTTPException
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST
 
-from server import auth
+from server.auth.utils import get_current_user
 
 from db import crud
 from db import schemas
@@ -18,8 +18,8 @@ router = APIRouter()
 
 
 @router.get("/me", response_model=schemas.User)
-async def get_current_user(
-    current_user: schemas.User = Security(auth.get_current_user,
+async def get_me_user(
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"]),
 
 ):
@@ -30,7 +30,7 @@ async def get_current_user(
 @router.put("/me")
 async def update_current_user(
     body: schemas.UpdateUserDetails,
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"]),
     db: Session = Depends(get_db),
 ):
@@ -79,8 +79,8 @@ def get_all_allowed_users_of(db, user):
 
 
 @router.get("/me/allowed_users", response_model=List[schemas.User])
-async def get_current_user(
-    current_user: schemas.User = Security(auth.get_current_user,
+async def get_allowed_users(
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"]),
     db: Session = Depends(get_db),
 ):
@@ -92,7 +92,7 @@ async def get_current_user(
 async def get_user(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get user."""
@@ -106,7 +106,7 @@ async def get_user(
 async def delete_user(
     user_id: int = None,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Delete user."""
@@ -117,7 +117,7 @@ async def delete_user(
 async def get_commander(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ) -> int:
     """Get commander."""
@@ -128,7 +128,7 @@ async def get_commander(
 async def get_subjects(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get subjects."""
@@ -159,7 +159,7 @@ async def get_calendar_me(
     start: date,
     end: date = None,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
@@ -176,7 +176,7 @@ async def post_calendar_me(
     state: schemas.AnswerStateTypes = Body(...),
     reason: str = Body(None),
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
@@ -193,7 +193,7 @@ async def get_calendar(
     start: date,
     end: date = None,
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
@@ -210,7 +210,7 @@ async def post_user_calendar(
     state: schemas.AnswerStateTypes = Body(...),
     reason: str = Body(None),
     db: Session = Depends(get_db),
-    current_user: schemas.User = Security(auth.get_current_user,
+    current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""

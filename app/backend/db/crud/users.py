@@ -21,6 +21,8 @@ def create_user(
     db: Session,
     username: str,
     password: str = None,
+    google_id: str = None,
+    facebook_id: str = None,
     account_type: str = 'local'
 ) -> User:
     """Create new user in db.
@@ -29,14 +31,17 @@ def create_user(
         db: the related db session.
         username: the required username.
         password: the required password.
+        google_id: google id of the user.
+        facebook_id: facebook id of the user.
         account_type: type of the account.
 
     Returns:
         the newly created user.
     """
-    new_user = User(english_name=name,
+    new_user = User(english_name=username,
                     username=username,
-                    email=email,
+                    google_id=google_id,
+                    facebook_id=facebook_id,
                     password=password,
                     type=account_type)
     db.add(new_user)
@@ -167,6 +172,38 @@ def get_hierarchy(
             childs=[get_hierarchy(db=db, leader_id=child.id)
                     for child in childs]
         )
+
+
+def get_user_by_facebook_id(
+    db: Session,
+    facebook_id: str
+) -> User:
+    """Get user from the db by username.
+
+    Args:
+        db: the related db session.
+        facebook_id: the user's google-id.
+
+    Returns:
+        the wanted user.
+    """
+    return db.query(User).filter(User.facebook_id == facebook_id).first()
+
+
+def get_user_by_google_id(
+    db: Session,
+    google_id: str
+) -> User:
+    """Get user from the db by username.
+
+    Args:
+        db: the related db session.
+        google_id: the user's google-id.
+
+    Returns:
+        the wanted user.
+    """
+    return db.query(User).filter(User.google_id == google_id).first()
 
 
 def get_user_by_username(
