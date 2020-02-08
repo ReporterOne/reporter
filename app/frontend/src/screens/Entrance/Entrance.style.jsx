@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {motion} from "framer-motion";
-import {Container, SVGIcon} from "~/components/common";
+import {Container, SVGIcon, Spacer} from "~/components/common";
 import {Textfit} from "react-textfit";
 import MUIButton from "@material-ui/core/Button";
 
@@ -63,11 +63,6 @@ export const Content = styled(Container)`
     'none'
 };
   flex: ${({enabled}) => enabled ? 1 : 0};
-`;
-export const Spacer = styled.div`
-  flex: ${({enabled = true}) => enabled ? 1 : 0};
-  transition: 0.5s flex;
-  will-change: flex;
 `;
 export const ConstantSpacer = styled.div`
   flex-shrink: 0;

@@ -106,6 +106,11 @@ export const FadeInContainer = ({poseKey, ...props}) => (
   </PoseGroup>
 );
 
+export const Spacer = styled.div`
+  flex: ${({enabled = true}) => enabled ? 1 : 0};
+  transition: 0.5s flex;
+  will-change: flex;
+`;
 
 export const theme = {
   cards: 'white',

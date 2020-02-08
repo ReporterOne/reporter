@@ -4,9 +4,10 @@ import {AnimatePresence, motion} from 'framer-motion';
 import {Switch, Route} from 'react-router-dom';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {theme} from "~/components/common";
+import {theme, Spacer, SVGIcon} from "~/components/common";
 import {Title} from "~/components/Title/Title";
 import {Rings} from "~/components/Rings/Rings.jsx";
+import alphaIcon from '~/assets/alph_icon.svg';
 
 import {
   BackButton,
@@ -18,7 +19,6 @@ import {
   Controls,
   EntrancePage,
   ForeGround,
-  Spacer,
   Wrapper
 } from "./Entrance.style.jsx";
 import {LoginForm, RegisterForm} from "./Forms";
@@ -41,6 +41,16 @@ const RegisterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+
+const StyledAlpha = styled(SVGIcon)`
+  margin-right: 10px;
+  opacity: 0.7;
+  fill: white;
+  position: absolute;
+  right: 0;
+  top: 10px;
 `;
 
 const RegisterPage = ({size, history, pathname, setValid}) => {
@@ -148,6 +158,7 @@ const Entrance = React.memo(({location, history}) => {
 
   return (
     <EntrancePage stretched scrollable>
+      <StyledAlpha size={50} src={alphaIcon}/>
       <ContentWrapper stretched>
         <Wrapper ref={containerRef}>
           <AnimatePresence>
