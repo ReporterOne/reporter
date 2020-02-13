@@ -88,9 +88,9 @@ export const App = (props) => {
               </Switch>
             )}>
             <Switch>
-              <PrivateRoute path="/hierarchy" component={Hierarchy}/>
-              <PrivateRoute path="/operator" component={Operator}/>
-              <PrivateRoute path="/commander" component={Commander}/>
+              <PrivateRoute path="/hierarchy" component={Hierarchy} allowedPermissions={["admin"]}/>
+              <PrivateRoute path="/operator" component={Operator} allowedPermissions={["admin", "reporter"]}/>
+              <PrivateRoute path="/commander" component={Commander} allowedPermissions={["admin", "commander"]}/>
               <PrivateRoute path="/" component={Dashboard}/>
             </Switch>
           </DrawerContent>

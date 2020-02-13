@@ -10,6 +10,7 @@ import hierarchyIconUrl from '~/assets/hierarchy.svg';
 import settingsIconUrl from '~/assets/settings.svg';
 import {Container, SVGIcon} from '~/components/common';
 import {useSelector} from "react-redux";
+import {isAllowed} from "~/components/Menu/PrivateRoute";
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -28,7 +29,7 @@ const Spacer = styled.div`
 `;
 
 export const Menu = React.memo(({avatar, avatarRef}) => {
-  const {icon_path: iconPath} = useSelector((state) => _.find(state.users.all, {id: state.users.me}) ?? {});
+  const {icon_path: iconPath, permissions = undefined} = useSelector((state) => _.find(state.users.all, {id: state.users.me}) ?? {});
   return (
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual} innerRef={avatarRef} kind={parseInt(iconPath?? '0')} status="here" jumping={true}/>
@@ -36,19 +37,19 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
       <Option selected path="/" id="dashboardButton">
         <SVGIcon src={dashboardIconUrl} size={20} />
       </Option>
-      <Option path="/commander" id="commanderButton">
-        <SVGIcon src={commanderIconUrl} size={20} />
+      <Option path="/commander" id="commanderButton" hidden={!isAllowed(permissions, ["admin", "commander"])}>
+        <SVGIcon src={commanderIconUrl} size={20}/>
       </Option>
-      <Option path="/operator" id="operatorButton">
+      <Option path="/operator" id="operatorButton" hidden={!isAllowed(permissions, ["admin", "reporter"])}>
         <SVGIcon src={operatorIconUrl} size={20} />
       </Option>
-      <Option path="/hierarchy" id="hierarchyButton">
+      <Option path="/hierarchy" id="hierarchyButton" hidden={!isAllowed(permissions, ["admin"])}>
         <SVGIcon src={hierarchyIconUrl} size={20} />
       </Option>
       <Spacer />
       <Separator />
       <Container>
-        <Option path="/settings" id="settingsButton">
+        <Option path="/settings" id="settingsButton" hidden={!isAllowed(permissions, ["admin"])}>
           <SVGIcon src={settingsIconUrl} size={20} />
         </Option>
       </Container>

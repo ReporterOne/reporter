@@ -14,6 +14,13 @@ class Mador(BaseModel):
         orm_mode = True
 
 
+class Permission(BaseModel):
+    type: str
+
+    class Config:
+        orm_mode = True
+
+
 class User(BaseModel):
     id: int
     commander_id: int = None
@@ -22,6 +29,7 @@ class User(BaseModel):
     mador: Mador = None
     manages_mador_name: str = None
     operates: List[Mador] = None
+    permissions: List[Permission] = None
     icon_path: str = None
 
     class Config:
