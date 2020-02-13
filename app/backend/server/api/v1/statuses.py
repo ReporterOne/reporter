@@ -9,7 +9,7 @@ from db import crud, schemas
 from db.database import get_db
 from server.auth.utils import get_current_user
 from utils.datetime_utils import as_dict, fill_missing
-
+from .security import secure_user_accessing
 
 router = APIRouter()
 
@@ -24,10 +24,11 @@ async def get_dates_status(
                                           scopes=["personal"])
 ):
     """Get dates status."""
-    date_details = crud.get_dates_data_of(db, users_id, start, end)
-    details = as_dict(date_details)
+    with secure_user_accessing(db, current_user, users_id):
+        date_details = crud.get_dates_data_of(db, users_id, start, end)
+        details = as_dict(date_details)
 
-    if end is None:
-        end = start
+        if end is None:
+            end = start
 
-    return fill_missing(details, users_id, start, end, flat=False)
+        return fill_missing(details, users_id, start, end, flat=False)

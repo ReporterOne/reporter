@@ -7,6 +7,8 @@ from fastapi import APIRouter, Depends, Security, Body, HTTPException
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST
 
+from .security import (get_all_allowed_users_of,
+                       secure_user_accessing)
 from server.auth.utils import get_current_user
 
 from db import crud
@@ -56,28 +58,6 @@ async def update_current_user(
                                   **body.to_change)
 
 
-def get_all_users_in_tree(user):
-    to_ret = [user]
-    current_soldiers = user.soldiers
-    to_ret += current_soldiers
-    for soldier in current_soldiers:
-        to_ret += get_all_users_in_tree(soldier)
-
-    return to_ret
-
-
-def get_all_allowed_users_of(db, user):
-    if crud.users.is_admin(db, user):
-        return crud.users.get_all_users(db)
-
-    allowed_users = get_all_users_in_tree(user)
-    operates_madors = user.operates
-    for mador in operates_madors:
-        allowed_users += mador.users
-
-    return list(set(allowed_users))
-
-
 @router.get("/me/allowed_users", response_model=List[schemas.User])
 async def get_allowed_users(
     current_user: schemas.User = Security(get_current_user,
@@ -96,7 +76,8 @@ async def get_user(
                                           scopes=["personal"])
 ):
     """Get user."""
-    return crud.get_user(
+    with secure_user_accessing(db, current_user, [user_id]):
+        return crud.get_user(
             db=db,
             user_id=user_id
         )
@@ -110,7 +91,8 @@ async def delete_user(
                                           scopes=["personal"])
 ):
     """Delete user."""
-    crud.delete_user(db=db, user_id=user_id)
+    with secure_user_accessing(db, current_user, [user_id]):
+        crud.delete_user(db=db, user_id=user_id)
 
 
 @router.get("/{user_id}/commander_id")
@@ -121,7 +103,8 @@ async def get_commander(
                                           scopes=["personal"])
 ) -> int:
     """Get commander."""
-    return crud.get_commander_id(db=db, user_id=user_id)
+    with secure_user_accessing(db, current_user, [user_id]):
+        return crud.get_commander_id(db=db, user_id=user_id)
 
 
 @router.get("/{user_id}/subjects", response_model=List[schemas.User])
@@ -132,7 +115,8 @@ async def get_subjects(
                                           scopes=["personal"])
 ):
     """Get subjects."""
-    return crud.get_subjects(
+    with secure_user_accessing(db, current_user, [user_id]):
+        return crud.get_subjects(
             db=db,
             commander_id=user_id
         )
@@ -197,8 +181,9 @@ async def get_calendar(
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
-    return get_calendar_of_users(users_id=[user_id],
-                                 start=start, end=end, db=db)
+    with secure_user_accessing(db, current_user, [user_id]):
+        return get_calendar_of_users(users_id=[user_id],
+                                     start=start, end=end, db=db)
 
 
 @router.post("/{user_id}/statuses",
@@ -214,6 +199,7 @@ async def post_user_calendar(
                                           scopes=["personal"])
 ):
     """Get calendar data of user."""
-    return post_calendar_of_user(user_id=user_id, start=start, end=end,
-                                 reason=reason, state=state,
-                                 db=db, current_user=current_user)
+    with secure_user_accessing(db, current_user, [user_id]):
+        return post_calendar_of_user(user_id=user_id, start=start, end=end,
+                                     reason=reason, state=state,
+                                     db=db, current_user=current_user)
