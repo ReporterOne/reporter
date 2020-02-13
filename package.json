@@ -57,7 +57,7 @@
     "jest-mock-axios": "^3.2.0",
     "jest-puppeteer": "^4.4.0",
     "mockdate": "^2.0.5",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "nyc": "^15.0.0",
     "puppeteer": "^2.1.0",
     "sass-loader": "^7.1.0",
@@ -68,7 +68,9 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.8.2",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "workbox-cli": "^5.0.0",
+    "workbox-webpack-plugin": "^5.0.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
@@ -117,12 +119,19 @@
     "react-virtualized": "^9.21.2",
     "react-zoom-pan-pinch": "^1.4.5",
     "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.3",
     "serialize-javascript": "^2.1.2",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.4.0",
     "universal-cookie": "^4.0.2",
+    "workbox-broadcast-update": "^5.0.0",
+    "workbox-cacheable-response": "^5.0.0",
+    "workbox-expiration": "^5.0.0",
+    "workbox-precaching": "^5.0.0",
+    "workbox-routing": "^5.0.0",
+    "workbox-strategies": "^5.0.0",
     "yup": "^0.28.0"
   }
 }

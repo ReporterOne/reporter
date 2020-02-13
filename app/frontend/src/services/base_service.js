@@ -6,8 +6,21 @@ import AuthService, {PermissionsError} from '~/services/auth';
  * Raise when axios request is canceled
  */
 class CanceledError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'CanceledError';
+  }
 }
 
+/**
+ * Raise when there is no network connection
+ */
+class NetworkError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
 
 /**
  * Base Http service.
@@ -46,6 +59,10 @@ export class HttpService {
     } catch (error) {
       if (axios.isCancel(error)) {
         throw new CanceledError(error.message);
+      }
+      if(!error.status) {
+        console.trace(error);
+        throw new NetworkError(`failed to make request ${JSON.stringify(config)}`);
       }
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);

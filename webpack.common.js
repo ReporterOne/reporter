@@ -2,6 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 
 const frontend = path.resolve(__dirname, 'app', 'frontend');
@@ -31,6 +32,11 @@ module.exports = {
         to: path.resolve(dist, 'static'),
       },
     ]),
+    new WorkboxPlugin.InjectManifest({
+      swSrc: path.resolve(src, 'sw.js'),
+      swDest: 'sw.js',
+      maximumFileSizeToCacheInBytes: 100 * 1024 * 1024
+    })
   ],
   resolve: {
     extensions: ['.js', '.jsx'],

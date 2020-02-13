@@ -128,6 +128,7 @@ const AttendenceValue = styled.div`
 const AttendenceText = styled(motion.span)`
   position: absolute;
   transform: translate(-50%, -50%);
+  direction: rtl;
 `;
 
 
