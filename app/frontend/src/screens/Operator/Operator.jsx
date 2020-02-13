@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components';
 import posed, {PoseGroup} from 'react-pose';
 import lodash from 'lodash';
-import {HERE, NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
+import {NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
 
 import {Container} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails';
@@ -10,9 +10,7 @@ import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
 import Calender from '~/components/Calendar';
 import {motion, useAnimation} from 'framer-motion';
 import {formatDate} from "~/components/Calendar/components/utils";
-import {logoutIfNoPermission} from "~/hooks/utils";
-import DateStatusService from "~/services/date_datas";
-import {updateDates, updateToday} from "~/actions/calendar";
+import {fetchDatesOf} from "~/actions/calendar";
 import {useDispatch, useSelector} from "react-redux";
 
 
@@ -83,8 +81,7 @@ const useUsersAsDict = (users) => {
 const useUsersStatuses = (selectedDate) => {
   const statuses = useSelector((state) => state.calendar.dates?.[selectedDate]?.data ?? []);
   return useMemo(() => {
-    return  lodash.partition(statuses, {'state': NOT_HERE});
-    // return [notHereStatuses, returnRestStatuses] ;
+    return lodash.partition(statuses, {'state': NOT_HERE});
   }, [statuses]);
 };
 
@@ -99,11 +96,12 @@ const useMadorMapping = (statuses, users) => {
   }, [statuses]);
 };
 
-const useFillNotAnsweredUsers = (statuses, users) => {
+const useFillNotAnsweredUsers = (statuses, notHereStatuses, users) => {
   return useMemo(() => {
     const usersIds = Object.keys(users).map((id) => parseInt(id));
     const toDrop = statuses.map(status => status.user_id);
-    const toFill = lodash.difference(usersIds, toDrop);
+    const toDropNotHere = notHereStatuses.map(status => status.user_id);
+    const toFill = lodash.difference(usersIds, toDrop, toDropNotHere);
     const toRet = [
       ...statuses,
       ...toFill.map(id => ({
@@ -119,7 +117,7 @@ const useFillNotAnsweredUsers = (statuses, users) => {
 const useMadorStatuses = (selectedDate, users, selectedMador) => {
   const [notHereStatuses, restStatuses] = useUsersStatuses(selectedDate);
   const toRetNotHereStatuses = useMadorMapping(notHereStatuses, users);
-  const filledRestStatuses = useFillNotAnsweredUsers(restStatuses, users);
+  const filledRestStatuses = useFillNotAnsweredUsers(restStatuses, notHereStatuses, users);
   const toRetRestStatuses = useMadorMapping(filledRestStatuses, users);
   return useMemo(() => {
     return [toRetNotHereStatuses[selectedMador] ?? [], toRetRestStatuses[selectedMador] ?? []]
@@ -147,11 +145,8 @@ export const Operator = React.memo((props) => {
     setSelectedDate(data.date);
   });
 
-  const fetchDates = useCallback(async (start, end) => {
-    await logoutIfNoPermission(async () => {
-      const data = await DateStatusService.getDateData({start, end, usersId});
-      dispatch(updateDates(data));
-    }, dispatch);
+  const fetchDates = useCallback((start, end) => {
+    dispatch(fetchDatesOf(usersId, start, end));
   }, [dispatch, usersId]);
 
   const disableDrag = useCallback(() => changeDrag(false), []);
@@ -205,16 +200,6 @@ export const Operator = React.memo((props) => {
                     </AnimatedReason>
                 );
               })
-              // users.filter((user) => user.status !== NOT_HERE).sort((user1, user2) => {
-              //   if (user1.status === user2.status) return 0;
-              //   if (user1.status === HERE && user2.status === NOT_ANSWERED) return 1;
-              //   if (user2.status === HERE && user1.status === NOT_ANSWERED) return -1;
-              // }).map((user, index) => (
-              //   <AnimatedReason index={animationIndex++} key={index}>
-              //     <AvatarDetails key={index} kind={user.avatar.kind}
-              //                    name={user.name} status={user.status}/>
-              //   </AnimatedReason>
-              // ))
             }
           </PoseGroup>
         </TheRest>

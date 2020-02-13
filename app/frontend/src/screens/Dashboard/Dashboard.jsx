@@ -8,18 +8,14 @@ import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import ReasonsDialog from '~/dialogs/Reasons';
 import {useDispatch, useSelector} from 'react-redux';
-import DateStatusService from '~/services/date_datas';
 import {
   HERE,
   NOT_ANSWERED,
   NOT_HERE, titleCase,
 } from '~/utils/utils';
-import {logoutIfNoPermission} from '~/hooks/utils';
-import UsersService from '~/services/users';
 import {
-  updateDates,
-  updateDay,
-  updateToday,
+  deleteDateOf,
+  fetchMyDates, setDateStatus,
 } from '~/actions/calendar';
 import {formatDate} from '~/components/Calendar/components/utils';
 
@@ -58,49 +54,22 @@ const Dashboard = React.memo((props) => {
   const changeSelectedDate = useCallback((data) => {
     setSelectedDate(data.date);
   });
-  const fetchDates = useCallback(async (start, end) => {
-    const today = new Date();
-    await logoutIfNoPermission(async () => {
-      const data = await UsersService.getMyCalendar({start, end});
-      dispatch(updateDates(data));
-      const todayData = lodash.find(data, {date: formatDate(today)});
-      if (todayData) {
-        dispatch(updateToday(todayData));
-      }
-    }, dispatch);
+  const fetchDates = useCallback((start, end) => {
+    dispatch(fetchMyDates(start, end));
   }, [dispatch]);
 
   const handleClose = useCallback((value) => {
     changeOpenDialog(false);
-    UsersService.setMyCalendar({
-      state: NOT_HERE,
-      reason: value,
-      start: selectedDate,
-    }).then((data) => {
-      const key = Object.keys(data)[0];
-      const value = Object.values(data)[0];
-      dispatch(updateDay(key, value, id));
-    });
+    dispatch(setDateStatus({userId: id, start: selectedDate, status: NOT_HERE, reason: value}));
   });
 
   const handleOnChange = useCallback((state) => {
     if (state === NOT_HERE) {
       changeOpenDialog(true);
+    } else if (state === HERE) {
+      dispatch(setDateStatus({userId: id, start: selectedDate, status: HERE}));
     } else {
-      if (state === HERE) {
-        UsersService.setMyCalendar({
-          start: selectedDate,
-          state: HERE,
-        }).then((data) => {
-          const key = Object.keys(data)[0];
-          const value = Object.values(data)[0];
-          dispatch(updateDay(key, value, id));
-        });
-      } else {
-        DateStatusService.deleteToday({userId: id}).then(() => {
-          dispatch(updateDay(selectedDate, null, id));
-        });
-      }
+      dispatch(deleteDateOf(id, selectedDate))
     }
   });
 

@@ -1,6 +1,6 @@
-import React, {useState, useCallback, useRef} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import {Provider, useSelector} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import {ThemeProvider} from 'styled-components';
 import {ThemeProvider as MUIThemeProvider} from '@material-ui/styles';
 import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';
@@ -16,17 +16,24 @@ import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
-import {fetchMyToday, fetchReasons} from '~/hooks/date_datas';
-import {fetchAllowedUsers} from '~/hooks/users';
 import store from './store';
+import {fetchAllowedUsers} from "~/actions/users";
+import {fetchMyToday} from "~/actions/calendar";
+import {fetchReasons} from "~/actions/general";
 
 export const App = (props) => {
+  const dispatch = useDispatch();
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const avatarRef = useRef(null);
+  const isLoggedIn = useSelector((state) => state.general.login);
 
-  fetchReasons();
-  fetchAllowedUsers();
-  fetchMyToday();
+  useEffect(() => {
+    if (isLoggedIn) {
+     dispatch(fetchReasons());
+     dispatch(fetchMyToday());
+     dispatch(fetchAllowedUsers());
+    }
+  }, [isLoggedIn, dispatch]);
 
   const onDrawerDrag = useCallback(({data, drawer}) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;

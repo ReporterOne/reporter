@@ -62,12 +62,12 @@ class DateStatusService extends HttpService {
   }
 
   /**
-   * Delete today status.
+   * Delete date status.
    * @param {number} userId - relevant user id.
+   * @param {date} date - date to delete.
    * @return {Promise<T>}
    */
-  async deleteToday({userId}) {
-    const date = new Date();
+  async deleteDate({userId, date}) {
     return await this.request({
       method: 'delete',
       url: '/',
