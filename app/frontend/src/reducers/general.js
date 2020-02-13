@@ -1,10 +1,11 @@
-import {UPDATE_LOGIN, UPDATE_REASONS} from '~/actions/general';
+import {UPDATE_LOGIN, UPDATE_ONLINE, UPDATE_REASONS} from '~/actions/general';
 import AuthService from '~/services/auth';
 
 
 const initialState = {
   reasons: [],
   login: AuthService.isLoggedIn(),
+  online: navigator.onLine
 };
 
 
@@ -19,6 +20,11 @@ export const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         login: action.login,
+      };
+    case UPDATE_ONLINE:
+      return {
+        ...state,
+        online: action.state
       };
 
     default: return state;

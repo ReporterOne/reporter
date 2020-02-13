@@ -60,7 +60,7 @@ export class HttpService {
       if (axios.isCancel(error)) {
         throw new CanceledError(error.message);
       }
-      if(!error.status) {
+      if(!error.response) {
         console.trace(error);
         throw new NetworkError(`failed to make request ${JSON.stringify(config)}`);
       }

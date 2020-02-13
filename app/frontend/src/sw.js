@@ -56,6 +56,12 @@ registerRoute(
 //   })
 // );
 const handler = createHandlerBoundToURL('/index.html');
+// const strategy = new NetworkFirst({
+//   cacheName: 'cached-navigations',
+//   plugins: [
+//     // Any plugins, like `ExpirationPlugin`, etc.
+//   ],
+// });
 const navigationRoute = new NavigationRoute(handler, {
   denylist: [
     new RegExp('/api'),
@@ -80,3 +86,4 @@ self.addEventListener('message', async (event) => {
     console.log(event, updatedText)
   }
 });
+

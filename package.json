@@ -95,6 +95,7 @@
     "prop-types": "^15.7.2",
     "qs": "^6.9.1",
     "react": "^16.10.2",
+    "react-add-to-homescreen": "^1.1.0",
     "react-animate-on-scroll": "^2.1.5",
     "react-burger-menu": "^2.6.5",
     "react-dom": "^16.10.2",
@@ -132,6 +133,7 @@
     "workbox-precaching": "^5.0.0",
     "workbox-routing": "^5.0.0",
     "workbox-strategies": "^5.0.0",
+    "workbox-window": "^5.0.0",
     "yup": "^0.28.0"
   }
 }

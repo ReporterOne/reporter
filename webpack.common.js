@@ -31,6 +31,10 @@ module.exports = {
         from: path.resolve(src, 'manifest.json'),
         to: path.resolve(dist, 'static'),
       },
+      {
+        from: path.resolve(src, 'assets', 'icons'),
+        to: path.resolve(dist, 'static', 'icons')
+      }
     ]),
     new WorkboxPlugin.InjectManifest({
       swSrc: path.resolve(src, 'sw.js'),

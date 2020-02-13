@@ -4,6 +4,7 @@ import AuthService, {PermissionsError} from "~/services/auth";
 export const UPDATE_REASONS = 'UPDATE_REASONS';
 export const UPDATE_LOGIN = 'UPDATE_LOGIN';
 export const UPDATE_DATES = 'UPDATE_DATES';
+export const UPDATE_ONLINE = 'UPDATE_ONLINE';
 
 export const updateReasons = (reasons) => ({
   type: UPDATE_REASONS,
@@ -18,6 +19,11 @@ export const updateLogin = (login) => ({
 export const updateDates = (dates) => ({
   type: UPDATE_DATES,
   dates,
+});
+
+export const updateOnline = (state) => ({
+  type: UPDATE_ONLINE,
+  state: state
 });
 
 export const logout = () => async dispatch => {
