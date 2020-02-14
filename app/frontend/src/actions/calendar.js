@@ -67,18 +67,22 @@ export const fetchMyDates = (start, end) => async (dispatch) => {
 };
 
 export const deleteDateOf = (userId, date) => async (dispatch) => {
-  await DateStatusService.deleteDate({userId: userId, date: new Date(date)});
-  dispatch(updateDay(date, null, userId));
+  await logoutIfNoPermission(async () => {
+    await DateStatusService.deleteDate({userId: userId, date: new Date(date)});
+    dispatch(updateDay(date, null, userId));
+  }, dispatch);
 };
 
-export const setDateStatus = ({userId, status, start, reason=undefined}) => async (dispatch) => {
-  const data = await UsersService.setDate({
-    userId: userId,
-    start: start,
-    state: status,
-    reason: reason,
-  });
-  const key = Object.keys(data)[0];
-  const value = Object.values(data)[0];
-  dispatch(updateDay(key, value, userId));
+export const setDateStatus = ({userId, status, start, reason = undefined}) => async (dispatch) => {
+  await logoutIfNoPermission(async () => {
+    const data = await UsersService.setDate({
+      userId: userId,
+      start: start,
+      state: status,
+      reason: reason,
+    });
+    const key = Object.keys(data)[0];
+    const value = Object.values(data)[0];
+    dispatch(updateDay(key, value, userId));
+  }, dispatch);
 };

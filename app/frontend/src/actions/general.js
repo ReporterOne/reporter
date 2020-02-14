@@ -19,11 +19,6 @@ export const updateLogin = (login) => ({
   login,
 });
 
-export const updateDates = (dates) => ({
-  type: UPDATE_DATES,
-  dates,
-});
-
 export const updateOnline = (state) => ({
   type: UPDATE_ONLINE,
   state: state,

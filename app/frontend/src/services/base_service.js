@@ -69,11 +69,11 @@ export class HttpService {
         throw new CanceledError(error.message);
       }
       if (!error.response) {
-        console.trace(error);
-        throw new NetworkError(`failed to make request ${JSON.stringify(config)}`);
+        console.trace(error, config);
+        throw new NetworkError(`failed to make request: offline`);
       }
       if (error.response.status === 401) {
-        throw new PermissionsError(error.response.data.details);
+        throw new PermissionsError(error.response.data.detail);
       }
       console.trace('couldn\'t make request', config, error.response.status);
       throw error;
