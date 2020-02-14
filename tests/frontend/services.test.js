@@ -30,7 +30,7 @@ describe("test date_datas service", () => {
     const request = DateDatasService.getReasons();
     expectHTTP(request).get('/api/v1/dates_status/reasons').toReturn(reasons);
   });
-  test("permissions error", () => {
+  test("permissions notification", () => {
     const request = DateDatasService.getReasons();
     expectHTTP(request).get('/api/v1/dates_status/reasons').toPermissionFail();
   });

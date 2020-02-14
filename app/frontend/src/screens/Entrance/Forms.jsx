@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import AuthService from '~/services/auth';
-import {updateLogin} from '~/actions/general';
+import {newNotification, updateLogin} from '~/actions/general';
 import {updateCurrentUser} from '~/actions/users';
 import GoogleLogin from 'react-google-login';
 import {SVGIcon, theme} from '~/components/common';
@@ -63,10 +63,10 @@ const StyledFormControl = styled(({overrideColor, ...props}) =>
   }
 `;
 const InputField = (
-    {
-      label, field, setField, icon, color = 'primary',
-      blurColor = 'grey', overrideColor = undefined, ...props
-    }) => {
+  {
+    label, field, setField, icon, color = 'primary',
+    blurColor = 'grey', overrideColor = undefined, ...props
+  }) => {
   const [_blurColor, setBlurColor] = useState(blurColor);
 
   const onFocus = () => {
@@ -81,15 +81,15 @@ const InputField = (
     <StyledFormControl color={color} overrideColor={overrideColor}>
       <InputLabel htmlFor={`${label}-field`}>{label}</InputLabel>
       <Input id={`${label}-field`}
-        value={field}
-        onChange={(event) => setField(event.target.value)}
-        onFocus={onFocus} onBlur={onBlur}
-        endAdornment={
-          <InputAdornment position="end">
-            <StyledIcon src={icon} color={theme[_blurColor]}
-              isCentered={false}/>
-          </InputAdornment>
-        } {...props}
+             value={field}
+             onChange={(event) => setField(event.target.value)}
+             onFocus={onFocus} onBlur={onBlur}
+             endAdornment={
+               <InputAdornment position="end">
+                 <StyledIcon src={icon} color={theme[_blurColor]}
+                             isCentered={false}/>
+               </InputAdornment>
+             } {...props}
       />
     </StyledFormControl>
   );
@@ -97,31 +97,31 @@ const InputField = (
 
 
 const RegisterStageOneForm = (
-    {
-      username, password, setUsername, setPassword, googleSuccess, googleFailed,
-      facebookSuccess, facebookFailed,
-    }) => {
+  {
+    username, password, setUsername, setPassword, googleSuccess, googleFailed,
+    facebookSuccess, facebookFailed,
+  }) => {
   return (
     <>
       <InputField label="Username" icon={userIconUrl}
-        color="secondary"
-        overrideColor="white"
-        blurColor="white"
-        field={username}
-        setField={setUsername}/>
+                  color="secondary"
+                  overrideColor="white"
+                  blurColor="white"
+                  field={username}
+                  setField={setUsername}/>
       <InputField label="Password" type="password" icon={passwordIconUrl}
-        color="secondary"
-        overrideColor="white"
-        blurColor="white"
-        field={password}
-        setField={setPassword}/>
+                  color="secondary"
+                  overrideColor="white"
+                  blurColor="white"
+                  field={password}
+                  setField={setPassword}/>
       <ExternalLogin>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
           render={(renderProps) => (
             <IconButton onClick={renderProps.onClick} spacing="5px">
               <SVGIcon size={60} src={googleFullIconUrl}
-                color={theme.white}/>
+                       color={theme.white}/>
             </IconButton>
           )}
           buttonText="Login"
@@ -136,7 +136,7 @@ const RegisterStageOneForm = (
           render={(renderProps) => (
             <IconButton onClick={renderProps.onClick} spacing="5px">
               <SVGIcon size={60} src={facebookFullIconUrl}
-                color={theme.white}/>
+                       color={theme.white}/>
             </IconButton>
           )}
           callback={facebookSuccess}
@@ -152,17 +152,17 @@ const RegisterStageTwoForm = ({name, email, setName, setEmail}) => {
   return (
     <>
       <InputField label="Display Name" icon={userIconUrl}
-        color="secondary"
-        overrideColor="white"
-        blurColor="white"
-        field={name}
-        setField={setName}/>
+                  color="secondary"
+                  overrideColor="white"
+                  blurColor="white"
+                  field={name}
+                  setField={setName}/>
       <InputField label="Email Address" icon={emailIconUrl}
-        color="secondary"
-        overrideColor="white"
-        blurColor="white"
-        field={email}
-        setField={setEmail}/>
+                  color="secondary"
+                  overrideColor="white"
+                  blurColor="white"
+                  field={email}
+                  setField={setEmail}/>
     </>
   );
 };
@@ -182,8 +182,8 @@ const RegisterStageThreeForm = ({avatar, setAvatar}) => {
       {
         avatarsAvailable.map((_, index) =>
           <Avatar onClick={() => setAvatar(String(index))}
-            opacity={parseInt(avatar) === index ? 1 : 0.5}
-            key={index} kind={index} jumping={true}/>)
+                  opacity={parseInt(avatar) === index ? 1 : 0.5}
+                  key={index} kind={index} jumping={true}/>)
       }
     </AvatarChoose>
   );
@@ -236,18 +236,23 @@ export const RegisterForm = React.memo(({history, setValid}) => {
       // send all details to server
       (async () => {
         // await AuthService.facebookLogin(id_token);
-        switch (type) {
-          case 'facebook':
-            await AuthService.facebookRegister(token, email, name, avatar);
-            break;
-          case 'google':
-            await AuthService.googleRegister(token, email, name, avatar);
-            break;
-          default:
-            await AuthService.register(username, password, email, name, avatar);
-            break;
+        try {
+          switch (type) {
+            case 'facebook':
+              await AuthService.facebookRegister(token, email, name, avatar);
+              break;
+            case 'google':
+              await AuthService.googleRegister(token, email, name, avatar);
+              break;
+            default:
+              await AuthService.register(username, password, email, name, avatar);
+              break;
+          }
+          history.push(LOGIN_ROUTE);
+        } catch (e) {
+          dispatch(newNotification(
+            {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
         }
-        history.push(LOGIN_ROUTE);
       })();
     } else {
       setStep(step + 1);
@@ -275,11 +280,17 @@ export const RegisterForm = React.memo(({history, setValid}) => {
     setToken(id_token);
     (async () => {
       // await AuthService.facebookLogin(id_token);
-      await AuthService.isFree(id_token, 'facebook');
-      setType('facebook');
-      setEmail(response.email);
-      setName(response.name);
-      setStep(step + 1);
+      try {
+        await AuthService.isFree(id_token, 'facebook');
+        setType('facebook');
+        setEmail(response.email);
+        setName(response.name);
+        setStep(step + 1);
+
+      } catch (e) {
+        dispatch(newNotification(
+          {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
+      }
     })();
   });
   const googleResponse = useCallback((response) => {
@@ -292,11 +303,16 @@ export const RegisterForm = React.memo(({history, setValid}) => {
     setToken(id_token);
     (async () => {
       // await AuthService.googleLogin(id_token);
-      await AuthService.isFree(id_token, 'google');
-      setType('google');
-      setEmail(response.profileObj.email);
-      setName(response.profileObj.name);
-      setStep(step + 1);
+      try {
+        await AuthService.isFree(id_token, 'google');
+        setType('google');
+        setEmail(response.profileObj.email);
+        setName(response.profileObj.name);
+        setStep(step + 1);
+      } catch (e) {
+        dispatch(newNotification(
+          {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
+      }
     })();
   });
 
@@ -319,7 +335,7 @@ export const RegisterForm = React.memo(({history, setValid}) => {
             case 1:
               return (
                 <RegisterStageTwoForm name={name} setName={setName}
-                  email={email} setEmail={setEmail}/>
+                                      email={email} setEmail={setEmail}/>
               );
             case 2:
               return (
@@ -329,11 +345,11 @@ export const RegisterForm = React.memo(({history, setValid}) => {
             default:
               return (
                 <RegisterStageOneForm username={username} password={password}
-                  setUsername={updateUsername}
-                  setPassword={updatePassword}
-                  googleSuccess={googleRegister}
-                  facebookSuccess={facebookResponse}
-                  googleFailed={googleResponse}/>
+                                      setUsername={updateUsername}
+                                      setPassword={updatePassword}
+                                      googleSuccess={googleRegister}
+                                      facebookSuccess={facebookResponse}
+                                      googleFailed={googleResponse}/>
               );
           }
         })()
@@ -358,10 +374,15 @@ export const LoginForm = React.memo(({setValid}) => {
 
   const onSend = useCallback((e) => {
     (async () => {
-      console.log(username, password);
-      await AuthService.login(username, password);
-      dispatch(updateLogin(true));
-      dispatch(updateCurrentUser(AuthService.getUserId()));
+      try {
+        await AuthService.login(username, password);
+        dispatch(updateLogin(true));
+        dispatch(updateCurrentUser(AuthService.getUserId()));
+      } catch (e) {
+        console.log(e.response)
+        dispatch(newNotification(
+          {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
+      }
     })();
     e.preventDefault();
   });
@@ -369,37 +390,48 @@ export const LoginForm = React.memo(({setValid}) => {
   const facebookResponse = useCallback((response) => {
     const id_token = response.accessToken;
     (async () => {
-      await AuthService.facebookLogin(id_token);
-      dispatch(updateLogin(true));
-      dispatch(updateCurrentUser(AuthService.getUserId()));
+      try {
+        await AuthService.facebookLogin(id_token);
+        dispatch(updateLogin(true));
+        dispatch(updateCurrentUser(AuthService.getUserId()));
+      } catch (e) {
+        dispatch(newNotification(
+          {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
+      }
     })();
   });
-  const googleResponse = useCallback((response) => {
-    console.log('GOOGLE 2RESPONSE');
+  const googleFailed = useCallback((response) => {
+    console.log('GOOGLE RESPONSE');
+    dispatch(newNotification({message: `Error logging in: ${JSON.stringify(response)}`}));
     console.log(response);
   });
 
   const googleLogin = useCallback((response) => {
     const id_token = response.tokenObj.id_token;
     (async () => {
-      await AuthService.googleLogin(id_token);
-      dispatch(updateLogin(true));
-      dispatch(updateCurrentUser(AuthService.getUserId()));
+      try {
+        await AuthService.googleLogin(id_token);
+        dispatch(updateLogin(true));
+        dispatch(updateCurrentUser(AuthService.getUserId()));
+      } catch (e) {
+        dispatch(newNotification(
+          {message: `Error logging in: ${e?.response?.data?.detail ?? e?.message}`}));
+      }
     })();
   });
 
   return (
     <StyledForm id="loginForm" onSubmit={onSend}
-      exit={{opacity: 0}}
-      animate={{opacity: 1}}
-      initial={{opacity: 0}}
+                exit={{opacity: 0}}
+                animate={{opacity: 1}}
+                initial={{opacity: 0}}
     >
       <InputField label="Username" icon={userIconUrl}
-        field={username}
-        setField={setUsername}/>
+                  field={username}
+                  setField={setUsername}/>
       <InputField label="Password" type="password" icon={passwordIconUrl}
-        field={password}
-        setField={setPassword}/>
+                  field={password}
+                  setField={setPassword}/>
       <ExternalLogin>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
@@ -410,7 +442,7 @@ export const LoginForm = React.memo(({setValid}) => {
           )}
           buttonText="Login"
           onSuccess={googleLogin}
-          onFailure={googleResponse}
+          onFailure={googleFailed}
           cookiePolicy={'single_host_origin'}
         />
         <FacebookLogin
