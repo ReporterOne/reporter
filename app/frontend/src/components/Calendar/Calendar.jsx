@@ -6,13 +6,14 @@ import {
   addMonths,
   startOfMonth,
   endOfMonth,
-  startOfWeek, endOfWeek, addWeeks, getUnixTime,
+  startOfWeek, endOfWeek, addWeeks,
 } from 'date-fns';
 import {Header, Days, Cells} from './components';
 import styled from 'styled-components';
 import {Swipeable} from 'react-swipeable';
-import {useSelector} from 'react-redux';
-import {fetchDateDate} from '~/hooks/date_datas';
+import {useDispatch} from 'react-redux';
+import {formatDate} from '~/components/Calendar/components/utils';
+import {updateRenderedMonth} from '~/actions/calendar';
 
 
 const StyledSwipeable = styled(Swipeable)`
@@ -22,8 +23,10 @@ const StyledSwipeable = styled(Swipeable)`
 `;
 
 const SpinerContainer = styled.div`
-  align-self: center;
-  justify-self: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledContainer = styled(motion.div)`
@@ -32,42 +35,41 @@ const StyledContainer = styled(motion.div)`
   display: inline-flex;
   flex-direction: column;
   position: absolute;
+  min-height: 0;
 `;
 
-const Calendar = ({userId}) => {
-  const [currentDate, setCurrentDate] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [swipedLeft, setSwipedLeft] = useState(true);
-  const [mounted, setMounted] = useState(false);
-  const now = new Date();
-  useEffect(() => {
-    setCurrentDate(now);
-    setSelectedDate(now);
-    setTimeout(() => {
-      // let the calendar settle.
-      setMounted(true);
-    }, 10);
-  }, []);
 
-  const {monthStartDay, monthEndDay, startDate, endDate} = useMemo(() => {
+const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
+  const now = new Date();
+  const [currentDate, setCurrentDate] = useState(now);
+  const [loading, setLoading] = useState(false);
+  const [swipedLeft, setSwipedLeft] = useState(true);
+  const [cellSize, updateCellSize] = useState({size: 0, gapSize: 0});
+  const dispatch = useDispatch();
+
+  const {renderedMonth, startDate, endDate} = useMemo(() => {
+    const renderedMonth = currentDate.getMonth();
     const dateMonthStart = startOfMonth(currentDate);
     const dateMonthEnd = endOfMonth(dateMonthStart);
     const dateStartDate = startOfWeek(dateMonthStart);
     const dateEndDate = endOfWeek(addWeeks(dateMonthEnd, 1));
     return {
-      monthStartDay: dateMonthStart,
-      monthEndDay: dateMonthEnd,
+      renderedMonth: renderedMonth,
       startDate: dateStartDate,
       endDate: dateEndDate,
     };
   }, [currentDate]);
 
-  const {loading, dates} = useSelector((state) => state.calendar);
-  fetchDateDate({
-    start: getUnixTime(monthStartDay),
-    end: getUnixTime(monthEndDay),
-    userId: userId,
-  });
+  useEffect(() => {
+    (async () => {
+      dispatch(updateRenderedMonth(renderedMonth));
+      if (fetchData) {
+        setLoading(true);
+        await fetchData(formatDate(startDate), formatDate(endDate));
+        setLoading(false);
+      }
+    })();
+  }, [startDate, endDate, fetchData, dispatch, renderedMonth]);
 
   const nextMonth = useCallback((e) => {
     setSwipedLeft(false);
@@ -80,11 +82,11 @@ const Calendar = ({userId}) => {
   });
 
   const onDateClick = useCallback((day) => {
-    setSelectedDate(day);
+    if (setSelectedDate) setSelectedDate(day);
   });
 
   const slideAmount = useMemo(() => {
-    return swipedLeft? -300 : 300;
+    return swipedLeft ? -300 : 300;
   }, [swipedLeft]);
 
   if (loading || currentDate === null) {
@@ -96,22 +98,24 @@ const Calendar = ({userId}) => {
   }
 
   return (
-    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth} trackMouse={true}
+    <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}
+      trackMouse={true}
       className="CalendarContainer"
     >
       <AnimatePresence>
         <StyledContainer
           key={currentDate}
-          initial={{x: mounted? slideAmount : 0, opacity: mounted? 0 : 1}}
+          initial={{x: slideAmount, opacity: 1}}
           animate={{x: 0, opacity: 1}}
-          exit={{x: slideAmount * -1, opacity: 0}}
+          exit={{x: -slideAmount, opacity: 0}}
         >
-          <Header currentDate={currentDate} selectedDate={selectedDate}/>
-          <Days currentDate={currentDate}/>
+          <Header currentDate={currentDate}/>
+          <Days currentDate={currentDate} cellSize={cellSize}/>
           <Cells onDateClick={onDateClick}
-            userId={userId} today={now} renderedMonth={monthStartDay.getMonth()}
-            dates={dates} from={startDate} to={endDate}
-
+            userId={userId} updateCellSize={updateCellSize}
+            selectedDate={selectedDate}
+            today={now} renderedMonth={renderedMonth}
+            from={startDate} to={endDate}
           />
         </StyledContainer>
       </AnimatePresence>

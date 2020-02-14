@@ -39,15 +39,15 @@ const StyledLink = styled(NavLink)`
 `;
 
 const OptionWrapper = styled.div`
-  display: flex;
+  display: ${({isHidden}) => isHidden? 'none' : 'flex'};
   flex-direction: column;
 `;
 
 
-export const Option = React.memo(({path, ...props}) => {
+export const Option = React.memo(({path, hidden, ...props}) => {
   const {isOpen, toggleDrawer} = useContext(DrawerContext);
   return (
-    <OptionWrapper>
+    <OptionWrapper isHidden={hidden}>
       <StyledOptionButton color="primary" variant="contained" activeClassName="selected" exact
         component={StyledLink} to={path} onClick={() => {
           if (isOpen) {

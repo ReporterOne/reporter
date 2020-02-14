@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Container, StyledIconButton, SVGIcon} from '~/components/common';
+import {
+  Container,
+  Spacer,
+  StyledIconButton,
+  SVGIcon,
+} from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
+import alphaIcon from '~/assets/alph_icon.svg';
 
 
 const TitleWrapper = styled(Container)`
@@ -19,6 +25,12 @@ const PageTitle = styled.h3`
   font-weight: 600;
 `;
 
+const StyledAlpha = styled(SVGIcon)`
+  margin-right: 10px;
+  opacity: 0.7;
+  fill: white;
+`;
+
 
 export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
   return (
@@ -31,6 +43,8 @@ export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
           {titleComponent()}
         </PageTitle>
       </TitleWrapper>
+      <Spacer/>
+      <StyledAlpha src={alphaIcon}/>
     </Container>
   );
 });

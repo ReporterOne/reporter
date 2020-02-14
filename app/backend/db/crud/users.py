@@ -4,14 +4,56 @@ from datetime import date, time
 
 from sqlalchemy.orm import Session
 
-from db.models import User
 from db import schemas
+from db.models import User, Permission, Mador, MadorSettings
+from .crud_utils import put_values
+
+
+def update_user(
+    db: Session,
+    user: User,
+    **kwargs
+) -> User:
+    """Update user with the given details."""
+    return put_values(db, user, should_commit=True, **kwargs)
+
+
+def _get_mador(
+    db: Session,
+    name: str,
+    make_if_not_exists: bool = False,
+) -> Mador:
+    """Get mador.
+
+    Args:
+        db: the related db session.
+        name: date for the details.
+        make_if_not_exists: a flag, if True will create mador
+                            if the mador was not found.
+    """
+    mador = db.query(Mador).filter(
+        Mador.name == name).first()
+    if make_if_not_exists and mador is None:
+        mador = Mador(name=name)
+        mador_settings = MadorSettings(
+            mador=mador, key='default_reminder_time', value='09:00',
+            type='time')
+        db.add_all([mador, mador_settings])
+        db.commit()
+
+    return mador
 
 
 def create_user(
     db: Session,
     username: str,
-    password: str
+    email: str,
+    english_name: str,
+    icon_path: str = None,
+    password: str = None,
+    google_id: str = None,
+    facebook_id: str = None,
+    account_type: str = 'local'
 ) -> User:
     """Create new user in db.
 
@@ -19,13 +61,26 @@ def create_user(
         db: the related db session.
         username: the required username.
         password: the required password.
+        email: the required email.
+        english_name: the required english name.
+        icon_path: the required icon path.
+        google_id: google id of the user.
+        facebook_id: facebook id of the user.
+        account_type: type of the account.
 
     Returns:
         the newly created user.
     """
-    new_user = User(english_name=username,
+    mador = _get_mador(db, name="Unity", make_if_not_exists=True)
+    new_user = User(english_name=english_name,
+                    email=email,
+                    mador=mador,
+                    icon_path=icon_path,
                     username=username,
-                    password=password)
+                    google_id=google_id,
+                    facebook_id=facebook_id,
+                    password=password,
+                    type=account_type)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -61,6 +116,43 @@ def delete_user(
     user = get_user(db=db, user_id=user_id)
     db.delete(user)
     db.commit()
+
+
+def is_admin(db: Session, user: User) -> bool:
+    """Check if user is admin."""
+    admin_permission = db.query(Permission).filter(
+        Permission.type == 'admin').one()
+    return admin_permission in user.permissions
+
+
+def add_permission(db: Session, user: User, permission: str,
+                   create_if_missing=False):
+    """Add user permission and create if missing"""
+    if create_if_missing:  # create new if not exists
+        permission = db.query(Permission).filter(
+            Permission.type == permission).first()
+        if permission is None:
+            permission = Permission(type=permission)
+
+    else:
+        permission = db.query(Permission).filter(
+            Permission.type == permission).one()
+
+    if permission in user.permissions:
+        return
+
+    user.permissions += permission
+    db.commit()
+
+
+def set_admin(db: Session, user: User):
+    """Add admin permission for a user."""
+    return add_permission(db, user, 'admin')
+
+
+def get_all_users(db: Session) -> List[User]:
+    """In-case of admin get all users."""
+    return db.query(User).all()
 
 
 def get_users(
@@ -117,6 +209,38 @@ def get_hierarchy(
             childs=[get_hierarchy(db=db, leader_id=child.id)
                     for child in childs]
         )
+
+
+def get_user_by_facebook_id(
+    db: Session,
+    facebook_id: str
+) -> User:
+    """Get user from the db by username.
+
+    Args:
+        db: the related db session.
+        facebook_id: the user's google-id.
+
+    Returns:
+        the wanted user.
+    """
+    return db.query(User).filter(User.facebook_id == facebook_id).first()
+
+
+def get_user_by_google_id(
+    db: Session,
+    google_id: str
+) -> User:
+    """Get user from the db by username.
+
+    Args:
+        db: the related db session.
+        google_id: the user's google-id.
+
+    Returns:
+        the wanted user.
+    """
+    return db.query(User).filter(User.google_id == google_id).first()
 
 
 def get_user_by_username(

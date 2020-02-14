@@ -1,35 +1,19 @@
-"""Authentication module."""
-import os
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 from typing import List
 
 import jwt
-from fastapi import (Depends, HTTPException, Security, APIRouter)
-from fastapi.security import (
-    OAuth2PasswordBearer,
-    OAuth2PasswordRequestForm,
-    SecurityScopes,
-)
-from jwt import PyJWTError
-from jwt.exceptions import ExpiredSignatureError
-from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, Security
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from jwt import ExpiredSignatureError, PyJWTError
 # pylint: disable=no-name-in-module
 from pydantic import BaseModel, ValidationError
+from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 
+from db.crud import get_user_by_username
+from db.database import verify_password, get_db
 from db.schemas import User
-from db.database import get_db, get_password_hash, verify_password
-from db.crud import get_user_by_username, create_user
-
-# TODO: remember in production to generate new hash using:
-#       openssl rand -hex 32
-SECRET_KEY = os.environ.get(
-    "ONE_REPORT_SECRET",
-    "a10519645263a665b3a10068a29b9e6171f32bad184d82a8aef0d790fe09d49a")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 500
-
-router = APIRouter()
+from .consts import SECRET_KEY, ALGORITHM
 
 
 class Token(BaseModel):
@@ -41,6 +25,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Token data model."""
     username: str = None
+    user_id: int = None
     scopes: List[str] = []
 
 
@@ -95,8 +80,12 @@ async def get_current_user(
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
+        user_id: int = payload.get("id")
+        if user_id is None:
+            raise credentials_exception
         token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(scopes=token_scopes, username=username,
+                               user_id=user_id)
     except ExpiredSignatureError:
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
@@ -125,46 +114,3 @@ async def get_current_user_secured(
 ) -> User:
     """Get the current user with secured scope."""
     return current_user
-
-
-@router.post("/login", response_model=Token)
-async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
-):
-    """Login to system and get access token."""
-    user = authenticate_user(db, form_data.username, form_data.password)
-
-    if user is None:
-        raise HTTPException(status_code=400,
-                            detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # TODO: give only possible scopes
-    access_token = create_access_token(
-        data={"sub": user.username, "scopes": ["personal"]},
-        expires_delta=access_token_expires,
-    )
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id
-    }
-
-
-@router.post("/register", response_model=User)
-def register(
-    *,
-    username: str,
-    password: str,
-    db: Session = Depends(get_db)
-) -> User:
-    """Register to application and return the created user."""
-    existing_user = get_user_by_username(db, username)
-    if existing_user:
-        raise HTTPException(status_code=400,
-                            detail="Username already taken!")
-
-    hashed_password = get_password_hash(password)
-    created_user = create_user(db, username, hashed_password)
-
-    return created_user

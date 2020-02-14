@@ -32,10 +32,13 @@ export const Icon = styled.img`
   height: 30px;
 `;
 
-export const SVGIcon = styled(SVG)`
+export const SVGIcon = styled(({isCentered, ...props}) => <SVG {...props}/>)`
+  fill: ${({color}) => color};
   width: ${({size = 30}) => size}px;
   height: ${({size = 30}) => size}px;
-  margin: auto;
+  margin: ${({isCentered = true}) => isCentered && 'auto'};
+  position: ${({position = 'relative'}) => position};
+  opacity: 1;
 `;
 
 export const StyledIconButton = styled(IconButton)`
@@ -103,6 +106,11 @@ export const FadeInContainer = ({poseKey, ...props}) => (
   </PoseGroup>
 );
 
+export const Spacer = styled.div`
+  flex: ${({enabled = true}) => enabled ? 1 : 0};
+  transition: 0.5s flex;
+  will-change: flex;
+`;
 
 export const theme = {
   cards: 'white',
@@ -115,6 +123,7 @@ export const theme = {
     },
   },
   main: '#4725a5',
+  primary: '#4725a5',
   secondary: '#FFF',
   outerShadows: shadows,
   innerShadows: innerShaddow,
@@ -126,7 +135,9 @@ export const theme = {
   approved: '#22B573',
   notApproved: '#F15A24',
   grey: 'rgb(120, 120, 120)',
+  lightgray: 'rgb(200, 200, 200)',
   white: 'rgb(255, 255, 255)',
+  black: '#000',
   drawerSpeed: 0.3,
   handleSpeed: 0.3,
   avatarSpeed: 0.3,

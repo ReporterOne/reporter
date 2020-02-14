@@ -7,8 +7,17 @@ import {Container, RoundedContainer, theme} from '~/components/common';
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import ReasonsDialog from '~/dialogs/Reasons';
-import {useSelector} from 'react-redux';
-import DateStatusService from '~/services/date_datas';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  HERE,
+  NOT_ANSWERED,
+  NOT_HERE, titleCase,
+} from '~/utils/utils';
+import {
+  deleteDateOf,
+  fetchMyDates, setDateStatus,
+} from '~/actions/calendar';
+import {formatDate} from '~/components/Calendar/components/utils';
 
 
 const HeaderWelcome = styled.h2`
@@ -32,33 +41,43 @@ const WelcomeMessage = styled(Container)`
 
 
 const Dashboard = React.memo((props) => {
-  const {english_name = undefined, id = undefined} = useSelector((state) => state.users.me || {});
+  const dispatch = useDispatch();
+  const {
+    english_name: englishName = undefined,
+    id = undefined,
+  } = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
   const [openDialog, changeOpenDialog] = useState(false);
-  const [selectedValue, changeSelectedValue] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+
+  const {
+    state: todayState = NOT_ANSWERED,
+    reason: todayReason = null,
+  } = useSelector((state) => lodash.find(state.calendar.dates?.[selectedDate]?.data, {user_id: id}) ?? {});
+
+  const changeSelectedDate = useCallback((data) => {
+    setSelectedDate(data.date);
+  });
+  const fetchDates = useCallback((start, end) => {
+    dispatch(fetchMyDates(start, end));
+  }, [dispatch]);
 
   const handleClose = useCallback((value) => {
     changeOpenDialog(false);
-    changeSelectedValue(value);
-    DateStatusService.setToday({
+    dispatch(setDateStatus({
       userId: id,
-      state: 'not_here',
+      start: selectedDate,
+      status: NOT_HERE,
       reason: value,
-    });
+    }));
   });
 
   const handleOnChange = useCallback((state) => {
-    if (state === 'notHere') {
+    if (state === NOT_HERE) {
       changeOpenDialog(true);
+    } else if (state === HERE) {
+      dispatch(setDateStatus({userId: id, start: selectedDate, status: HERE}));
     } else {
-      changeSelectedValue(null);
-      if (state === 'here') {
-        DateStatusService.setToday({
-          userId: id,
-          state: 'here',
-        });
-      } else {
-        DateStatusService.deleteToday({userId: id});
-      }
+      dispatch(deleteDateOf(id, selectedDate));
     }
   });
 
@@ -67,14 +86,20 @@ const Dashboard = React.memo((props) => {
       <Container flex={2} style={{padding: '15px'}}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
-          <HeaderName mode="single" max={45}>{lodash.capitalize(english_name)}</HeaderName>
+          <HeaderName mode="single"
+            max={45}>{titleCase(englishName)}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton missingReason={selectedValue} onChange={handleOnChange}/>
+        <AttendingButton missingReason={todayReason?.name}
+          onChange={handleOnChange} initialState={todayState}
+          isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender userId={id}/>
+        <Calender key="static" userId={id} fetchData={fetchDates}
+          selectedDate={selectedDate}
+          setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>
-      <ReasonsDialog open={openDialog} selectedValue={selectedValue} onClose={handleClose}/>
+      <ReasonsDialog open={openDialog} selectedValue={todayReason?.name}
+        onClose={handleClose}/>
     </Container>
   );
 });

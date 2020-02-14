@@ -1,9 +1,5 @@
-import {
-  getUnixTime,
-} from 'date-fns';
-import {statusList} from '~/utils/statusList';
-
 import {HttpService} from '~/services/base_service';
+import {formatDate} from '~/components/Calendar/components/utils';
 
 
 /** DateStatus service for requesting date statuses. */
@@ -55,7 +51,7 @@ class DateStatusService extends HttpService {
       method: 'post',
       url: '/',
       data: {
-        start_date: getUnixTime(date),
+        start_date: formatDate(date),
         user_id: userId,
         state,
         reason,
@@ -64,17 +60,17 @@ class DateStatusService extends HttpService {
   }
 
   /**
-   * Delete today status.
+   * Delete date status.
    * @param {number} userId - relevant user id.
+   * @param {date} date - date to delete.
    * @return {Promise<T>}
    */
-  async deleteToday({userId}) {
-    const date = new Date();
+  async deleteDate({userId, date}) {
     return await this.request({
       method: 'delete',
       url: '/',
       data: {
-        start_date: getUnixTime(date),
+        start_date: formatDate(date),
         user_id: userId,
       },
     });
@@ -83,20 +79,20 @@ class DateStatusService extends HttpService {
    * Get date datas from server.
    * @param {number} start - start timestamp
    * @param {number} end - end timestamp
-   * @param {number} userId - relevant user id.
+   * @param {number} usersId - relevant users id.
    * @return {Promise<T>}
    */
-  async getDateData({start, end, userId}) {
-    // return await this.request({
-    //   method: 'get',
-    //   url: '/',
-    //   params: {
-    //     start,
-    //     end,
-    //     user_id: userId,
-    //   },
-    // });
-    return Promise.resolve(statusList);
+  async getDateData({start, end, usersId}) {
+    return await this.request({
+      method: 'get',
+      url: '/',
+      params: {
+        start,
+        end,
+        users_id: usersId,
+      },
+    });
+    // return Promise.resolve(statusList);
   }
 }
 

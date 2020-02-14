@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   format,
   endOfWeek,
@@ -7,119 +7,276 @@ import {
   isPast,
   isSameDay,
 } from 'date-fns';
-import styled from 'styled-components';
+import lodash from 'lodash';
+import styled, {css} from 'styled-components';
 import {Container, theme} from '~/components/common';
-import {iteratePrevCurrentNext} from '~/utils/utils';
+import {
+  ANSWERED,
+  HERE,
+  NOT_ANSWERED,
+  NOT_HERE,
+} from '~/utils/utils';
+import {formatDate} from '~/components/Calendar/components/utils';
+import {useSelector} from 'react-redux';
 
 
 const CellsDateFormat = 'd';
 
+
+const Month = styled(Container)`
+  justify-content: space-between;
+`;
 const Week = styled.div`
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction:row;
-  flex-wrap: wrap;
+  justify-content: space-between;
   flex:1;
   width: 100%;
   min-height: 30px;
+  overflow: hidden;
 `;
 const StyledDay = styled.div`
+  position: relative;
   display: flex;
-  flex:1;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) => dayColor(props)};
-  ${({type}) => dayTypes[type]}
+  //flex:1;
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
 `;
-const DateLabel = styled.span`
-  line-height: 1;
-  font-weight: bold;
-  color: ${({isPast, isSameMonth, status}) => dayLabelIsPased({
+const Background = styled.div`
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
     isPast,
     isSameMonth,
     status,
   })};
+  margin: ${({margin}) => margin}px;
+  ${({type}) => dayTypes[type]};
+`;
+
+const Filler = styled.div`
+  width: ${({width}) => width}px;
+  height: ${({size}) => size}px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(${({size}) => size}px);
+  background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
+    isPast,
+    isSameMonth,
+    status,
+  })};
+  padding: 0 ${({margin}) => margin}px;
+  margin: ${({margin}) => margin}px;
+`;
+const DateLabel = styled.div`
+  position: relative;
+  line-height: 1;
+  font-weight: bold;
+  z-index: 1;
+  background-color: ${({isToday, isSelected, status, isPast, isSameMonth}) => getDateLabelBackgroundColor({
+    isSelected, isToday, status, isPast, isSameMonth,
+  })};
+  border-radius: 50%;
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: ${({backgroundSize}) => Math.round(backgroundSize)}px;
+  height: ${({backgroundSize}) => Math.round(backgroundSize)}px;
+  box-sizing: border-box;
+  border: ${({isToday}) => isToday && '1px solid rgba(0, 0, 0, 0.5)'};
+  color: ${({isPast, isSameMonth, status, isToday, isSelected}) => getDateLabelColor({
+    isPast, isSameMonth, status, isToday, isSelected,
+  })};
   opacity: ${({isSameMonth}) => isSameMonth ? 1 : 0.2};
 `;
 
-const dayColor = ({isPast, isSameMonth, status}) => {
+const getDateBackgroundColor = ({isPast, isSameMonth, status}) => {
   if (!isPast) {
-    return isSameMonth ? dayStatus[status] : theme.white;
+    return isSameMonth ? dayStatusBackgroundColor[status] : theme.white;
   } else {
     return theme.white;
   }
 };
-const dayLabelIsPased = ({isPast, isSameMonth, status}) => {
+const getDateLabelBackgroundColor = ({isToday, isSelected, status, isPast, isSameMonth}) => {
+  if (status === NOT_ANSWERED || isPast) {
+    if (isSelected) return 'rgba(140, 140, 140, 0.5)';
+  } else {
+    if (isSelected) return 'rgba(255, 255, 255, 0.5)';
+  }
+  return 'transparent';
+};
+const getDateLabelColor = ({isPast, isSameMonth, status, isToday, isSelected}) => {
   if (!isPast) {
     if (isSameMonth) {
-      if (status === 'notDecided') {
-        return dateLabelStatus.no;
+      if (isSelected) return dateLabelColor.selected;
+      if (status === NOT_ANSWERED) {
+        return dateLabelColor[NOT_ANSWERED];
       } else {
-        return dateLabelStatus.yes;
+        return dateLabelColor[ANSWERED];
       }
-    } else {
-      return dateLabelStatus[status];
     }
   }
-  return dateLabelStatus[status];
+  return dateLabelColor[status];
 };
 const dayTypes = {
-  Start: 'border-top-left-radius:100px;border-bottom-left-radius:100px;margin: 1px 0px; margin-left: 1px;',
-  Mid: 'margin: 1px 0px;',
-  End: 'border-top-right-radius:100px; border-bottom-right-radius:100px; margin: 1px 0px; margin-right: 1px;',
-  Single: 'border-radius:200px; margin: 0px 1px; margin-bottom: 1px',
+  Start: css`
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+  `,
+  Mid: css`
+  `,
+  End: css`
+    border-top-right-radius: 50%; 
+    border-bottom-right-radius: 50%;
+  `,
+  Single: css`
+    border-radius: 50%; 
+  `,
 };
 
-const dayStatus = {
-  here: theme.approved,
-  notHere: theme.notApproved,
-  notDecided: theme.white,
+const dayStatusBackgroundColor = {
+  [HERE]: theme.approved,
+  [NOT_HERE]: theme.notApproved,
+  [NOT_ANSWERED]: theme.white,
 };
-const dateLabelStatus = {
-  no: theme.grey,
-  yes: theme.white,
-  here: theme.approved,
-  notHere: theme.notApproved,
+const dateLabelColor = {
+  [NOT_ANSWERED]: theme.grey,
+  [ANSWERED]: theme.white,
+  [HERE]: theme.approved,
+  [NOT_HERE]: theme.notApproved,
+  selected: theme.black,
 };
 
-export const datesFormatter = (dates, today, isSameMonth) => {
-  const dateList = iteratePrevCurrentNext(dates, ({prev, current, next}, index) => {
-    const dateObject = {status: current.status, type: 'Single'};
-    if (isSameMonth && index < today.getDate() - 1) return dateObject;
+const isEqual = (a, b, fields) => {
+  return fields.every((field) => lodash.get(a, field) === lodash.get(b, field));
+};
 
-    if ((!prev || prev.status !== current.status) && (next && next.status === current.status)) {
-      dateObject.type = 'Start';
-    } else if ((prev && prev.status === current.status) && (next && next.status === current.status)) {
-      dateObject.type = 'Mid';
-    } else if ((prev && prev.status === current.status) && (!next || next.status !== current.status)) {
-      dateObject.type = 'End';
-    }
-    return dateObject;
+const isDiff = (a, b, fields) => !isEqual(a, b, fields);
+
+const getRangeType = (prev, current, next, renderedMonth, userId) => {
+  const today = formatDate(new Date());
+  const prevDate = prev?.date;
+  prev = lodash.find(prev?.data, {user_id: userId});
+  current = lodash.find(current?.data, {user_id: userId});
+  next = lodash.find(next?.data, {user_id: userId});
+  if (!prev && !current && !prev) {
+    return 'Single';
+  }
+
+  if ((!prev || isDiff(prev, current, [`state`, `reason.name`]) || today > prevDate) &&
+    (next && isEqual(next, current, [`state`, `reason.name`]))) {
+    return 'Start';
+  } else if ((prev && isEqual(prev, current, [`state`, `reason.name`])) &&
+    (next && isEqual(next, current, [`state`, `reason.name`]))) {
+    return 'Mid';
+  } else if ((prev && isEqual(prev, current, [`state`, `reason.name`])) &&
+    (!next || isDiff(next, current, [`state`, `reason.name`]))) {
+    return 'End';
+  }
+  return 'Single';
+};
+
+const useDay = (date, delta) => {
+  return useMemo(() => {
+    const toRet = new Date(date);
+    toRet.setDate(date.getDate() + delta);
+    return toRet;
+  }, [date, delta]);
+};
+
+const useRangeType = (date, userId, isRenderedMonth) => {
+  const beforeDay = useDay(date, -1);
+  const afterDay = useDay(date, 1);
+  const renderPrev = useSelector((state) => state.calendar.dates?.[formatDate(beforeDay)]);
+  const renderNext = useSelector((state) => state.calendar.dates?.[formatDate(afterDay)]);
+  const render = useSelector((state) => state.calendar.dates?.[formatDate(date)] ?? {
+    date: formatDate(date),
   });
-  return dateList;
+  return useMemo(
+      () => getRangeType(renderPrev, render, renderNext, isRenderedMonth, userId),
+      [render, renderPrev, renderNext, isRenderedMonth, userId]);
 };
 
-const Day = React.memo(({date, onDateClick, isRenderedMonth}) => {
+const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userId}) => {
+  const dayRef = useRef(null);
+  const dayLabelRef = useRef(null);
+  const size = cell.size;
+  const gapSize = cell.gapSize;
+
+  const isRenderedMonth = useMemo(
+      () => renderedMonth === date.getMonth(),
+      [renderedMonth, date]);
+
+  const dateStr = formatDate(date);
+  const render = useSelector((state) => state.calendar.dates?.[dateStr] ?? {
+    date: dateStr,
+  });
+  const rangeType = useRangeType(date, userId, isRenderedMonth);
+
+  const data = useMemo(
+      () => lodash.find(render.data, {user_id: userId}),
+      [render, userId]);
+
+  const isToday = isSameDay(date, today);
+  const isPast_ = !isToday && isPast(date);
+  const status = data?.state ?? NOT_ANSWERED;
+  const margin = 2;
+  const backgroundSize = size - (margin * 2);
   return (
-    <StyledDay status={date.status} isPast={date.isPast} type={date.type}
-      isSameMonth={isRenderedMonth} key={date}
-      onClick={() => onDateClick(date)}>
-      <DateLabel status={date.status} isPast={date.isPast}
-        isSameMonth={isRenderedMonth}>
-        {format(date.date, CellsDateFormat)}
+    <StyledDay status={status} isPast={isPast_}
+      isSameMonth={isRenderedMonth} key={dateStr} ref={dayRef}
+      onClick={() => onDateClick(render)} size={size}>
+      <Background size={backgroundSize} margin={margin} isPast={isPast_}
+        isSameMonth={isRenderedMonth} status={status}
+        type={rangeType}/>
+      <DateLabel status={status} isPast={isPast_}
+        isSelected={selectedDate === dateStr}
+        size={size} backgroundSize={backgroundSize}
+        isToday={isToday} isSameMonth={isRenderedMonth}
+        ref={dayLabelRef}>
+        <span>{format(date, CellsDateFormat)}</span>
       </DateLabel>
+      {
+        (rangeType === 'Mid' || rangeType === 'Start') &&
+        <Filler size={backgroundSize} isPast={isPast_} width={gapSize}
+          isSameMonth={isRenderedMonth} status={status} margin={margin}/>
+      }
     </StyledDay>
   );
-});
+};
 
 Day.displayName = 'Day';
 
 
-const Cells = React.memo(({onDateClick, today, from, to, dates, renderedMonth}) => {
+const Cells = React.memo(({
+  onDateClick, today, from, to, renderedMonth,
+  selectedDate, userId, updateCellSize,
+}) => {
+  const cells = useRef(null);
+  const [cell, setCell] = useState({size: 0, gapSize: 0});
+  useEffect(() => {
+    const resizeObserve = new ResizeObserver((entries) => {
+      const width = Math.ceil(entries[0].contentRect.width / 7);
+      const height = Math.ceil(entries[0].contentRect.height / 6);
+      const size = Math.min(width, height);
+      const gapSize = Math.ceil((entries[0].contentRect.width - (size * 7)) / 6);
+      setCell({size, gapSize});
+      updateCellSize({size, gapSize});
+    });
+    resizeObserve.observe(cells.current);
+    return () => {
+      resizeObserve.disconnect();
+    };
+  }, []);
+
   const rows = useMemo(() => {
-    const dateList = datesFormatter(dates, today, today.getMonth() === renderedMonth);
     return eachWeekOfInterval({
       start: from,
       end: to,
@@ -133,21 +290,21 @@ const Cells = React.memo(({onDateClick, today, from, to, dates, renderedMonth}) 
               }).map((date) =>
                 <Day
                   key={date}
-                  date={{
-                    ...dateList[date.getDate()],
-                    isPast: !isSameDay(date, today) && isPast(date),
-                    date: date, // TODO: replace with real data
-                  }}
-                  isRenderedMonth={date.getMonth() === renderedMonth}
+                  cell={cell}
+                  date={date}
+                  today={today}
+                  userId={userId}
+                  selectedDate={selectedDate}
+                  renderedMonth={renderedMonth}
                   onDateClick={onDateClick}
                 />)
             }
           </Week>
         ),
     );
-  }, [renderedMonth, from, to, today]);
+  });
 
-  return <Container stretched>{rows}</Container>;
+  return <Month stretched ref={cells}>{rows}</Month>;
 });
 
 Cells.displayName = 'Cells';

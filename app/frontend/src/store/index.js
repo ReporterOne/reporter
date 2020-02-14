@@ -1,4 +1,8 @@
-import {createStore, combineReducers} from 'redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+import {composeWithDevTools} from 'redux-devtools-extension';
+
+
 import {generalReducer, usersReducer, calendarReducer} from '~/reducers';
 
 export const mainReducer = combineReducers({
@@ -8,8 +12,9 @@ export const mainReducer = combineReducers({
 });
 
 export const store = createStore(mainReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION__(),
+    composeWithDevTools(
+        applyMiddleware(thunk),
+    ),
 );
 
 export default store;

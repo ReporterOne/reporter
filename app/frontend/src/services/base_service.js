@@ -1,5 +1,34 @@
 import axios from 'axios';
+import qs from 'qs';
 import AuthService, {PermissionsError} from '~/services/auth';
+
+/**
+ * Raise when axios request is canceled
+ */
+class CanceledError extends Error {
+  /**
+   * Ctor
+   * @param {string} message
+   */
+  constructor(message) {
+    super(message);
+    this.name = 'CanceledError';
+  }
+}
+
+/**
+ * Raise when there is no network connection
+ */
+class NetworkError extends Error {
+  /**
+   * Ctor
+   * @param {string} message
+   */
+  constructor(message) {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
 
 /**
  * Base Http service.
@@ -30,10 +59,19 @@ export class HttpService {
         headers: {
           ...AuthService.getAuthHeader(),
         },
-      },
-      );
+        paramsSerializer: (params) => {
+          return qs.stringify(params, {indices: false});
+        },
+      });
       return response.data;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        throw new CanceledError(error.message);
+      }
+      if (!error.response) {
+        console.trace(error);
+        throw new NetworkError(`failed to make request ${JSON.stringify(config)}`);
+      }
       if (error.response.status === 401) {
         throw new PermissionsError(error.response.data.details);
       }

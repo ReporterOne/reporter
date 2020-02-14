@@ -23,3 +23,31 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+
+Cypress.Commands.add("clearServiceWorkerCache", () => {
+  return window.caches.keys().then(function (cacheNames) {
+    return Promise.all(
+      cacheNames.map(function (cacheName) {
+        return window.caches.delete(cacheName);
+      })
+    );
+  })
+});
+
+Cypress.Commands.add("clearServiceWorker", () => {
+  window.navigator.serviceWorker.getRegistrations()
+    .then(function (registrations) {
+      return Promise.map(registrations, function (registration) {
+        return registration.unregister()
+      })
+    });
+});
+
+Cypress.Commands.add("noSWVisit", (url) => {
+  cy.visit(url, {
+    onBeforeLoad (win) {
+      delete win.navigator.__proto__.serviceWorker
+    }
+  });
+});

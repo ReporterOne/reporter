@@ -1,5 +1,4 @@
 """All models related to user, mador."""
-from sqlalchemy.dialects.postgresql import TIME
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import (Integer,
                         String,
@@ -45,13 +44,16 @@ class User(Base):
                           index=True)
     soldiers = relationship('User',
                             backref=backref('commander', remote_side=[id]))
-    reminder_time = Column(TIME)
+    reminder_time = Column(String)
     last_reminded_date = Column(Date)
     english_name = Column(String)
     type = Column(Enum('facebook', 'google', 'local', name='user_type'),
                   default='local')
     username = Column(String, index=True, unique=True)
     password = Column(String)
+    email = Column(String)
+    google_id = Column(String)
+    facebook_id = Column(String)
     mador_name = Column(String, ForeignKey('madors.name', ondelete='SET NULL'),
                         index=True)
     mador = relationship('Mador', backref='users', foreign_keys=[mador_name])
@@ -66,12 +68,16 @@ class User(Base):
     permissions = relationship('Permission', secondary=permission_map,
                                backref='users')
 
+    def __hash__(self):
+        return hash(self.id)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         mador_name = self.mador.name if self.mador else self.mador_name
-
+        print(mador_name)
         if mador_name:
             self.reminder_time = select([MadorSettings.value]).where(
-                mador_name == MadorSettings.mador_name and
+                MadorSettings.mador_name == mador_name and
                 MadorSettings.key == 'default_reminder_time'
             )
+            print(self.reminder_time)

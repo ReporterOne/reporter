@@ -34,12 +34,12 @@ jobs:
         npm run lint:js
       env:
         CI: true
-    - name: Run tests
-      run: |
-        npm test tests/ -- --coverage
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: coverage/clover.xml
-        flags: frontend
+#    - name: Run tests
+#      run: |
+#        npm test tests/ -- --coverage
+#    - name: Upload coverage to Codecov
+#      uses: codecov/codecov-action@v1
+#      with:
+#        token: ${{ secrets.CODECOV_TOKEN }}
+#        file: coverage/clover.xml
+#        flags: frontend

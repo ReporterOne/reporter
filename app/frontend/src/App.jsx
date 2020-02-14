@@ -1,9 +1,10 @@
-import React, {useState, useCallback, useRef} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import {ThemeProvider} from 'styled-components';
 import {ThemeProvider as MUIThemeProvider} from '@material-ui/styles';
 import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';
+import AddToHomescreen from 'react-add-to-homescreen';
 
 import Menu from '@/Menu';
 import Entrance from '@/Entrance';
@@ -16,16 +17,36 @@ import {GlobalStyle, theme} from '~/components/common';
 import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
-import {fetchReasons} from '~/hooks/date_datas';
-import {fetchCurrentUser} from '~/hooks/users';
 import store from './store';
+import {fetchAllowedUsers} from '~/actions/users';
+import {fetchMyToday} from '~/actions/calendar';
+import {fetchReasons, updateOnline} from '~/actions/general';
 
 export const App = (props) => {
+  const dispatch = useDispatch();
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const avatarRef = useRef(null);
+  const isLoggedIn = useSelector((state) => state.general.login);
 
-  fetchReasons();
-  fetchCurrentUser();
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(fetchReasons());
+      dispatch(fetchMyToday());
+      dispatch(fetchAllowedUsers());
+    }
+  }, [isLoggedIn, dispatch]);
+
+  const updateOnlineState = useCallback(() => {
+    dispatch(updateOnline(navigator.onLine));
+  }, [dispatch]);
+  useEffect(() => {
+    window.addEventListener('online', updateOnlineState);
+    window.addEventListener('offline', updateOnlineState);
+    return () => {
+      window.removeEventListener('online', updateOnlineState);
+      window.removeEventListener('offline', updateOnlineState);
+    };
+  }, [updateOnlineState]);
 
   const onDrawerDrag = useCallback(({data, drawer}) => {
     const movePercent = data.x * 100 / drawer.drawerWidth;
@@ -80,9 +101,12 @@ export const App = (props) => {
               </Switch>
             )}>
             <Switch>
-              <PrivateRoute path="/hierarchy" component={Hierarchy}/>
-              <PrivateRoute path="/operator" component={Operator}/>
-              <PrivateRoute path="/commander" component={Commander}/>
+              <PrivateRoute path="/hierarchy" component={Hierarchy}
+                allowedPermissions={['admin']}/>
+              <PrivateRoute path="/operator" component={Operator}
+                allowedPermissions={['admin', 'reporter']}/>
+              <PrivateRoute path="/commander" component={Commander}
+                allowedPermissions={['admin', 'commander']}/>
               <PrivateRoute path="/" component={Dashboard}/>
             </Switch>
           </DrawerContent>
@@ -111,6 +135,7 @@ export const ProvidedApp = (props) => {
     <Provider store={store}>
       <Router>
         <StyledApp/>
+        <AddToHomescreen/>
       </Router>
     </Provider>
   );

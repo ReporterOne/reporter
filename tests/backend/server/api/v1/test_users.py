@@ -6,6 +6,8 @@ from tests.backend.test_query import TestQuery
 from tests.backend.utils.url_utils import URL
 from tests.backend.utils.fake_users_generator import get_fake_user
 from db.crud.users import get_user
+from tests.backend.utils.snapshot import response_snapshot
+
 
 class TestDatesStatus(TestQuery):
     def set_up_fake_db(self):
@@ -40,17 +42,7 @@ class TestDatesStatus(TestQuery):
                 headers={'authorization': f'bearer {self.current_user_token}'}
             )
         assert response.status_code == OK
-        assert response.json() == {
-            'id': self.user.id,
-            'commander_id': self.current_user.id,
-            'reminder_time': None,
-            'english_name': self.user.english_name,
-            'mador': {
-                'name': self.user.mador_name,
-                'manager': None
-            },
-            'operators_id': None
-        }
+        assert response_snapshot(0, response.json())
 
     def test_delete_user(self):
         """"Test for delete_user from users router."""
@@ -72,7 +64,7 @@ class TestDatesStatus(TestQuery):
                 headers={'authorization': f'bearer {self.current_user_token}'}
             )
         assert response.status_code == OK
-        assert response.json() == self.current_user.id
+        assert response_snapshot(0, response.json())
 
     def test_get_subjects(self):
         """"Test for get_subjects from users router."""
@@ -82,17 +74,7 @@ class TestDatesStatus(TestQuery):
                 headers={'authorization': f'bearer {self.current_user_token}'}
             )
         assert response.status_code == OK
-        assert response.json() == [{
-            'id': self.user.id,
-            'commander_id': self.current_user.id,
-            'reminder_time': None,
-            'english_name': self.user.english_name,
-            'mador': {
-                'name': self.user.mador_name,
-                'manager': None
-            },
-            'operators_id': None
-        }]
+        assert response_snapshot(0, response.json())
 
     def test_get_current_user(self):
         """"Test for get_current_user from users router."""
@@ -102,14 +84,4 @@ class TestDatesStatus(TestQuery):
                 headers={'authorization': f'bearer {self.current_user_token}'}
             )
         assert response.status_code == OK
-        assert response.json() == {
-            'id': self.current_user.id,
-            'commander_id': None,
-            'reminder_time': None,
-            'english_name': self.current_user.english_name,
-            'mador': {
-                'name': self.current_user.mador_name,
-                'manager': None
-            },
-            'operators_id': None
-        }
+        assert response_snapshot(0, response.json())

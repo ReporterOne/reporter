@@ -2,6 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 
 const frontend = path.resolve(__dirname, 'app', 'frontend');
@@ -30,7 +31,16 @@ module.exports = {
         from: path.resolve(src, 'manifest.json'),
         to: path.resolve(dist, 'static'),
       },
+      {
+        from: path.resolve(src, 'assets', 'icons'),
+        to: path.resolve(dist, 'static', 'icons')
+      }
     ]),
+    new WorkboxPlugin.InjectManifest({
+      swSrc: path.resolve(src, 'sw.js'),
+      swDest: 'sw.js',
+      maximumFileSizeToCacheInBytes: 100 * 1024 * 1024
+    })
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -55,7 +65,9 @@ module.exports = {
         loader: 'svg-url-loader',
         options: {
           limit: 10000,
-          name: '/static/[name].[ext]',
+          name: '[name].[ext]',
+          outputPath: 'static/avatars/',
+          publicPath: '/static/avatars/',
         },
       },
       {
@@ -83,8 +95,16 @@ module.exports = {
     ],
   },
   optimization: {
+    runtimeChunk: true,
     splitChunks: {
-      chunks: 'all',
-    },
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          enforce: true
+        },
+      }
+    }
   },
 };

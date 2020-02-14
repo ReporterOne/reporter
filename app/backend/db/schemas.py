@@ -9,7 +9,13 @@ from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 class Mador(BaseModel):
     name: str
-    manager: int = None
+
+    class Config:
+        orm_mode = True
+
+
+class Permission(BaseModel):
+    type: str
 
     class Config:
         orm_mode = True
@@ -21,7 +27,10 @@ class User(BaseModel):
     reminder_time: time = None
     english_name: str = None
     mador: Mador = None
-    operators_id: List[int] = None
+    manages_mador_name: str = None
+    operates: List[Mador] = None
+    permissions: List[Permission] = None
+    icon_path: str = None
 
     class Config:
         orm_mode = True
@@ -104,6 +113,61 @@ class DateDataResponse(BaseModel):
 class RangeDatesResponse(BaseModel):
     user_id: int
     data: List[DateDataResponse]
+
+    class Config:
+        orm_mode = True
+
+
+class CalendarResponse(BaseModel):
+    date: date
+    type: str
+    data: List[DateDataResponse]
+
+    class Config:
+        orm_mode = True
+
+
+class GoogleToken(BaseModel):
+    google_token: str
+
+
+class FacebookToken(BaseModel):
+    facebook_token: str
+
+
+class GoogleRegister(BaseModel):
+    google_token: str
+    email: str
+    name: str
+    avatar: str
+
+
+class FacebookRegister(BaseModel):
+    facebook_token: str
+    email: str
+    name: str
+    avatar: str
+
+
+class RegisterForm(BaseModel):
+    username: str
+    password: str
+    email: str
+    name: str
+    avatar: str
+
+
+class UpdateUserDetails(BaseModel):
+    id: int
+    to_change: dict = {}
+
+    class Config:
+        orm_mode = True
+
+
+class IsUserFree(BaseModel):
+    type: str
+    value: str
 
     class Config:
         orm_mode = True
