@@ -2,7 +2,7 @@ import {
   NEW_NOTIFICATION, POP_NOTIFICATION,
   UPDATE_LOGIN,
   UPDATE_ONLINE,
-  UPDATE_REASONS
+  UPDATE_REASONS,
 } from '~/actions/general';
 import AuthService from '~/services/auth';
 
@@ -11,7 +11,7 @@ const initialState = {
   reasons: [],
   login: AuthService.isLoggedIn(),
   online: navigator.onLine,
-  notifications: []
+  notifications: [],
 };
 
 
@@ -35,12 +35,12 @@ export const generalReducer = (state = initialState, action) => {
     case NEW_NOTIFICATION:
       return {
         ...state,
-        notifications: [...state.notifications, action.notification]
+        notifications: [...state.notifications, action.notification],
       };
     case POP_NOTIFICATION:
       return {
         ...state,
-        notifications: state.notifications.slice(1)
+        notifications: state.notifications.slice(1),
       };
 
     default: return state;

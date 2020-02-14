@@ -24,10 +24,7 @@ import {fetchAllowedUsers} from '~/actions/users';
 import {fetchMyToday} from '~/actions/calendar';
 import {fetchReasons, popNotification, updateOnline} from '~/actions/general';
 
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
 
 export const App = (props) => {
@@ -88,7 +85,7 @@ export const App = (props) => {
       <Route path="/entrance" component={Entrance}/>
       <Route path="/" render={() => (
         <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-                onDragEnd={onDrawerDragEnd}>
+          onDragEnd={onDrawerDragEnd}>
           <DrawerMenu>
             <Menu avatar={avatar} avatarRef={avatarRef}/>
           </DrawerMenu>
@@ -110,11 +107,11 @@ export const App = (props) => {
             )}>
             <Switch>
               <PrivateRoute path="/hierarchy" component={Hierarchy}
-                            allowedPermissions={['admin']}/>
+                allowedPermissions={['admin']}/>
               <PrivateRoute path="/operator" component={Operator}
-                            allowedPermissions={['admin', 'reporter']}/>
+                allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/commander" component={Commander}
-                            allowedPermissions={['admin', 'commander']}/>
+                allowedPermissions={['admin', 'commander']}/>
               <PrivateRoute path="/" component={Dashboard}/>
             </Switch>
           </DrawerContent>
@@ -129,7 +126,7 @@ const SNACKBAR_TIMEOUT = 6000;
 
 export const StyledApp = (props) => {
   const dispatch = useDispatch();
-  const notifications = useSelector(state => state.general.notifications);
+  const notifications = useSelector((state) => state.general.notifications);
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
@@ -153,10 +150,10 @@ export const StyledApp = (props) => {
         <ThemeProvider theme={theme}>
           <App/>
           <Snackbar open={notification !== null}
-                    autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
-                    onClose={handleClose}>
+            autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
+            onClose={handleClose}>
             <Alert onClose={handleClose}
-                   severity={notification?.severity ?? 'error'}>
+              severity={notification?.severity ?? 'error'}>
               {notification?.message}
             </Alert>
           </Snackbar>

@@ -31,11 +31,11 @@ export const updateOnline = (state) => ({
 
 export const newNotification = (notification) => ({
   type: NEW_NOTIFICATION,
-  notification: notification
+  notification: notification,
 });
 
 export const popNotification = () => ({
-  type: POP_NOTIFICATION
+  type: POP_NOTIFICATION,
 });
 
 export const logout = () => async (dispatch) => {

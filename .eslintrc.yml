@@ -26,6 +26,6 @@ rules:
   react/prop-types: off
   camelcase: off
   max-len:
-    - notification
+    - error
     - 120  # max len
     - 2    # tabs len
