@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import {DrawerContext} from './BaseDrawer.jsx';
 import Button from '@material-ui/core/Button';
-import {isAllowed} from "~/components/Menu/PrivateRoute";
 
 
 const StyledOptionButton = styled(({selected, ...props}) => (

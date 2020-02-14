@@ -1,21 +1,23 @@
-
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
-import { ExpirationPlugin } from 'workbox-expiration';
+import {
+  // CacheFirst, NetworkFirst,
+  StaleWhileRevalidate,
+} from 'workbox-strategies';
+// import {ExpirationPlugin} from 'workbox-expiration';
 // import { createHandlerForURL } from 'workbox-precaching/createHandlerForURL';
-import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
-import { NavigationRoute, registerRoute } from 'workbox-routing';
-import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
+import {NavigationRoute, registerRoute} from 'workbox-routing';
+// import {CacheableResponsePlugin} from 'workbox-cacheable-response';
 import {BroadcastUpdatePlugin} from 'workbox-broadcast-update';
 
 precacheAndRoute(self.__WB_MANIFEST);
 registerRoute(
-  new RegExp('/api/'),
-  new StaleWhileRevalidate({
-    cacheName: 'api-cache',
-    plugins: [
-      new BroadcastUpdatePlugin(),
-    ],
-  })
+    new RegExp('/api/'),
+    new StaleWhileRevalidate({
+      cacheName: 'api-cache',
+      plugins: [
+        new BroadcastUpdatePlugin(),
+      ],
+    }),
 );
 
 // registerRoute(
@@ -83,7 +85,7 @@ self.addEventListener('message', async (event) => {
     const cache = await caches.open(cacheName);
     const updatedResponse = await cache.match(updatedUrl);
     const updatedText = await updatedResponse.text();
-    console.log(event, updatedText)
+    console.log(event, updatedText);
   }
 });
 

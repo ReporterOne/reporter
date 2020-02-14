@@ -1,10 +1,9 @@
-import {theme} from "~/components/common";
-import React from "react";
-import styled from "styled-components";
-import {Textfit} from "react-textfit";
-import {motion} from "framer-motion";
-import SVG from "react-inlinesvg";
-import oIconUrl from "./reporters_O.svg";
+import React from 'react';
+import styled from 'styled-components';
+import {Textfit} from 'react-textfit';
+import {motion} from 'framer-motion';
+import SVG from 'react-inlinesvg';
+import oIconUrl from './reporters_O.svg';
 
 const StyledTitle = styled(Textfit)`
   width: 100%;
@@ -48,7 +47,7 @@ export const Title = ({size, color, style, spacing}) => {
       </TitleO>
       rter
     </StyledTitle>
-  )
+  );
 };
 
 export default Title;

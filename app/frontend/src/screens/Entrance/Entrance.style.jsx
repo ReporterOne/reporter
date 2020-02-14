@@ -1,9 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import {motion} from "framer-motion";
-import {Container, SVGIcon, Spacer} from "~/components/common";
-import {Textfit} from "react-textfit";
-import MUIButton from "@material-ui/core/Button";
+import React from 'react';
+import styled from 'styled-components';
+import {motion} from 'framer-motion';
+import {Container, SVGIcon} from '~/components/common';
+import MUIButton from '@material-ui/core/Button';
 
 export const BackForm = styled(motion.div)`
   width: 100%;

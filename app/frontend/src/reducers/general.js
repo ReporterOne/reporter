@@ -5,7 +5,7 @@ import AuthService from '~/services/auth';
 const initialState = {
   reasons: [],
   login: AuthService.isLoggedIn(),
-  online: navigator.onLine
+  online: navigator.onLine,
 };
 
 
@@ -24,7 +24,7 @@ export const generalReducer = (state = initialState, action) => {
     case UPDATE_ONLINE:
       return {
         ...state,
-        online: action.state
+        online: action.state,
       };
 
     default: return state;

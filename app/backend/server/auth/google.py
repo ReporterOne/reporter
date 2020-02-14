@@ -3,6 +3,7 @@ from datetime import timedelta
 from fastapi import HTTPException, Body, Depends, APIRouter
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
+# pylint: disable=no-name-in-module
 from google.oauth2 import id_token
 from google.auth.transport import requests
 

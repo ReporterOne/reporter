@@ -4,7 +4,7 @@ import {
   Container,
   Spacer,
   StyledIconButton,
-  SVGIcon
+  SVGIcon,
 } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 import alphaIcon from '~/assets/alph_icon.svg';
@@ -30,7 +30,6 @@ const StyledAlpha = styled(SVGIcon)`
   opacity: 0.7;
   fill: white;
 `;
-
 
 
 export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {

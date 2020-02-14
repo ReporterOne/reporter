@@ -9,9 +9,9 @@ import AvatarDetails from '~/components/Avatar/AvatarDetails';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
 import Calender from '~/components/Calendar';
 import {motion, useAnimation} from 'framer-motion';
-import {formatDate} from "~/components/Calendar/components/utils";
-import {fetchDatesOf} from "~/actions/calendar";
-import {useDispatch, useSelector} from "react-redux";
+import {formatDate} from '~/components/Calendar/components/utils';
+import {fetchDatesOf} from '~/actions/calendar';
+import {useDispatch, useSelector} from 'react-redux';
 
 
 const CALENDAR_HEIGHT = 460;
@@ -89,29 +89,29 @@ const useMadorMapping = (statuses, users) => {
   return useMemo(() => {
     return statuses.reduce((prev, current) => {
       const mador = users[current.user_id].mador.name;
-      if(!(mador in prev)) prev[mador] = [];
+      if (!(mador in prev)) prev[mador] = [];
       prev[mador].push(current);
       return prev;
-    }, {})
+    }, {});
   }, [statuses]);
 };
 
 const useFillNotAnsweredUsers = (statuses, notHereStatuses, users) => {
   return useMemo(() => {
     const usersIds = Object.keys(users).map((id) => parseInt(id));
-    const toDrop = statuses.map(status => status.user_id);
-    const toDropNotHere = notHereStatuses.map(status => status.user_id);
+    const toDrop = statuses.map((status) => status.user_id);
+    const toDropNotHere = notHereStatuses.map((status) => status.user_id);
     const toFill = lodash.difference(usersIds, toDrop, toDropNotHere);
     const toRet = [
       ...statuses,
-      ...toFill.map(id => ({
+      ...toFill.map((id) => ({
         user_id: id,
-        state: NOT_ANSWERED
-      }))
+        state: NOT_ANSWERED,
+      })),
     ];
 
-    return lodash.orderBy(toRet, ['state'], ['desc'])
-  }, [statuses, users])
+    return lodash.orderBy(toRet, ['state'], ['desc']);
+  }, [statuses, users]);
 };
 
 const useMadorStatuses = (selectedDate, users, selectedMador) => {
@@ -120,7 +120,7 @@ const useMadorStatuses = (selectedDate, users, selectedMador) => {
   const filledRestStatuses = useFillNotAnsweredUsers(restStatuses, notHereStatuses, users);
   const toRetRestStatuses = useMadorMapping(filledRestStatuses, users);
   return useMemo(() => {
-    return [toRetNotHereStatuses[selectedMador] ?? [], toRetRestStatuses[selectedMador] ?? []]
+    return [toRetNotHereStatuses[selectedMador] ?? [], toRetRestStatuses[selectedMador] ?? []];
   }, [toRetNotHereStatuses, toRetRestStatuses, selectedMador]);
 };
 
@@ -130,13 +130,13 @@ export const Operator = React.memo((props) => {
   const controls = useAnimation();
   const [drag, changeDrag] = useState('y');
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
-  const users = useSelector(state => state.users.all);
+  const users = useSelector((state) => state.users.all);
   const usersDict = useUsersAsDict(users);
   const usersId = useMemo(() => {
-    return users.map(user => user.id);
+    return users.map((user) => user.id);
   }, [users]);
 
-  const [selectedMador, changeSelectedMador] = useState('Unity');
+  const [selectedMador] = useState('Unity');
 
   const [notHereStatuses, restStatuses] = useMadorStatuses(selectedDate, usersDict, selectedMador);
 
@@ -156,7 +156,7 @@ export const Operator = React.memo((props) => {
     document.addEventListener('pointerup', enableDrag);
     return () => {
       document.removeEventListener('pointerup', enableDrag);
-    }
+    };
   }, []);
 
   const onDragEnd = useCallback((event, info) => {
@@ -178,10 +178,13 @@ export const Operator = React.memo((props) => {
               notHereStatuses.map((status, index) => {
                 const user = usersDict[status.user_id];
                 return (
-                  <AnimatedReason index={animationIndex++} key={`${index}${selectedDate}${selectedMador}`}>
-                    <AvatarExpanded kind={user?.icon_path} name={user.english_name}
-                                    delay={animationIndex} details={status.reason.name}
-                                    status={status.state}/>
+                  <AnimatedReason index={animationIndex++}
+                    key={`${index}${selectedDate}${selectedMador}`}>
+                    <AvatarExpanded kind={user?.icon_path}
+                      name={user.english_name}
+                      delay={animationIndex}
+                      details={status.reason.name}
+                      status={status.state}/>
                   </AnimatedReason>
                 );
               })
@@ -194,10 +197,12 @@ export const Operator = React.memo((props) => {
               restStatuses.map((status, index) => {
                 const user = usersDict[status.user_id];
                 return (
-                    <AnimatedReason index={animationIndex++} key={`${index}${selectedDate}${selectedMador}`}>
-                      <AvatarDetails key={index} kind={user?.icon_path}
-                                     name={user.english_name} status={status.state}/>
-                    </AnimatedReason>
+                  <AnimatedReason index={animationIndex++}
+                    key={`${index}${selectedDate}${selectedMador}`}>
+                    <AvatarDetails key={index} kind={user?.icon_path}
+                      name={user.english_name}
+                      status={status.state}/>
+                  </AnimatedReason>
                 );
               })
             }
@@ -221,8 +226,8 @@ export const Operator = React.memo((props) => {
       >
         <CalenderContainer onPointerDown={disableDrag}>
           <Calender selectedDate={selectedDate}
-                    setSelectedDate={changeSelectedDate}
-                    fetchData={fetchDates}/>
+            setSelectedDate={changeSelectedDate}
+            fetchData={fetchDates}/>
         </CalenderContainer>
       </OpeningCalendar>
     </PageContainer>

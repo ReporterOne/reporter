@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import {motion} from "framer-motion";
+import React from 'react';
+import styled from 'styled-components';
+import {motion} from 'framer-motion';
 
 export const Moon = styled.div`
   width: ${({size}) => size}px;
@@ -34,29 +34,29 @@ export const BackGround = styled.div`
 
 export const Rings = ({size, innerRingDistance, outerRingDistance, style, moonSize=10}) => {
   return (
-  <BackGround style={style} hideOver={size + outerRingDistance + moonSize}>
-    <Ring size={size + innerRingDistance} opacity={0.3}
-          animate={{rotate: 360}}
-          transition={{
-            loop: Infinity,
-            ease: 'linear',
-            duration: Math.random() * 5 + 5,
-          }}
-    >
-      <Moon size={moonSize}/>
-    </Ring>
-    <Ring size={size + outerRingDistance} opacity={0.1}
-          animate={{rotate: 360}}
-          transition={{
-            loop: Infinity,
-            ease: 'linear',
-            duration: Math.random() * 5 + 5,
-          }}
-    >
-      <Moon size={moonSize}/>
-    </Ring>
-  </BackGround>
-  )
+    <BackGround style={style} hideOver={size + outerRingDistance + moonSize}>
+      <Ring size={size + innerRingDistance} opacity={0.3}
+        animate={{rotate: 360}}
+        transition={{
+          loop: Infinity,
+          ease: 'linear',
+          duration: Math.random() * 5 + 5,
+        }}
+      >
+        <Moon size={moonSize}/>
+      </Ring>
+      <Ring size={size + outerRingDistance} opacity={0.1}
+        animate={{rotate: 360}}
+        transition={{
+          loop: Infinity,
+          ease: 'linear',
+          duration: Math.random() * 5 + 5,
+        }}
+      >
+        <Moon size={moonSize}/>
+      </Ring>
+    </BackGround>
+  );
 };
 
 export default Rings;

@@ -1,5 +1,3 @@
-import {statusList} from '~/utils/statusList';
-
 import {HttpService} from '~/services/base_service';
 import {formatDate} from '~/components/Calendar/components/utils';
 

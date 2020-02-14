@@ -2,10 +2,11 @@ import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 
 import {useSelector} from 'react-redux';
-import lodash from "lodash";
+import lodash from 'lodash';
 
 export const isAllowed = (permissions, allowedPermissions) => {
-  return permissions === undefined || allowedPermissions.length === 0 || permissions.some(permission => allowedPermissions.includes(permission.type));
+  return permissions === undefined || allowedPermissions.length === 0 ||
+    permissions.some((permission) => allowedPermissions.includes(permission.type));
 };
 
 export const PrivateRoute = ({component: Component, allowedPermissions = [], ...rest}) => {
@@ -20,7 +21,7 @@ export const PrivateRoute = ({component: Component, allowedPermissions = [], ...
           to={{pathname: '/entrance', state: {from: props.location}}}/>;
       }
 
-      if(!isAllowed(permissions, allowedPermissions)) {
+      if (!isAllowed(permissions, allowedPermissions)) {
         return <Redirect
           to={{pathname: '/', state: {from: props.location}}}/>;
       }

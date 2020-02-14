@@ -203,21 +203,21 @@ const AttendingButton = ({missingReason, onChange, initialState = NOT_ANSWERED, 
                 <Spacer/>
               </RoundedRectangle>
               <Circle key={width}
-                      className="AttendingHandle"
-                      drag={'x'}
-                      dragConstraints={{
-                        left: outlinePadding,
-                        right: width - circleDiameter - outlinePadding,
-                      }}
-                      variants={{
-                        [NOT_HERE]: {x: outlinePadding},
-                        [HERE]: {x: width - circleDiameter - outlinePadding},
-                        [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
-                      }}
-                      initial={initialState}
-                      dragElastic={false}
-                      animate={controls}
-                      onDragEnd={onDragEnd(width)}
+                className="AttendingHandle"
+                drag={'x'}
+                dragConstraints={{
+                  left: outlinePadding,
+                  right: width - circleDiameter - outlinePadding,
+                }}
+                variants={{
+                  [NOT_HERE]: {x: outlinePadding},
+                  [HERE]: {x: width - circleDiameter - outlinePadding},
+                  [NOT_ANSWERED]: {x: ((width - circleDiameter) * 0.5)},
+                }}
+                initial={initialState}
+                dragElastic={false}
+                animate={controls}
+                onDragEnd={onDragEnd(width)}
               />
               <AnimatePresence>
                 {isDisabled &&

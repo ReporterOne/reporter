@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Switch, Route} from 'react-router-dom';
 
-import {useDispatch, useSelector} from 'react-redux';
-import {theme, Spacer, SVGIcon} from "~/components/common";
-import {Title} from "~/components/Title/Title";
-import {Rings} from "~/components/Rings/Rings.jsx";
+import {useSelector} from 'react-redux';
+import {theme, Spacer, SVGIcon} from '~/components/common';
+import {Title} from '~/components/Title/Title';
+import {Rings} from '~/components/Rings/Rings.jsx';
 import alphaIcon from '~/assets/alph_icon.svg';
 
 import {
@@ -19,15 +19,15 @@ import {
   Controls,
   EntrancePage,
   ForeGround,
-  Wrapper
-} from "./Entrance.style.jsx";
-import {LoginForm, RegisterForm} from "./Forms";
+  Wrapper,
+} from './Entrance.style.jsx';
+import {LoginForm, RegisterForm} from './Forms';
 import {
   LoginControls,
   NormalControls,
-  RegisterControls
-} from "./Controls";
-import {LOGIN_ROUTE, MAIN_ROUTE, REGISTER_ROUTE} from "./consts";
+  RegisterControls,
+} from './Controls';
+import {LOGIN_ROUTE, MAIN_ROUTE, REGISTER_ROUTE} from './consts';
 
 
 const INNER_RING_DISTANCE = 75;
@@ -70,10 +70,10 @@ const MainCircle = ({size, setValid, pathname, history}) => {
       <ForeGround>
         <Spacer enabled={!isOpen}/>
         <Content radius={size} enabled={isOpen} size={size}
-                 initialized={initialized}>
+          initialized={initialized}>
           <ConstantSpacer size={isOpen ? 50 : 0}/>
           <Title size={size} color={theme.main}
-                 style={{transform: "translateY(-50%)"}}/>
+            style={{transform: 'translateY(-50%)'}}/>
           <AnimatePresence>
             {
               isOpen && (<LoginForm setValid={setValid}/>)
@@ -81,8 +81,8 @@ const MainCircle = ({size, setValid, pathname, history}) => {
           </AnimatePresence>
         </Content>
         <Rings size={size} innerRingDistance={INNER_RING_DISTANCE}
-               outerRingDistance={OUTER_RING_DISTANCE}
-               style={{bottom: 0, transform: "translateY(50%)"}}/>
+          outerRingDistance={OUTER_RING_DISTANCE}
+          style={{bottom: 0, transform: 'translateY(50%)'}}/>
       </ForeGround>
       <BottomSegment size={size}>
         <Spacer/>
@@ -90,7 +90,7 @@ const MainCircle = ({size, setValid, pathname, history}) => {
           {
             isOpen && (
               <BackForm exit={{opacity: 0}} animate={{opacity: 1}}
-                        initial={{opacity: 0}}>
+                initial={{opacity: 0}}>
                 <BackButton
                   color={theme.main}
                   onClick={() => history.push(MAIN_ROUTE)}>back</BackButton>
@@ -100,7 +100,7 @@ const MainCircle = ({size, setValid, pathname, history}) => {
         </AnimatePresence>
       </BottomSegment>
     </>
-  )
+  );
 };
 
 

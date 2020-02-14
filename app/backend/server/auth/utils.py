@@ -5,6 +5,7 @@ import jwt
 from fastapi import Depends, HTTPException, Security
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jwt import ExpiredSignatureError, PyJWTError
+# pylint: disable=no-name-in-module
 from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -13,7 +14,6 @@ from db.crud import get_user_by_username
 from db.database import verify_password, get_db
 from db.schemas import User
 from .consts import SECRET_KEY, ALGORITHM
-
 
 
 class Token(BaseModel):

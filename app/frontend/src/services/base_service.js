@@ -6,6 +6,10 @@ import AuthService, {PermissionsError} from '~/services/auth';
  * Raise when axios request is canceled
  */
 class CanceledError extends Error {
+  /**
+   * Ctor
+   * @param {string} message
+   */
   constructor(message) {
     super(message);
     this.name = 'CanceledError';
@@ -16,6 +20,10 @@ class CanceledError extends Error {
  * Raise when there is no network connection
  */
 class NetworkError extends Error {
+  /**
+   * Ctor
+   * @param {string} message
+   */
   constructor(message) {
     super(message);
     this.name = 'NetworkError';
@@ -51,16 +59,16 @@ export class HttpService {
         headers: {
           ...AuthService.getAuthHeader(),
         },
-        paramsSerializer: params => {
-          return qs.stringify(params, {indices: false})
-        }
+        paramsSerializer: (params) => {
+          return qs.stringify(params, {indices: false});
+        },
       });
       return response.data;
     } catch (error) {
       if (axios.isCancel(error)) {
         throw new CanceledError(error.message);
       }
-      if(!error.response) {
+      if (!error.response) {
         console.trace(error);
         throw new NetworkError(`failed to make request ${JSON.stringify(config)}`);
       }

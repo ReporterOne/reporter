@@ -42,7 +42,10 @@ const WelcomeMessage = styled(Container)`
 
 const Dashboard = React.memo((props) => {
   const dispatch = useDispatch();
-  const {english_name: englishName = undefined, id = undefined} = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
+  const {
+    english_name: englishName = undefined,
+    id = undefined,
+  } = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 
@@ -60,7 +63,12 @@ const Dashboard = React.memo((props) => {
 
   const handleClose = useCallback((value) => {
     changeOpenDialog(false);
-    dispatch(setDateStatus({userId: id, start: selectedDate, status: NOT_HERE, reason: value}));
+    dispatch(setDateStatus({
+      userId: id,
+      start: selectedDate,
+      status: NOT_HERE,
+      reason: value,
+    }));
   });
 
   const handleOnChange = useCallback((state) => {
@@ -69,7 +77,7 @@ const Dashboard = React.memo((props) => {
     } else if (state === HERE) {
       dispatch(setDateStatus({userId: id, start: selectedDate, status: HERE}));
     } else {
-      dispatch(deleteDateOf(id, selectedDate))
+      dispatch(deleteDateOf(id, selectedDate));
     }
   });
 
@@ -78,14 +86,20 @@ const Dashboard = React.memo((props) => {
       <Container flex={2} style={{padding: '15px'}}>
         <WelcomeMessage>
           <HeaderWelcome>Welcome,</HeaderWelcome>
-          <HeaderName mode="single" max={45}>{titleCase(englishName)}</HeaderName>
+          <HeaderName mode="single"
+            max={45}>{titleCase(englishName)}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton missingReason={todayReason?.name} onChange={handleOnChange} initialState={todayState} isDisabled={selectedDate < formatDate(new Date())}/>
+        <AttendingButton missingReason={todayReason?.name}
+          onChange={handleOnChange} initialState={todayState}
+          isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender userId={id} fetchData={fetchDates} selectedDate={selectedDate} setSelectedDate={changeSelectedDate}/>
+        <Calender userId={id} fetchData={fetchDates}
+          selectedDate={selectedDate}
+          setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>
-      <ReasonsDialog open={openDialog} selectedValue={todayReason?.name} onClose={handleClose}/>
+      <ReasonsDialog open={openDialog} selectedValue={todayReason?.name}
+        onClose={handleClose}/>
     </Container>
   );
 });

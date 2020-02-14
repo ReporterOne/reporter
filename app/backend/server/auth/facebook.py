@@ -12,6 +12,7 @@ from .consts import FACEBOOK_SECRET, FACEBOOK_APP, ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter()
 
+
 def validate_facebook_token(token: str):
     # copy clientId, clientSecret from MY APP Page
     app_link = 'https://graph.facebook.com/oauth/access_token?client_id=' + \
@@ -23,7 +24,7 @@ def validate_facebook_token(token: str):
            '&access_token=' + app_token
     try:
         user_id = requests.get(link).json()['data']['user_id']
-    except (ValueError, KeyError, TypeError) as error:
+    except (ValueError, KeyError, TypeError):
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
             detail="invalid token!",

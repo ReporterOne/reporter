@@ -1,5 +1,5 @@
-import {logoutIfNoPermission} from "~/actions/general";
-import UsersService from "~/services/users";
+import {logoutIfNoPermission} from '~/actions/general';
+import UsersService from '~/services/users';
 
 export const UPDATE_CURRENT_USER = 'UPDATE_CURRENT_USER';
 export const UPDATE_USERS = 'UPDATE_USERS';
@@ -17,7 +17,7 @@ export const updateUsers = (users) => ({
 });
 
 
-export const fetchAllowedUsers = () => async dispatch => {
+export const fetchAllowedUsers = () => async (dispatch) => {
   await logoutIfNoPermission(async () => {
     const users = await UsersService.getAllowedUsers();
     dispatch(updateUsers(users));

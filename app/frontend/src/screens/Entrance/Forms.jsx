@@ -1,41 +1,41 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import AuthService from "~/services/auth";
-import {updateLogin} from "~/actions/general";
-import {updateCurrentUser} from "~/actions/users";
-import GoogleLogin from "react-google-login";
-import {SVGIcon, theme} from "~/components/common";
+import React, {useCallback, useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import AuthService from '~/services/auth';
+import {updateLogin} from '~/actions/general';
+import {updateCurrentUser} from '~/actions/users';
+import GoogleLogin from 'react-google-login';
+import {SVGIcon, theme} from '~/components/common';
 import FacebookLogin
-  from "react-facebook-login/dist/facebook-login-render-props";
-import styled from "styled-components";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+  from 'react-facebook-login/dist/facebook-login-render-props';
+import styled from 'styled-components';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import InputAdornment from "@material-ui/core/InputAdornment";
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import {
   BackButton,
   ExternalLogin,
   IconButton,
   StyledForm,
-  StyledIcon
-} from "./Entrance.style";
+  StyledIcon,
+} from './Entrance.style';
 
-import userIconUrl from "./assets/user_icon.svg";
-import emailIconUrl from "./assets/email_icon.svg";
-import passwordIconUrl from "./assets/password_icon.svg";
-import googleFullIconUrl from "./assets/google_full.svg";
-import facebookFullIconUrl from "./assets/facebook_full.svg";
-import googleIconUrl from "./assets/google_not_full.svg";
-import facebookIconUrl from "./assets/facebook_not_full.svg";
-import {LOGIN_ROUTE, MAIN_ROUTE} from "@/Entrance/consts";
-import Avatar, {avatarsAvailable} from "~/components/Avatar/Avatar";
+import userIconUrl from './assets/user_icon.svg';
+import emailIconUrl from './assets/email_icon.svg';
+import passwordIconUrl from './assets/password_icon.svg';
+import googleFullIconUrl from './assets/google_full.svg';
+import facebookFullIconUrl from './assets/facebook_full.svg';
+import googleIconUrl from './assets/google_not_full.svg';
+import facebookIconUrl from './assets/facebook_not_full.svg';
+import {LOGIN_ROUTE, MAIN_ROUTE} from '@/Entrance/consts';
+import Avatar, {avatarsAvailable} from '~/components/Avatar/Avatar';
 
 const GOOGLE_CLIENT_ID = '623244279739-lrqk7n917mpnuqbmnkgbv8l4o73tjiek.apps.googleusercontent.com';
-const FACEBOOK_APP_ID = "861853434255614";
+const FACEBOOK_APP_ID = '861853434255614';
 
 
 const StyledFormControl = styled(({overrideColor, ...props}) =>
@@ -62,7 +62,11 @@ const StyledFormControl = styled(({overrideColor, ...props}) =>
     color: ${({overrideColor}) => overrideColor};
   }
 `;
-const InputField = ({label, field, setField, icon, color = "primary", blurColor = "grey", overrideColor = undefined, ...props}) => {
+const InputField = (
+    {
+      label, field, setField, icon, color = 'primary',
+      blurColor = 'grey', overrideColor = undefined, ...props
+    }) => {
   const [_blurColor, setBlurColor] = useState(blurColor);
 
   const onFocus = () => {
@@ -77,43 +81,47 @@ const InputField = ({label, field, setField, icon, color = "primary", blurColor 
     <StyledFormControl color={color} overrideColor={overrideColor}>
       <InputLabel htmlFor={`${label}-field`}>{label}</InputLabel>
       <Input id={`${label}-field`}
-             value={field}
-             onChange={(event) => setField(event.target.value)}
-             onFocus={onFocus} onBlur={onBlur}
-             endAdornment={
-               <InputAdornment position="end">
-                 <StyledIcon src={icon} color={theme[_blurColor]}
-                             isCentered={false}/>
-               </InputAdornment>
-             } {...props}
+        value={field}
+        onChange={(event) => setField(event.target.value)}
+        onFocus={onFocus} onBlur={onBlur}
+        endAdornment={
+          <InputAdornment position="end">
+            <StyledIcon src={icon} color={theme[_blurColor]}
+              isCentered={false}/>
+          </InputAdornment>
+        } {...props}
       />
     </StyledFormControl>
-  )
+  );
 };
 
 
-const RegisterStageOneForm = ({username, password, setUsername, setPassword, googleSuccess, googleFailed, facebookSuccess, facebookFailed}) => {
+const RegisterStageOneForm = (
+    {
+      username, password, setUsername, setPassword, googleSuccess, googleFailed,
+      facebookSuccess, facebookFailed,
+    }) => {
   return (
     <>
       <InputField label="Username" icon={userIconUrl}
-                  color="secondary"
-                  overrideColor="white"
-                  blurColor="white"
-                  field={username}
-                  setField={setUsername}/>
+        color="secondary"
+        overrideColor="white"
+        blurColor="white"
+        field={username}
+        setField={setUsername}/>
       <InputField label="Password" type="password" icon={passwordIconUrl}
-                  color="secondary"
-                  overrideColor="white"
-                  blurColor="white"
-                  field={password}
-                  setField={setPassword}/>
+        color="secondary"
+        overrideColor="white"
+        blurColor="white"
+        field={password}
+        setField={setPassword}/>
       <ExternalLogin>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
           render={(renderProps) => (
             <IconButton onClick={renderProps.onClick} spacing="5px">
               <SVGIcon size={60} src={googleFullIconUrl}
-                       color={theme.white}/>
+                color={theme.white}/>
             </IconButton>
           )}
           buttonText="Login"
@@ -125,10 +133,10 @@ const RegisterStageOneForm = ({username, password, setUsername, setPassword, goo
           appId={FACEBOOK_APP_ID}
           fields="name,email,picture"
           redirectUri={window.location.href.split('?')[0]}
-          render={renderProps => (
+          render={(renderProps) => (
             <IconButton onClick={renderProps.onClick} spacing="5px">
               <SVGIcon size={60} src={facebookFullIconUrl}
-                       color={theme.white}/>
+                color={theme.white}/>
             </IconButton>
           )}
           callback={facebookSuccess}
@@ -144,17 +152,17 @@ const RegisterStageTwoForm = ({name, email, setName, setEmail}) => {
   return (
     <>
       <InputField label="Display Name" icon={userIconUrl}
-                  color="secondary"
-                  overrideColor="white"
-                  blurColor="white"
-                  field={name}
-                  setField={setName}/>
+        color="secondary"
+        overrideColor="white"
+        blurColor="white"
+        field={name}
+        setField={setName}/>
       <InputField label="Email Address" icon={emailIconUrl}
-                  color="secondary"
-                  overrideColor="white"
-                  blurColor="white"
-                  field={email}
-                  setField={setEmail}/>
+        color="secondary"
+        overrideColor="white"
+        blurColor="white"
+        field={email}
+        setField={setEmail}/>
     </>
   );
 };
@@ -174,11 +182,11 @@ const RegisterStageThreeForm = ({avatar, setAvatar}) => {
       {
         avatarsAvailable.map((_, index) =>
           <Avatar onClick={() => setAvatar(String(index))}
-                  opacity={parseInt(avatar) === index ? 1 : 0.5}
-                  key={index} kind={index} jumping={true}/>)
+            opacity={parseInt(avatar) === index ? 1 : 0.5}
+            key={index} kind={index} jumping={true}/>)
       }
     </AvatarChoose>
-  )
+  );
 };
 
 
@@ -206,18 +214,17 @@ const StyledStepper = styled(Stepper)`
 `;
 
 export const RegisterForm = React.memo(({history, setValid}) => {
-  const dispatch = useDispatch();
   const [step, setStep] = useState(0);
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [avatar, setAvatar] = useState(null);
-  const [type, setType] = useState("local");
+  const [type, setType] = useState('local');
   const [token, setToken] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const updatePassword = (value) => {
-    setPassword(value)
+    setPassword(value);
   };
 
   const updateUsername = (value) => {
@@ -241,7 +248,7 @@ export const RegisterForm = React.memo(({history, setValid}) => {
             break;
         }
         history.push(LOGIN_ROUTE);
-      })()
+      })();
     } else {
       setStep(step + 1);
     }
@@ -269,14 +276,14 @@ export const RegisterForm = React.memo(({history, setValid}) => {
     (async () => {
       // await AuthService.facebookLogin(id_token);
       await AuthService.isFree(id_token, 'facebook');
-      setType("facebook");
+      setType('facebook');
       setEmail(response.email);
       setName(response.name);
       setStep(step + 1);
     })();
   });
   const googleResponse = useCallback((response) => {
-    console.log("GOOGLE 2RESPONSE");
+    console.log('GOOGLE 2RESPONSE');
     console.log(response);
   });
 
@@ -286,7 +293,7 @@ export const RegisterForm = React.memo(({history, setValid}) => {
     (async () => {
       // await AuthService.googleLogin(id_token);
       await AuthService.isFree(id_token, 'google');
-      setType("google");
+      setType('google');
       setEmail(response.profileObj.email);
       setName(response.profileObj.name);
       setStep(step + 1);
@@ -296,12 +303,12 @@ export const RegisterForm = React.memo(({history, setValid}) => {
   return (
     <StyledForm id="registerForm" onSubmit={onSend}>
       <StyledStepper activeStep={step} alternativeLabel>
-          <Step>
-             <StepLabel>Stage 1</StepLabel>
-          </Step>
-          <Step>
-             <StepLabel>Stage 2</StepLabel>
-          </Step>
+        <Step>
+          <StepLabel>Stage 1</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Stage 2</StepLabel>
+        </Step>
         <Step>
           <StepLabel>Stage 3</StepLabel>
         </Step>
@@ -311,7 +318,8 @@ export const RegisterForm = React.memo(({history, setValid}) => {
           switch (step) {
             case 1:
               return (
-                <RegisterStageTwoForm name={name} setName={setName} email={email} setEmail={setEmail}/>
+                <RegisterStageTwoForm name={name} setName={setName}
+                  email={email} setEmail={setEmail}/>
               );
             case 2:
               return (
@@ -320,8 +328,12 @@ export const RegisterForm = React.memo(({history, setValid}) => {
 
             default:
               return (
-                <RegisterStageOneForm username={username} password={password} setUsername={updateUsername} setPassword={updatePassword}
-                                      googleSuccess={googleRegister} facebookSuccess={facebookResponse} googleFailed={googleResponse}/>
+                <RegisterStageOneForm username={username} password={password}
+                  setUsername={updateUsername}
+                  setPassword={updatePassword}
+                  googleSuccess={googleRegister}
+                  facebookSuccess={facebookResponse}
+                  googleFailed={googleResponse}/>
               );
           }
         })()
@@ -330,8 +342,10 @@ export const RegisterForm = React.memo(({history, setValid}) => {
         color={theme.white}
         onClick={goBack}>back</BackButton>
     </StyledForm>
-  )
+  );
 });
+
+RegisterForm.displayName = 'RegisterForm';
 
 export const LoginForm = React.memo(({setValid}) => {
   const dispatch = useDispatch();
@@ -339,12 +353,12 @@ export const LoginForm = React.memo(({setValid}) => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    setValid(username.length > 3 && password.length > 3)
+    setValid(username.length > 3 && password.length > 3);
   }, [username, password]);
 
   const onSend = useCallback((e) => {
     (async () => {
-      console.log(username, password)
+      console.log(username, password);
       await AuthService.login(username, password);
       dispatch(updateLogin(true));
       dispatch(updateCurrentUser(AuthService.getUserId()));
@@ -361,7 +375,7 @@ export const LoginForm = React.memo(({setValid}) => {
     })();
   });
   const googleResponse = useCallback((response) => {
-    console.log("GOOGLE 2RESPONSE");
+    console.log('GOOGLE 2RESPONSE');
     console.log(response);
   });
 
@@ -376,16 +390,16 @@ export const LoginForm = React.memo(({setValid}) => {
 
   return (
     <StyledForm id="loginForm" onSubmit={onSend}
-                exit={{opacity: 0}}
-                animate={{opacity: 1}}
-                initial={{opacity: 0}}
+      exit={{opacity: 0}}
+      animate={{opacity: 1}}
+      initial={{opacity: 0}}
     >
       <InputField label="Username" icon={userIconUrl}
-                  field={username}
-                  setField={setUsername}/>
+        field={username}
+        setField={setUsername}/>
       <InputField label="Password" type="password" icon={passwordIconUrl}
-                  field={password}
-                  setField={setPassword}/>
+        field={password}
+        setField={setPassword}/>
       <ExternalLogin>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
@@ -403,7 +417,7 @@ export const LoginForm = React.memo(({setValid}) => {
           appId={FACEBOOK_APP_ID}
           fields="name,email,picture"
           redirectUri={window.location.href.split('?')[0]}
-          render={renderProps => (
+          render={(renderProps) => (
             <IconButton onClick={renderProps.onClick} spacing="5px">
               <SVGIcon size={60} src={facebookIconUrl} color={theme.main}/>
             </IconButton>
@@ -411,5 +425,7 @@ export const LoginForm = React.memo(({setValid}) => {
           callback={facebookResponse}/>
       </ExternalLogin>
     </StyledForm>
-  )
+  );
 });
+
+LoginForm.displayName = 'LoginForm';

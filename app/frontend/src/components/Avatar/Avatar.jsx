@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Icon, theme} from '~/components/common';
 
 import {
-  Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
+  // Avatar1, Avatar2, Avatar3, Avatar4, Avatar5, Avatar6, Avatar7, Avatar8,
   Av1, Av2, Av3, Av4, Av5, Av6, Av7, Av8, Av9, Av10, Av11, Av12, Av13, Av14,
   Av15, Av16, Av17, Av18, Av19, Av20, Av21, Av22, Av23, Av24, Av25, Av26, Av27,
   Av28, Av29, Av30, Av31, Av32, Av33, Av34, Av35, Av36, Av37,
@@ -117,7 +117,8 @@ const JUMPING_AMOUNT = 10;
 export const Avatar = (
     {
       type = 'normal', kind = 8, background = 'white', appearing = 100, manual = false,
-      opacity = 1, onClick = undefined, innerRef = undefined, status = undefined, jumping = false, squared = false, ...props
+      opacity = 1, onClick = undefined, innerRef = undefined, status = undefined, jumping = false,
+      squared = false, ...props
     },
 ) => {
   const style = useMemo(() => sized[type], [type]);
@@ -135,9 +136,9 @@ export const Avatar = (
   return (
     <AvatarContainer onClick={onClick} opacity={opacity}>
       <BackgroundBottomHalf avatarSize={style.avatarSize}
-                            size={style.backgroundSize} squared={squared}>
+        size={style.backgroundSize} squared={squared}>
         <BackgroundTopHalf size={style.backgroundSize}
-                           color={background} avatarSize={style.avatarSize}/>
+          color={background} avatarSize={style.avatarSize}/>
         <AvatarImage src={avatarsAvailable[parseInt(kind)]} size={style.avatarSize}
           ref={innerRef}
           backgroundSize={style.backgroundSize}

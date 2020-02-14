@@ -1,10 +1,10 @@
 import {UPDATE_CURRENT_USER, UPDATE_USERS} from '~/actions/users';
-import AuthService from "~/services/auth";
+import AuthService from '~/services/auth';
 
 
 const initialState = {
   me: AuthService.getUserId(),
-  all: []
+  all: [],
 };
 
 
@@ -18,7 +18,7 @@ export const usersReducer = (state = initialState, action) => {
     case UPDATE_USERS:
       return {
         ...state,
-        all: action.users
+        all: action.users,
       };
 
     default: return state;

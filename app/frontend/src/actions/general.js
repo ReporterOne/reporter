@@ -1,5 +1,5 @@
-import DateStatusService from "~/services/date_datas";
-import AuthService, {PermissionsError} from "~/services/auth";
+import DateStatusService from '~/services/date_datas';
+import AuthService, {PermissionsError} from '~/services/auth';
 
 export const UPDATE_REASONS = 'UPDATE_REASONS';
 export const UPDATE_LOGIN = 'UPDATE_LOGIN';
@@ -23,10 +23,10 @@ export const updateDates = (dates) => ({
 
 export const updateOnline = (state) => ({
   type: UPDATE_ONLINE,
-  state: state
+  state: state,
 });
 
-export const logout = () => async dispatch => {
+export const logout = () => async (dispatch) => {
   await AuthService.logout();
   dispatch(updateLogin(false));
 };
@@ -44,7 +44,7 @@ export const logoutIfNoPermission = async (callback, dispatch) => {
 };
 
 
-export const fetchReasons = () => async dispatch => {
+export const fetchReasons = () => async (dispatch) => {
   await logoutIfNoPermission(async () => {
     const reasons = await DateStatusService.getReasons();
     dispatch(updateReasons(reasons));

@@ -1,8 +1,8 @@
-import UsersService from "~/services/users";
-import {logoutIfNoPermission} from "~/actions/general";
-import lodash from "lodash";
-import {formatDate} from "~/components/Calendar/components/utils";
-import DateStatusService from "~/services/date_datas";
+import UsersService from '~/services/users';
+import {logoutIfNoPermission} from '~/actions/general';
+import lodash from 'lodash';
+import {formatDate} from '~/components/Calendar/components/utils';
+import DateStatusService from '~/services/date_datas';
 
 export const UPDATE_DATES = 'UPDATE_DATES';
 export const UPDATE_DAY = 'UPDATE_DAY';
@@ -25,7 +25,7 @@ export const updateDay = (key, data, userId) => ({
   type: UPDATE_DAY,
   key,
   data,
-  userId
+  userId,
 });
 
 export const updateToday = (data) => ({
@@ -39,7 +39,7 @@ export const updateTodayData = (data) => ({
 });
 
 
-export const fetchMyToday = () => async dispatch => {
+export const fetchMyToday = () => async (dispatch) => {
   await logoutIfNoPermission(async () => {
     const dateData = await UsersService.getMyToday();
     dispatch(updateToday(dateData));
@@ -47,14 +47,14 @@ export const fetchMyToday = () => async dispatch => {
 };
 
 
-export const fetchDatesOf = (usersId, start, end) => async dispatch => {
+export const fetchDatesOf = (usersId, start, end) => async (dispatch) => {
   await logoutIfNoPermission(async () => {
     const data = await DateStatusService.getDateData({start, end, usersId});
     dispatch(updateDates(data));
   }, dispatch);
 };
 
-export const fetchMyDates = (start, end) => async dispatch => {
+export const fetchMyDates = (start, end) => async (dispatch) => {
   const today = new Date();
   await logoutIfNoPermission(async () => {
     const dateData = await UsersService.getMyCalendar({start, end});
@@ -66,17 +66,17 @@ export const fetchMyDates = (start, end) => async dispatch => {
   }, dispatch);
 };
 
-export const deleteDateOf = (userId, date) => async dispatch => {
+export const deleteDateOf = (userId, date) => async (dispatch) => {
   await DateStatusService.deleteDate({userId: userId, date: new Date(date)});
   dispatch(updateDay(date, null, userId));
 };
 
-export const setDateStatus = ({userId, status, start, reason=undefined}) => async dispatch => {
+export const setDateStatus = ({userId, status, start, reason=undefined}) => async (dispatch) => {
   const data = await UsersService.setDate({
     userId: userId,
     start: start,
     state: status,
-    reason: reason
+    reason: reason,
   });
   const key = Object.keys(data)[0];
   const value = Object.values(data)[0];

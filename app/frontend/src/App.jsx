@@ -18,9 +18,9 @@ import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
 import store from './store';
-import {fetchAllowedUsers} from "~/actions/users";
-import {fetchMyToday} from "~/actions/calendar";
-import {fetchReasons, updateOnline} from "~/actions/general";
+import {fetchAllowedUsers} from '~/actions/users';
+import {fetchMyToday} from '~/actions/calendar';
+import {fetchReasons, updateOnline} from '~/actions/general';
 
 export const App = (props) => {
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ export const App = (props) => {
     return () => {
       window.removeEventListener('online', updateOnlineState);
       window.removeEventListener('offline', updateOnlineState);
-    }
+    };
   }, [updateOnlineState]);
 
   const onDrawerDrag = useCallback(({data, drawer}) => {
@@ -80,7 +80,7 @@ export const App = (props) => {
       <Route path="/entrance" component={Entrance}/>
       <Route path="/" render={() => (
         <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-                onDragEnd={onDrawerDragEnd}>
+          onDragEnd={onDrawerDragEnd}>
           <DrawerMenu>
             <Menu avatar={avatar} avatarRef={avatarRef}/>
           </DrawerMenu>
@@ -102,11 +102,11 @@ export const App = (props) => {
             )}>
             <Switch>
               <PrivateRoute path="/hierarchy" component={Hierarchy}
-                            allowedPermissions={["admin"]}/>
+                allowedPermissions={['admin']}/>
               <PrivateRoute path="/operator" component={Operator}
-                            allowedPermissions={["admin", "reporter"]}/>
+                allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/commander" component={Commander}
-                            allowedPermissions={["admin", "commander"]}/>
+                allowedPermissions={['admin', 'commander']}/>
               <PrivateRoute path="/" component={Dashboard}/>
             </Switch>
           </DrawerContent>

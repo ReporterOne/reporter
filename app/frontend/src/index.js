@@ -5,10 +5,10 @@ import 'regenerator-runtime/runtime';
 
 import App from './App.jsx';
 
-const renderApp = Component => {
+const renderApp = (Component) => {
   const container = document.getElementById('root');
 
-  ReactDOM.render(<Component/>, container)
+  ReactDOM.render(<Component/>, container);
 };
 
 renderApp(App);
@@ -19,7 +19,6 @@ if ('serviceWorker' in navigator) {
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
   wb.addEventListener('waiting', (event) => {
-
     // Assuming the user accepted the update, set up a listener
     // that will reload the page as soon as the previously waiting
     // service worker has taken control.
@@ -48,5 +47,5 @@ if (module.hot) {
   module.hot.accept('./App.jsx', () => {
     const app = require('./App.jsx').default;
     renderApp(app);
-  })
+  });
 }

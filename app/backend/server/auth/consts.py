@@ -16,4 +16,5 @@ FACEBOOK_APP = "861853434255614"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 500
 # public
-CLIENT_ID = "623244279739-lrqk7n917mpnuqbmnkgbv8l4o73tjiek.apps.googleusercontent.com"
+CLIENT_ID = \
+    "623244279739-lrqk7n917mpnuqbmnkgbv8l4o73tjiek.apps.googleusercontent.com"
