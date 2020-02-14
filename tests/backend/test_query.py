@@ -4,7 +4,6 @@ from collections import namedtuple
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from starlette.testclient import TestClient
-# from pytest import unittest
 
 from server.main import app
 from server.api.v1 import api_v1
@@ -14,6 +13,7 @@ from tests.backend.utils.fake_users_generator import get_fake_current_user
 
 
 StateMock = namedtuple("state", "name")
+
 
 class TestQuery(unittest.TestCase):
     """"Generic test class for routes or crud functions."""
@@ -29,6 +29,10 @@ class TestQuery(unittest.TestCase):
         # Create Reasons:
         self.current_user, self.current_user_token = \
             get_fake_current_user(self.APP_TEST, self.session, "one report")
+
+        admin_permission = models.Permission(type="admin")
+        self.session.add_all([admin_permission])
+        self.session.commit()
 
         self.reasons = {"1_abc": "abc", "2_bcd": "bcd", "3_efg": "efg"}
         self.session.add_all([models.date_datas.Reason(name=reason)

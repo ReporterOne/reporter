@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
 from tests.backend.utils.url_utils import URL, Query
 
-from db import models
+from db import models, database
 from server import auth
 
 def _get_fake_username_password(full_name=None):
@@ -32,7 +32,7 @@ def get_fake_current_user(app_test: TestClient, db: Session, name):
     current_user = models.User(
             english_name=full_name,
             username=username,
-            password=auth.get_password_hash(password)
+            password=database.get_password_hash(password)
         )
     db.add(current_user)
     db.commit()
@@ -48,5 +48,5 @@ def get_fake_user():
     return models.User(
             english_name=full_name,
             username=username,
-            password=auth.get_password_hash(password)
+            password=database.get_password_hash(password)
         )

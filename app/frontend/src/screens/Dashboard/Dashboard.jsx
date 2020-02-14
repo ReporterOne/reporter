@@ -94,7 +94,7 @@ const Dashboard = React.memo((props) => {
           isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
-        <Calender userId={id} fetchData={fetchDates}
+        <Calender key="static" userId={id} fetchData={fetchDates}
           selectedDate={selectedDate}
           setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>

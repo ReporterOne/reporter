@@ -99,8 +99,8 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
 
   return (
     <StyledSwipeable onSwipedRight={prevMonth} onSwipedLeft={nextMonth}
-      trackMouse={true}
-      className="CalendarContainer"
+                     trackMouse={true}
+                     className="CalendarContainer"
     >
       <AnimatePresence>
         <StyledContainer
@@ -112,10 +112,10 @@ const Calendar = ({fetchData, selectedDate, setSelectedDate, userId}) => {
           <Header currentDate={currentDate}/>
           <Days currentDate={currentDate} cellSize={cellSize}/>
           <Cells onDateClick={onDateClick}
-            userId={userId} updateCellSize={updateCellSize}
-            selectedDate={selectedDate}
-            today={now} renderedMonth={renderedMonth}
-            from={startDate} to={endDate}
+                 userId={userId} updateCellSize={updateCellSize}
+                 selectedDate={selectedDate}
+                 today={now} renderedMonth={renderedMonth}
+                 from={startDate} to={endDate}
           />
         </StyledContainer>
       </AnimatePresence>

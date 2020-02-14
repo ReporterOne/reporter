@@ -7,9 +7,13 @@ SECRET_KEY = os.environ.get(
     "a10519645263a665b3a10068a29b9e6171f32bad184d82a8aef0d790fe09d49a")
 
 if "ONE_REPORT_FACEBOOK" not in os.environ:
-    raise RuntimeError("ONE_REPORT_FACEBOOK must be set for this application")
+    if "ONE_REPORT_MODE" not in os.environ or \
+            os.environ["ONE_REPORT_MODE"] != "TEST":
+        raise RuntimeError(
+            "ONE_REPORT_FACEBOOK must be set for this application, or set "
+            "ONE_REPORT_MODE to TEST")
 
-FACEBOOK_SECRET = os.environ["ONE_REPORT_FACEBOOK"]
+FACEBOOK_SECRET = os.environ.get("ONE_REPORT_FACEBOOK", None)
 # public
 FACEBOOK_APP = "861853434255614"
 

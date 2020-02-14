@@ -15,19 +15,18 @@ const login = () => {
 context('Calendar', () => {
   beforeEach(() => {
     login();
-    cy.visit('/');
+    cy.noSWVisit('/');
   });
 
-  it.skip('swipe left', () => {
+  it('swipe left', () => {
     cy.get(".AttendingHandle")
       .swipe("right");
 
-    cy.get('.CalendarContainer')
-      .swipe("left")
-      .swipe("left")
-      .swipe("left")
-      .swipe("right")
-      .swipe("right")
-      .swipe("right")
+    cy.get('.CalendarContainer').swipe("left");
+    cy.get('.CalendarContainer').swipe("left");
+    cy.get('.CalendarContainer').swipe("left");
+    cy.get('.CalendarContainer').swipe("right");
+    cy.get('.CalendarContainer').swipe("right");
+    cy.get('.CalendarContainer').swipe("left");
   })
 });
