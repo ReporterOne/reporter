@@ -1,4 +1,5 @@
 """Main backend API serving."""
+import time
 from pathlib import Path
 
 import uvicorn
@@ -29,10 +30,18 @@ app.include_router(
 @app.get("/.*")
 async def index(request: Request):
     """Index url, let frontend handle all routes."""
-    return templates.TemplateResponse("index.html", {"request": request},
-                                      headers={
-                                          'Service-Worker-Allowed': '/'
-                                      })
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.middleware("http")
+async def add_service_worker_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers["X-Process-Time"] = str(process_time)
+
+    return response
 
 
 if __name__ == '__main__':
