@@ -88,7 +88,8 @@ const useUsersStatuses = (selectedDate) => {
 const useMadorMapping = (statuses, users) => {
   return useMemo(() => {
     return statuses.reduce((prev, current) => {
-      const mador = users[current.user_id].mador.name;
+      const mador = users[current.user_id].mador?.name;
+      if (!mador) return prev;
       if (!(mador in prev)) prev[mador] = [];
       prev[mador].push(current);
       return prev;
