@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import styled from 'styled-components';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Switch, Route} from 'react-router-dom';

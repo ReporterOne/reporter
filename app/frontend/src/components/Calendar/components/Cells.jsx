@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import {
   format,
   endOfWeek,
