@@ -1,5 +1,6 @@
 import {
-  // CacheFirst, NetworkFirst,
+  // CacheFirst,
+  // NetworkFirst,
   StaleWhileRevalidate,
 } from 'workbox-strategies';
 // import {ExpirationPlugin} from 'workbox-expiration';
@@ -86,6 +87,7 @@ self.addEventListener('message', async (event) => {
     const updatedResponse = await cache.match(updatedUrl);
     const updatedText = await updatedResponse.text();
     console.log(event, updatedText);
+    window.location.reload();
   }
 });
 
