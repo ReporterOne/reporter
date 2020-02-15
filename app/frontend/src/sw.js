@@ -1,22 +1,19 @@
 import {
-  // CacheFirst,
-  // NetworkFirst,
-  StaleWhileRevalidate,
+  NetworkFirst,
 } from 'workbox-strategies';
-// import {ExpirationPlugin} from 'workbox-expiration';
-// import { createHandlerForURL } from 'workbox-precaching/createHandlerForURL';
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
 import {NavigationRoute, registerRoute} from 'workbox-routing';
-// import {CacheableResponsePlugin} from 'workbox-cacheable-response';
-import {BroadcastUpdatePlugin} from 'workbox-broadcast-update';
+import {CacheableResponsePlugin} from "workbox-cacheable-response";
 
 precacheAndRoute(self.__WB_MANIFEST);
 registerRoute(
     new RegExp('/api/'),
-    new StaleWhileRevalidate({
+    new NetworkFirst({
       cacheName: 'api-cache',
       plugins: [
-        new BroadcastUpdatePlugin(),
+        new CacheableResponsePlugin({
+          statuses: [200]
+        }),
       ],
     }),
 );
