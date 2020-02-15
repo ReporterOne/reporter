@@ -29,7 +29,10 @@ app.include_router(
 @app.get("/.*")
 async def index(request: Request):
     """Index url, let frontend handle all routes."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request},
+                                      headers={
+                                          'Service-Worker-Allowed': '/'
+                                      })
 
 
 if __name__ == '__main__':

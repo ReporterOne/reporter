@@ -38,7 +38,7 @@ module.exports = {
     ]),
     new WorkboxPlugin.InjectManifest({
       swSrc: path.resolve(src, 'sw.js'),
-      swDest: 'sw.js',
+      swDest: 'static/sw.js',
       maximumFileSizeToCacheInBytes: 100 * 1024 * 1024
     })
   ],

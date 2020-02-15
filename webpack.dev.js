@@ -13,6 +13,9 @@ module.exports = merge(common, {
     port: 8000,
     historyApiFallback: true,
     hot: true,
+    headers: {
+      'Service-Worker-Allowed': '/'
+    },
     proxy: [
       {
         context: ['/api/**'],
