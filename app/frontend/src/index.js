@@ -16,7 +16,7 @@ renderApp(App);
 
 if ('serviceWorker' in navigator) {
   const wb = new Workbox('/static/sw.js', {
-    scope: '/'
+    scope: '/',
   });
   // Add an event listener to detect when the registered
   // service worker has installed but is waiting to activate.
