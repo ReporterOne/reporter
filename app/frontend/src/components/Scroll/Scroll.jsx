@@ -3,10 +3,7 @@ import {motion} from 'framer-motion';
 import ReactResizeDetector from 'react-resize-detector';
 
 
-const timers = {};
-let instance = 0;
 export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...props}) => {
-  const [instanceID] = useState(instance++);
   const teamsRef = useRef(null);
   const containerRef = useRef(null);
   const [size, changeSize] = useState({width: 0, height: 0});
@@ -31,12 +28,9 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
   return (
     <ReactResizeDetector handleWidth handleHeight>
       {({width, height}) => {
-        clearTimeout(timers[`${instanceID}_0`]);
-        timers[`${instanceID}_0`] = setTimeout(() => {
-          if (containerSize.width !== width || containerSize.height !== height) {
-            changeContainerSize({width, height});
-          }
-        }, 100);
+        if (containerSize.width !== width || containerSize.height !== height) {
+          changeContainerSize({width, height});
+        }
         return (
           <div style={{width, height}} className="resized_container_scroll">
             <motion.div ref={containerRef}
@@ -50,19 +44,15 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
               }}>
                 <ReactResizeDetector handleWidth handleHeight>
                   {({width, height}) => {
-                    clearTimeout(timers[`${instanceID}_1`]);
-                    timers[`${instanceID}_1`] = setTimeout(() => {
-                      if (size.width !== width || size.height !== height) {
-                        changeSize({width, height});
-                      }
-                    }, 100);
+                    if (size.width !== width || size.height !== height) {
+                      changeSize({width, height});
+                    }
                     return (
                       <div style={{width, height}} className="resized_container_inner_scroll">
                         {children}
                       </div>
                     );
                   }}
-                  {/* {children}*/}
                 </ReactResizeDetector>
               </div>
             </motion.div>

@@ -89,7 +89,7 @@ const Dashboard = React.memo((props) => {
           <HeaderName mode="single"
             max={45}>{titleCase(englishName)}</HeaderName>
         </WelcomeMessage>
-        <AttendingButton missingReason={todayReason?.name}
+        <AttendingButton key={selectedDate} missingReason={todayReason?.name}
           onChange={handleOnChange} initialState={todayState}
           isDisabled={selectedDate < formatDate(new Date())}/>
       </Container>

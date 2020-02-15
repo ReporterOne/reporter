@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
   format,
   endOfWeek,
@@ -61,7 +61,7 @@ const Background = styled.div`
 `;
 
 const Filler = styled.div`
-  width: ${({width}) => width + 2}px;
+  width: ${({width}) => width + 4}px;
   height: ${({size}) => size}px;
   position: absolute;
   top: 0;
@@ -256,14 +256,12 @@ const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userI
 Day.displayName = 'Day';
 
 
-let timer = undefined;
 const Cells = React.memo(
     ({
       onDateClick, today, from, to, renderedMonth,
       selectedDate, userId, updateCellSize,
     }) => {
-      const cells = useRef(null);
-
+      const [cell, changeCell] = useState({size: 0, gapSize: 0});
       const rows = useCallback((cell) => {
         return eachWeekOfInterval({
           start: from,
@@ -292,7 +290,7 @@ const Cells = React.memo(
         );
       });
 
-      return <Month stretched ref={cells}>
+      return <Month stretched>
         <ReactResizeDetector handleWidth handleHeight>
           {({width, height}) => {
             const cellWidth = Math.ceil((width ?? 0) / 7);
@@ -300,10 +298,10 @@ const Cells = React.memo(
             const size = Math.min(cellWidth, cellHeight);
             const gapSize = Math.ceil(((width ?? 0) - (size * 7)) / 6);
             const toRender = rows({size, gapSize});
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-              if (size && gapSize) updateCellSize({size, gapSize});
-            }, 100);
+            if (size !== cell.size || gapSize !== cell.gapSize) {
+              updateCellSize({size, gapSize});
+              changeCell({size, gapSize});
+            }
             return (<div>
               {toRender}
             </div>);
