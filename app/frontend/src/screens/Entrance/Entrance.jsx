@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
+import ReactResizeDetector from 'react-resize-detector';
 import styled from 'styled-components';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Switch, Route} from 'react-router-dom';
@@ -127,28 +127,12 @@ const getPoseKey = (location) => {
 
 const Entrance = React.memo(({location, history}) => {
   const isLoggedIn = useSelector((state) => state.general.login);
-  const [size, setSize] = useState(0);
   const containerRef = useRef(null);
   const [validInput, setValidInput] = useState(false);
 
   useEffect(() => {
     setValidInput(false);
   }, [location.pathname]);
-
-
-  useEffect(() => {
-    setSize(containerRef.current.getBoundingClientRect());
-    const resizeObserve = new ResizeObserver((entries) => {
-      const sizeRect = entries[0].contentRect;
-      setSize(Math.min(sizeRect.width, sizeRect.height));
-    });
-    resizeObserve.observe(containerRef.current);
-
-    return () => {
-      resizeObserve.disconnect();
-    };
-  }, []);
-
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -162,34 +146,41 @@ const Entrance = React.memo(({location, history}) => {
       <StyledAlpha size={50} src={alphaIcon}/>
       <ContentWrapper stretched>
         <Wrapper ref={containerRef}>
-          <AnimatePresence>
-            <ContentDiv
-              key={getPoseKey(location.pathname)}
-              exit={{opacity: 0}}
-              animate={{opacity: 1}}
-              initial={{opacity: 0}}
-              style={{position: 'absolute'}}
-            >
-              <Switch location={location}>
-                <Route path={REGISTER_ROUTE}>
-                  <RegisterPage
-                    size={size}
-                    pathname={location.pathname}
-                    setValid={setValidInput}
-                    history={history}
-                  />
-                </Route>
-                <Route path={MAIN_ROUTE}>
-                  <MainCircle
-                    size={size}
-                    setValid={setValidInput}
-                    pathname={location.pathname}
-                    history={history}
-                  />
-                </Route>
-              </Switch>
-            </ContentDiv>
-          </AnimatePresence>
+          <ReactResizeDetector handleWidth handleHeight>
+            {({width, height}) => {
+              const size = Math.min(width ?? 0, height ?? 0);
+              return (
+                <AnimatePresence>
+                  <ContentDiv
+                    key={getPoseKey(location.pathname)}
+                    exit={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    initial={{opacity: 0}}
+                    style={{position: 'absolute'}}
+                  >
+                    <Switch location={location}>
+                      <Route path={REGISTER_ROUTE}>
+                        <RegisterPage
+                          size={size}
+                          pathname={location.pathname}
+                          setValid={setValidInput}
+                          history={history}
+                        />
+                      </Route>
+                      <Route path={MAIN_ROUTE}>
+                        <MainCircle
+                          size={size}
+                          setValid={setValidInput}
+                          pathname={location.pathname}
+                          history={history}
+                        />
+                      </Route>
+                    </Switch>
+                  </ContentDiv>
+                </AnimatePresence>
+              );
+            }}
+          </ReactResizeDetector>
         </Wrapper>
         <Controls>
           <AnimatePresence>

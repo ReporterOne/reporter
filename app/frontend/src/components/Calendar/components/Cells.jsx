@@ -1,5 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
+import React, {useCallback, useMemo, useRef} from 'react';
 import {
   format,
   endOfWeek,
@@ -19,6 +18,7 @@ import {
 } from '~/utils/utils';
 import {formatDate} from '~/components/Calendar/components/utils';
 import {useSelector} from 'react-redux';
+import ReactResizeDetector from 'react-resize-detector';
 
 
 const CellsDateFormat = 'd';
@@ -256,57 +256,61 @@ const Day = ({date, onDateClick, renderedMonth, today, cell, selectedDate, userI
 Day.displayName = 'Day';
 
 
-const Cells = React.memo(({
-  onDateClick, today, from, to, renderedMonth,
-  selectedDate, userId, updateCellSize,
-}) => {
-  const cells = useRef(null);
-  const [cell, setCell] = useState({size: 0, gapSize: 0});
-  useEffect(() => {
-    const resizeObserve = new ResizeObserver((entries) => {
-      const width = Math.ceil(entries[0].contentRect.width / 7);
-      const height = Math.ceil(entries[0].contentRect.height / 6);
-      const size = Math.min(width, height);
-      const gapSize = Math.ceil((entries[0].contentRect.width - (size * 7)) / 6);
-      setCell({size, gapSize});
-      updateCellSize({size, gapSize});
+let timer = undefined;
+const Cells = React.memo(
+    ({
+      onDateClick, today, from, to, renderedMonth,
+      selectedDate, userId, updateCellSize,
+    }) => {
+      const cells = useRef(null);
+
+      const rows = useCallback((cell) => {
+        return eachWeekOfInterval({
+          start: from,
+          end: to,
+        }).slice(0, 6).map(
+            (date) => (
+              <Week key={date}>
+                {
+                  eachDayOfInterval({
+                    start: date,
+                    end: endOfWeek(date),
+                  }).map((date) =>
+                    <Day
+                      key={date}
+                      cell={cell}
+                      date={date}
+                      today={today}
+                      userId={userId}
+                      selectedDate={selectedDate}
+                      renderedMonth={renderedMonth}
+                      onDateClick={onDateClick}
+                    />)
+                }
+              </Week>
+            ),
+        );
+      });
+
+      return <Month stretched ref={cells}>
+        <ReactResizeDetector handleWidth handleHeight>
+          {({width, height}) => {
+            const cellWidth = Math.ceil((width ?? 0) / 7);
+            const cellHeight = Math.ceil((height ?? 0) / 6);
+            const size = Math.min(cellWidth, cellHeight);
+            const gapSize = Math.ceil(((width ?? 0) - (size * 7)) / 6);
+            const toRender = rows({size, gapSize});
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              if (size && gapSize) updateCellSize({size, gapSize});
+            }, 100);
+            return (<div>
+              {toRender}
+            </div>);
+          }}
+        </ReactResizeDetector>
+      </Month>;
     });
-    resizeObserve.observe(cells.current);
-    return () => {
-      resizeObserve.disconnect();
-    };
-  }, []);
-
-  const rows = useMemo(() => {
-    return eachWeekOfInterval({
-      start: from,
-      end: to,
-    }).slice(0, 6).map(
-        (date) => (
-          <Week key={date}>
-            {
-              eachDayOfInterval({
-                start: date,
-                end: endOfWeek(date),
-              }).map((date) =>
-                <Day
-                  key={date}
-                  cell={cell}
-                  date={date}
-                  today={today}
-                  userId={userId}
-                  selectedDate={selectedDate}
-                  renderedMonth={renderedMonth}
-                  onDateClick={onDateClick}
-                />)
-            }
-          </Week>
-        ),
-    );
-  });
-
-  return <Month stretched ref={cells}>{rows}</Month>;
-});
 
 Cells.displayName = 'Cells';
 

@@ -3,7 +3,7 @@ import {
 } from 'workbox-strategies';
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
 import {NavigationRoute, registerRoute} from 'workbox-routing';
-import {CacheableResponsePlugin} from "workbox-cacheable-response";
+import {CacheableResponsePlugin} from 'workbox-cacheable-response';
 
 precacheAndRoute(self.__WB_MANIFEST);
 registerRoute(
@@ -12,7 +12,7 @@ registerRoute(
       cacheName: 'api-cache',
       plugins: [
         new CacheableResponsePlugin({
-          statuses: [200]
+          statuses: [200],
         }),
       ],
     }),
