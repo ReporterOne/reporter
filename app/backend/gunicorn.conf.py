@@ -1,5 +1,9 @@
 """Main gunicorn config file."""
-bind = "0.0.0.0:8443"
+import os
+
+
+PORT = os.environ.get("PORT", 8443)
+bind = f"0.0.0.0:{PORT}"
 workers = 1
 
 
