@@ -17,14 +17,19 @@ from sqlalchemy import create_engine
 
 from db import models
 
-USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
-PASSWORD = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
-HOST = os.environ.get('ONE_REPORT_HOST', 'localhost')
-DB = os.environ.get('ONE_REPORT_DB', 'one_report')
-PORT = os.environ.get('ONE_REPORT_PORT', '5432')
+
+if 'DATABASE_URL' in os.environ:
+    DATABASE_URI = os.environ['DATABASE_URL']
+
+else:
+    USERNAME = os.environ.get('ONE_REPORT_USERNAME', 'one_report')
+    PASSWORD = os.environ.get('ONE_REPORT_PASSWORD', 'one_report')
+    HOST = os.environ.get('ONE_REPORT_HOST', 'localhost')
+    DB = os.environ.get('ONE_REPORT_DB', 'one_report')
+    PORT = os.environ.get('ONE_REPORT_PORT', '5432')
+    DATABASE_URI = f'postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-DATABASE_URI = f'postgresql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB}'
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)

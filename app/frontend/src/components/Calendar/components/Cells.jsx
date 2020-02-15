@@ -60,12 +60,12 @@ const Background = styled.div`
 `;
 
 const Filler = styled.div`
-  width: ${({width}) => width}px;
+  width: ${({width}) => width + 2}px;
   height: ${({size}) => size}px;
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateX(${({size}) => size}px);
+  transform: translateX(${({size}) => size - 2}px);
   background-color: ${({isPast, isSameMonth, status}) => getDateBackgroundColor({
     isPast,
     isSameMonth,
