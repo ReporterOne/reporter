@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import {Provider, useDispatch, useSelector} from 'react-redux';
@@ -20,9 +21,10 @@ import {DrawerMenu, Drawer, DrawerContent} from '~/components/Menu';
 import PrivateRoute from '~/components/Menu/PrivateRoute';
 
 import store from './store';
-import {fetchAllowedUsers} from '~/actions/users';
+import {fetchAllowedUsers, fetchSubjects} from '~/actions/users';
 import {fetchMyToday} from '~/actions/calendar';
 import {fetchReasons, popNotification, updateOnline} from '~/actions/general';
+import {fetchMadors} from "~/actions/madors";
 
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
@@ -38,6 +40,8 @@ export const App = (props) => {
       dispatch(fetchReasons());
       dispatch(fetchMyToday());
       dispatch(fetchAllowedUsers());
+      dispatch(fetchSubjects());
+      dispatch(fetchMadors());
     }
   }, [isLoggedIn, dispatch]);
 
@@ -174,4 +178,4 @@ export const ProvidedApp = (props) => {
   );
 };
 
-export default ProvidedApp;
+export default hot(ProvidedApp);

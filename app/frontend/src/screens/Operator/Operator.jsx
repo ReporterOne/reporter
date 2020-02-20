@@ -12,6 +12,7 @@ import {motion, useAnimation} from 'framer-motion';
 import {formatDate} from '~/components/Calendar/components/utils';
 import {fetchDatesOf} from '~/actions/calendar';
 import {useDispatch, useSelector} from 'react-redux';
+import {useMe} from "~/hooks/common";
 
 
 const CALENDAR_HEIGHT = 460;
@@ -137,7 +138,8 @@ export const Operator = React.memo((props) => {
     return users.map((user) => user.id);
   }, [users]);
 
-  const [selectedMador] = useState('Unity');
+  const {mador} = useMe();
+  const [selectedMador] = useState(mador?.name);
 
   const [notHereStatuses, restStatuses] = useMadorStatuses(selectedDate, usersDict, selectedMador);
 

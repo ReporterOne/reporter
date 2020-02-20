@@ -2,7 +2,7 @@ import {HttpService} from '~/services/base_service';
 import {formatDate} from '~/components/Calendar/components/utils';
 
 /** Service for handling users requests */
-class UsersService extends HttpService {
+class UsersService_ extends HttpService {
   /**
    * Get the current user.
    * @return {Promise<T>}
@@ -114,6 +114,21 @@ class UsersService extends HttpService {
       },
     });
   }
+
+  async getMySubjects() {
+    return await this.request({
+      method: 'get',
+      url: `/me/subjects`,
+    })
+  }
+
+  async getUnassignedUsers() {
+    return await this.request({
+      method: 'get',
+      url: `/unassigned`
+    })
+  }
 }
 
-export default new UsersService('/api/v1/users');
+export const UsersService = new UsersService_('/api/v1/users');
+export default UsersService;

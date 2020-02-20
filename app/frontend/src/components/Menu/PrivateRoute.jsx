@@ -3,6 +3,7 @@ import {Route, Redirect} from 'react-router-dom';
 
 import {useSelector} from 'react-redux';
 import lodash from 'lodash';
+import {useMe} from "~/hooks/common";
 
 export const isAllowed = (permissions, allowedPermissions) => {
   return permissions === undefined || allowedPermissions.length === 0 ||
@@ -11,7 +12,7 @@ export const isAllowed = (permissions, allowedPermissions) => {
 
 export const PrivateRoute = ({component: Component, allowedPermissions = [], ...rest}) => {
   const isLoggedIn = useSelector((state) => state.general.login);
-  const {permissions = undefined} = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
+  const {permissions = undefined} = useMe();
 
   return (
     <Route {...rest} render={(props) => {

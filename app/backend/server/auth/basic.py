@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from db import schemas, crud
 from db.database import get_db, get_password_hash
-from db.crud import get_user_by_username, create_user
+from db.crud.users import get_user_by_username, create_user
 from .utils import (Token,
                     authenticate_user,
                     create_access_token)

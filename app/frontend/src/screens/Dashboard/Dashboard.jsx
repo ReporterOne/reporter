@@ -18,6 +18,7 @@ import {
   fetchMyDates, setDateStatus,
 } from '~/actions/calendar';
 import {formatDate} from '~/components/Calendar/components/utils';
+import {useMe} from "~/hooks/common";
 
 
 const HeaderWelcome = styled.h2`
@@ -45,7 +46,7 @@ const Dashboard = React.memo((props) => {
   const {
     english_name: englishName = undefined,
     id = undefined,
-  } = useSelector((state) => lodash.find(state.users.all, {id: state.users.me}) ?? {});
+  } = useMe();
   const [openDialog, changeOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 

@@ -3,7 +3,7 @@ import {formatDate} from '~/components/Calendar/components/utils';
 
 
 /** DateStatus service for requesting date statuses. */
-class DateStatusService extends HttpService {
+class DateStatusService_ extends HttpService {
   /**
    * Get all the missing reasons from the server.
    * @return {Promise<T>}
@@ -96,4 +96,5 @@ class DateStatusService extends HttpService {
   }
 }
 
-export default new DateStatusService('/api/v1/dates_status');
+export const DateStatusService = new DateStatusService_('/api/v1/dates_status');
+export default DateStatusService;

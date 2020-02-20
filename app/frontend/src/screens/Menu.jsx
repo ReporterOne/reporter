@@ -11,6 +11,7 @@ import settingsIconUrl from '~/assets/settings.svg';
 import {Container, SVGIcon} from '~/components/common';
 import {useSelector} from 'react-redux';
 import {isAllowed} from '~/components/Menu/PrivateRoute';
+import {useMe} from "~/hooks/common";
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -32,7 +33,7 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
   const {
     icon_path: iconPath,
     permissions = undefined,
-  } = useSelector((state) => _.find(state.users.all, {id: state.users.me}) ?? {});
+  } = useMe();
   return (
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual}

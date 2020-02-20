@@ -1,7 +1,7 @@
 # pylint: disable=missing-class-docstring
 """Schemes for db responses."""
 from enum import Enum
-from typing import List, Any
+from typing import List, Any, ForwardRef
 from datetime import date, time, datetime
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
@@ -41,11 +41,16 @@ class UserAuth(User):
     password: str
 
 
+Hierarchy = ForwardRef('Hierarchy')
+
+
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
-    leader_id: int
-    childs: List[Any]  # list of Hierarchy.
+    leader: int
+    childs: List[Hierarchy]  # list of Hierarchy.
 
+
+Hierarchy.update_forward_refs()
 
 class StatusTypes(str, Enum):
     required = "required"

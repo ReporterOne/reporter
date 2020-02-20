@@ -25,7 +25,8 @@ async def get_dates_status(
 ):
     """Get dates status."""
     with secure_user_accessing(db, current_user, users_id):
-        date_details = crud.get_dates_data_of(db, users_id, start, end)
+        date_details = crud.date_datas.get_dates_data_of(
+            db, users_id, start, end)
         details = as_dict(date_details)
 
         if end is None:

@@ -8,7 +8,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 from db import schemas, crud
-from db.crud import create_user
+from db.crud.users import create_user
 from db.database import get_db
 from db.schemas import User
 from .utils import (Token,

@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+    "@hot-loader/react-dom": "^16.11.0",
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.42",
@@ -105,6 +106,7 @@
     "react-easy-swipe": "0.0.18",
     "react-facebook-login": "^4.1.1",
     "react-google-login": "^5.1.0",
+    "react-hot-loader": "^4.12.19",
     "react-inlinesvg": "^1.1.7",
     "react-material-ripple": "^0.1.1",
     "react-motion": "^0.5.2",

@@ -17,6 +17,7 @@ module.exports = {
     publicPath: '/',
   },
   entry: {
+    reactHotLoader: 'react-hot-loader/patch',
     main: path.resolve(src, 'index.js'),
     avatars: path.resolve(src, 'assets', 'avatars', 'index.js'),
     fonts: path.resolve(src, 'assets', 'fonts', 'index.js'),
@@ -47,6 +48,7 @@ module.exports = {
     alias: {
       "~": path.resolve(src),
       "@": path.resolve(src, 'screens'),
+      'react-dom': '@hot-loader/react-dom',
     }
   },
   module: {

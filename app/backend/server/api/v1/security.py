@@ -25,6 +25,9 @@ def get_all_allowed_users_of(db, user):
     for mador in operates_madors:
         allowed_users += mador.users
 
+    if crud.users.is_operator(db, user):
+        allowed_users += crud.users.get_users_without_mador(db)
+
     return list(set(allowed_users))
 
 
@@ -39,4 +42,37 @@ def secure_user_accessing(db, current_user, user_ids):
         raise HTTPException(status_code=HTTP_403_FORBIDDEN,
                             detail="You are not allowed to access some of "
                                    "requested users!")
+    yield
+
+
+def get_relevant_madors(db, user):
+    if crud.users.is_admin(db, user):
+        return crud.madors.get_all_madors(db)
+
+    allowed_madors = user.operates
+    if user.mador:
+        allowed_madors += user.mador
+
+    return allowed_madors
+
+
+@contextmanager
+def secure_user_mador_accessing(db, current_user, mador_names):
+    allowed = [mador.name for mador in get_relevant_madors(db, current_user)]
+
+    if any(mador_name not in allowed for mador_name in mador_names):
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN,
+                            detail="You are not allowed to access some of "
+                                   "requested madors!")
+
+    yield
+
+
+@contextmanager
+def secure_access_unassigned_users(db, current_user):
+    if (not crud.users.is_admin(db, current_user)
+            and not crud.users.is_operator(db, current_user)):
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN,
+                            detail="You are not allowed to access this info!")
+
     yield

@@ -10,7 +10,7 @@ from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-from db.crud import get_user_by_username
+from db.crud.users import get_user_by_username
 from db.database import verify_password, get_db
 from db.schemas import User
 from .consts import SECRET_KEY, ALGORITHM

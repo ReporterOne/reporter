@@ -4,12 +4,22 @@ import lodash from 'lodash';
 
 import {AnimatePresence, motion, useMotionValue} from 'framer-motion';
 
-import {users} from '~/utils/users';
 import {Container} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded.jsx';
 import Avatar from '~/components/Avatar/Avatar.jsx';
 import Scroll from '~/components/Scroll/Scroll.jsx';
+import InlineSVG from "react-inlinesvg";
+import arrowsURL from './arrows.svg';
+import AppIcon from '@material-ui/icons/Settings';
+import SaveIcon from '@material-ui/icons/Save';
+import Fab from "@material-ui/core/Fab";
+import SettingsDialog from "@/Hierarchy/SettingsDialog";
+import {useMe} from "~/hooks/common";
+import UsersService from "~/services/users";
+import {useDispatch, useSelector} from "react-redux";
+import MadorsService from "~/services/madors";
+import {newNotification} from "~/actions/general";
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -106,20 +116,43 @@ const TopNotch = styled.div`
   z-index: 0;
 `;
 
+
+const DragHandle = styled(InlineSVG)`
+  fill: white;
+  width: 40px;
+  height: 40px;
+`;
+
+const HandleWrapper = styled.div`
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+`;
+
+const Options = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+`;
+
 const hierarchy = {
-  leader: 1,
+  leader: null,
   childs: [
-    {leader: 2},
-    {
-      leader: 4,
-      childs: [
-        {leader: 6}, {leader: 7}, {leader: 8}, {leader: 9}, {leader: 10},
-        {leader: 11}, {leader: 12}, {leader: 13}, {leader: 14}, {leader: 16},
-      ],
-    },
-    {
-      leader: 3, childs: [{leader: 5}],
-    },
+    // {leader: 2},
+    // {
+    //   leader: 4,
+    //   childs: [
+    //     {leader: 6}, {leader: 7}, {leader: 8}, {leader: 9}, {leader: 10},
+    //     {leader: 11}, {leader: 12}, {leader: 13}, {leader: 14}, {leader: 16},
+    //   ],
+    // },
+    // {
+    //   leader: 3, childs: [{leader: 5}],
+    // },
   ],
 };
 
@@ -142,8 +175,8 @@ const DraggableCanvas = styled(Container)`
 
 const AppendSubject = styled(motion.div)`
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   background-color: green;
   bottom: 0;
   border-radius: 50%;
@@ -162,28 +195,36 @@ const Replace = styled(motion.div)`
   left: 7px;
 `;
 
+const SetLeader = styled.div`
+  width: 58px;
+  height: 58px;
+  background-color: brown;
+  border-radius: 50%; 
+`;
+
 const SubjectDrawer = styled(Container)`
-  height: 120px;
+  height: 150px;
   flex: unset;
   justify-content: center;
   background-color: ${({theme}) => theme.drawer};
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 `;
 
 const AvatarsWrapper = styled.div`
   z-index: 1;
   display: flex;
+  height: 100%;
+  padding-bottom: 5px;
   overflow-x: auto;
   overflow-y: hidden;
-  align-items: center;
-  height: 100%;
 `;
 
 const AvatarsContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 0 10px;
+  margin-top: auto;
 `;
 
 const DroppableDrawer = styled(motion.div)`
@@ -195,17 +236,30 @@ const DroppableDrawer = styled(motion.div)`
   opacity: 0.5;
 `;
 
+const StyledFab = styled(Fab)`
+  margin-top: 5px;
+`;
+
+
 const THRESHOLD = 60;
 
 
-const Build = ({hierarchy, replaceUser, addUser}) => {
+const Build = ({hierarchy, replaceUser, addUser, setLeader, unsetUser, unsetUsersIds, saveHierarchy, selectedMador, changeSelectedMador}) => {
   const draggedElement = useRef(null);
   const canvas = useRef(null);
-  const teams = useMemo(() => lodash.get(hierarchy, 'childs', []), [hierarchy]);
-  const leader = useMemo(() => lodash.find(users, {id: hierarchy.leader}), [hierarchy]);
+  const teams = useMemo(() => lodash.get(hierarchy, 'childs', []));
+  const loading = useSelector(state => state.users.loading);
+  const users = useSelector(state => state.users.all);
+  const leader = useMemo(() => lodash.find(users, {id: hierarchy.leader}));
+  const unsetUsers = useMemo(() => unsetUsersIds.map(id => lodash.find(users, {id: id})));
   const scrollX = useMotionValue(0);
+  const [settingsOpen, setOpen] = useState(false);
   const [scrollXBounds, changeScrollXBounds] = useState(null);
 
+  const onClose = useCallback((settings) => {
+    changeSelectedMador(settings.selectedMador);
+    setOpen(false);
+  });
 
   const [initialPos, changeInitialPos] = useState({
     x: undefined,
@@ -232,7 +286,7 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
   const onMove = useCallback((e) => {
     setDraggedPos(e);
     const x = e.changedTouches[0].pageX;
-    if (draggedElement.current && dragging.element) {
+    if (draggedElement.current && dragging.element && scrollXBounds) {
       const currentX = scrollX.get();
       if (x < THRESHOLD && currentX < scrollXBounds.right) {
         scrollX.set(currentX + 5);
@@ -255,22 +309,28 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
         console.log('replacing', dragging.id, 'with', element.dataset.id);
         replaceUser(dragging.id, parseInt(element.dataset.id));
       }
+      if (element && element.classList.contains(SetLeader.styledComponentId)) {
+        console.log('Setting mador leader ', dragging.id);
+        setLeader(dragging.id);
+      }
       if (element && element.classList.contains(DroppableDrawer.styledComponentId)) {
         console.log('unsetting', dragging.id);
+        unsetUser(dragging.id);
       }
       changeDragging({
         ...dragging,
         element: null,
       });
     }
-  }, [dragging, changeDragging, replaceUser, addUser]);
+  }, [dragging, changeDragging, replaceUser, addUser, setLeader, unsetUser]);
 
-  const onTouchStart = useCallback((e, user) => {
+  const onTouchStart = useCallback((e, user, level) => {
     setDraggedPos(e);
-    const DraggedElement = () => <Avatar kind={user.avatar.kind} />;
+    const DraggedElement = () => <Avatar kind={user.icon_path}/>;
     changeDragging({
       ...dragging,
       id: user.id,
+      level,
       element: DraggedElement,
     });
   }, [setDraggedPos, changeDragging, dragging]);
@@ -278,99 +338,156 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
   return (
     <>
       <HierarchyHolder stretched
-        onTouchMove={onMove}
-        onTouchEnd={onMoveEnd}>
-        <MainManager>
-          <ManagerShrink>
-            <AvatarExpanded kind={leader.avatar.kind}
-              name={leader.name} rounded
-              inline/>
-            <Replace data-id={leader.id} initial={{opacity: 0}}
-              animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
-              onTouchStart={(e) => onTouchStart(e, leader)}/>
-          </ManagerShrink>
-          <AddNotch/>
-          <AppendSubject initial={{opacity: 0}}
-            animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
-            data-id={leader.id}/>
-        </MainManager>
-        <HierarchyLine/>
+                       onTouchMove={onMove}
+                       onTouchEnd={onMoveEnd}>
         <Container stretched>
-          <Scroll drag={dragging.element ? false : 'x'}
-            contentHeight="100%"
-            updateBounds={changeScrollXBounds}
-            style={{height: '100%', x: scrollX}}>
-            <Teams stretched row>
-              {teams.map((team) => {
-                const members = lodash.get(team, 'childs', []);
-                const teamLeader = lodash.find(users, {id: team.leader});
-                return <Team key={teamLeader.id}>
-                  <TeamLeader>
-                    <TopNotch/>
-                    <TeamLeaderShrink>
-                      <AvatarExpanded kind={teamLeader.avatar.kind}
-                        name={teamLeader.name} rounded
-                        inline/>
-                      <Replace data-id={teamLeader.id} initial={{opacity: 0}}
-                        animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
-                        onTouchStart={(e) => onTouchStart(e, teamLeader)}/>
-                    </TeamLeaderShrink>
+          {
+            !leader ? (
+                <>
+                  <MainManager>
+                    <SetLeader/>
+                  </MainManager>
+                  <Container stretched/>
+                </>
+              )
+              :
+              (
+                <>
+                  <MainManager>
+                    <ManagerShrink>
+                      <AvatarExpanded kind={leader.icon_path}
+                                      name={leader.english_name} rounded
+                                      inline/>
+                      <Replace data-id={leader.id} initial={{opacity: 0}}
+                               animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
+                               onTouchStart={(e) => onTouchStart(e, leader, 0)}/>
+                    </ManagerShrink>
+                    <AddNotch/>
                     <AppendSubject initial={{opacity: 0}}
-                      animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
-                      data-id={teamLeader.id}/>
-                  </TeamLeader>
-                  <MembersWrapper stretched>
-                    <Scroll drag={dragging.element ? false : 'y'}
-                      style={{height: '100%'}}>
-                      <TeamMembers stretched>
-                        <AnimatePresence>
-                          {members.map((member, index) => {
-                            const user = lodash.find(users, {id: member.leader});
-                            return (
-                              <StyledMotion key={user.id} exit={{opacity: 0}}
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                positionTransition>
-                                <Member key={user.id}>
-                                  <TopNotch index={index}/>
-                                  <MemberShrink>
-                                    <StyledMotion initial={{opacity: 1}}
-                                      animate={{opacity: dragging.element && dragging.id === user.id ? 0 : 1}}>
-                                      <AvatarExpanded kind={user.avatar.kind}
-                                        name={user.name}
-                                        rounded inline/>
-                                      <Replace data-id={user.id}
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: dragging.element && dragging.id !== user.id ? 1 : 0}}
-                                        onTouchStart={(e) => onTouchStart(e, user)}/>
-                                    </StyledMotion>
-                                  </MemberShrink>
-                                  <AddNotch
-                                    last={members.length === index + 1}/>
-                                </Member>
-                              </StyledMotion>
-                            );
-                          })}
-                        </AnimatePresence>
-                      </TeamMembers>
+                                   animate={{
+                                     opacity: dragging.element && dragging.id !== leader.id &&
+                                     dragging.level !== 1 // to prevent recursion
+                                       ? 1 : 0
+                                   }}
+                                   data-id={leader.id}/>
+                  </MainManager>
+                  <HierarchyLine/>
+                  <Container stretched>
+                    <Scroll drag={dragging.element ? false : 'x'}
+                            contentHeight="100%"
+                            updateBounds={changeScrollXBounds}
+                            style={{height: '100%', x: scrollX}}>
+                      <Teams stretched row>
+                        {teams.map((team) => {
+                          const members = lodash.get(team, 'childs', []);
+                          const teamLeader = lodash.find(users, {id: team.leader});
+                          return <Team key={teamLeader.id}>
+                            <TeamLeader>
+                              <TopNotch/>
+                              <TeamLeaderShrink>
+                                <AvatarExpanded kind={teamLeader.icon_path}
+                                                name={teamLeader.english_name}
+                                                rounded
+                                                inline/>
+                                <Replace data-id={teamLeader.id}
+                                         initial={{opacity: 0}}
+                                         animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
+                                         onTouchStart={(e) => onTouchStart(e, teamLeader, 1)}/>
+                              </TeamLeaderShrink>
+                              <AppendSubject initial={{opacity: 0}}
+                                             animate={{
+                                               opacity: dragging.element && dragging.id !== teamLeader.id &&
+                                               dragging.level !== 1 // to prevent recursion
+                                                 ? 1 : 0}}
+                                             data-id={teamLeader.id}/>
+                            </TeamLeader>
+                            <MembersWrapper stretched>
+                              <Scroll drag={dragging.element ? false : 'y'}
+                                      style={{height: '100%'}}>
+                                <TeamMembers stretched>
+                                  <AnimatePresence>
+                                    {members.map((member, index) => {
+                                      const user = lodash.find(users, {id: member.leader});
+                                      return (
+                                        <StyledMotion key={user.id}
+                                                      exit={{opacity: 0}}
+                                                      initial={{opacity: 0}}
+                                                      animate={{opacity: 1}}
+                                                      positionTransition>
+                                          <Member key={user.id}>
+                                            <TopNotch index={index}/>
+                                            <MemberShrink>
+                                              <StyledMotion
+                                                initial={{opacity: 1}}
+                                                animate={{opacity: dragging.element && dragging.id === user.id ? 0 : 1}}>
+                                                <AvatarExpanded
+                                                  kind={user.icon_path}
+                                                  name={user.english_name}
+                                                  rounded inline/>
+                                                <Replace data-id={user.id}
+                                                         initial={{opacity: 0}}
+                                                         animate={{opacity: dragging.element && dragging.id !== user.id ? 1 : 0}}
+                                                         onTouchStart={(e) => onTouchStart(e, user, 2)}/>
+                                              </StyledMotion>
+                                            </MemberShrink>
+                                            <AddNotch
+                                              last={members.length === index + 1}/>
+                                          </Member>
+                                        </StyledMotion>
+                                      );
+                                    })}
+                                  </AnimatePresence>
+                                </TeamMembers>
+                              </Scroll>
+                            </MembersWrapper>
+                          </Team>;
+                        })}
+                      </Teams>
                     </Scroll>
-                  </MembersWrapper>
-                </Team>;
-              })}
-            </Teams>
-          </Scroll>
+                  </Container>
+                </>
+              )
+          }
+          <Options>
+            <StyledFab
+              size="medium"
+              color="secondary"
+              aria-label="save"
+              onClick={() => saveHierarchy()}
+            >
+              <SaveIcon/>
+            </StyledFab>
+            <StyledFab
+              size="medium"
+              color="secondary"
+              aria-label="settings"
+              onClick={() => setOpen(true)}
+            >
+              <AppIcon/>
+            </StyledFab>
+          </Options>
         </Container>
+        <SettingsDialog open={settingsOpen} selectedMador={selectedMador}
+                        onClose={onClose}/>
         <SubjectDrawer>
           <AvatarsWrapper>
-            <AvatarsContainer>
-              {users.map((user, index) => (
-                <AvatarDetails
-                  key={index}
-                  name={user.name}
-                  kind={user.avatar.kind}
-                />
-              ))}
-            </AvatarsContainer>
+            <HandleWrapper>
+              <DragHandle src={arrowsURL}/>
+            </HandleWrapper>
+            {
+              !loading && (
+                <AvatarsContainer>
+                  {unsetUsers.map((user, index) => (
+                    <AvatarDetails
+                      key={index}
+                      name={user.english_name}
+                      kind={user.icon_path}
+                      onTouchStart={(e) => onTouchStart(e, user)}
+                    />
+                  ))}
+                </AvatarsContainer>
+              )
+            }
           </AvatarsWrapper>
           {
             dragging.element && <DroppableDrawer/>
@@ -379,16 +496,16 @@ const Build = ({hierarchy, replaceUser, addUser}) => {
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>
         <div ref={draggedElement}
-          style={{
-            display: 'inline-flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
+             style={{
+               display: 'inline-flex',
+               flexDirection: 'column',
+               alignItems: 'center',
+             }}>
           <AnimatePresence>
             {
               dragging.element && (
                 <StyledMotion initial={{opacity: 0}} animate={{opacity: 1}}
-                  exit={{opacity: 0}}>
+                              exit={{opacity: 0}}>
                   <dragging.element/>
                 </StyledMotion>
               )
@@ -409,67 +526,169 @@ const getTreeOf = (id, tree, prev) => {
   }
 };
 
+const useUnassignedUsers = (mador) => {
+  const [unassignedUsers, setUnassignedUsers] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const users = await UsersService.getUnassignedUsers();
+      setUnassignedUsers(users);
+    })();
+  }, [mador]);
+
+  return [unassignedUsers, setUnassignedUsers];
+};
+
+
+const useHierarchy = (mador) => {
+  const [currentHierarchy, changeCurrentHierarchy] = useState({
+    leader: null,
+    childs: []
+  });
+  const [originalHierarchy, changeOriginalHierarchy] = useState(null);
+  useEffect(() => {
+    (async () => {
+      if (mador) {
+        const hierarchy = await MadorsService.getHierarchy(mador);
+        changeOriginalHierarchy(hierarchy);
+        changeCurrentHierarchy(hierarchy);
+      }
+    })();
+  }, [mador]);
+  return [currentHierarchy, changeCurrentHierarchy, originalHierarchy];
+};
+
+const useMyMador = () => {
+  const {mador} = useMe();
+  const [selectedMador, changeSelectedMador] = useState(mador?.name);
+
+  useEffect(() => {
+    changeSelectedMador(mador?.name);
+  }, [mador]);
+  return [selectedMador, changeSelectedMador];
+};
+
 export const Hierarchy = React.memo((props) => {
-  const [currentHierarchy, changeCurrentHierarchy] = useState(hierarchy);
+  const dispatch = useDispatch();
+  const [selectedMador, changeSelectedMador] = useMyMador();
+  const [unassignedUsers, setUnassignedUsers] = useUnassignedUsers(selectedMador);
+  const [currentHierarchy, changeCurrentHierarchy] = useHierarchy(selectedMador);
+
+  const getAllChilds = useCallback((tree) => {
+    if (tree.childs.length === 0) return [tree.leader];
+    const lists = tree.childs.map(child => getAllChilds(child)).flat();
+    return [tree.leader, ...lists];
+  });
+
+  const setLeader = useCallback((leaderId) => {
+    changeCurrentHierarchy({
+      leader: leaderId,
+      childs: []
+    });
+    setUnassignedUsers(lodash.without(unassignedUsers, leaderId));
+  });
+
+  const unsetUser = useCallback((id) => {
+    const newHierarchy = lodash.cloneDeep(currentHierarchy);
+    const removeTree = getTreeOf(id, newHierarchy, null);
+
+    if (!removeTree) {
+      return; // user already not in tree..
+    }
+    const [fromTree, fromTreeParent] = removeTree;
+
+    // remove from parent
+    if (!fromTreeParent) {
+      changeCurrentHierarchy({leader: null, childs: []});  // new hierarchy
+      return;
+    }
+
+    if(fromTree.childs.length > 0) {
+      dispatch(newNotification({
+        message: "Removing a commander with soldiers is not allowed!"
+      }));
+      return;
+    }
+
+    lodash.pull(fromTreeParent.childs, fromTree);  // remove self from tree
+    changeCurrentHierarchy(newHierarchy);
+
+    setUnassignedUsers([...unassignedUsers, id]);
+  });
 
   const replaceUser = useCallback((id1, id2) => {
     const newHierarchy = lodash.cloneDeep(currentHierarchy);
     const replaceFromTree = getTreeOf(id1, newHierarchy, null);
     const replaceToTree = getTreeOf(id2, newHierarchy, null);
 
-    if (!replaceFromTree) {
-      throw new Error(`Invalid ids given! couldn't find id ${id1} in hierarchy tree`);
-    }
 
     if (!replaceToTree) {
       throw new Error(`Invalid ids given! couldn't find id ${id2} in hierarchy tree`);
     }
 
-    const [fromTree] = replaceFromTree;
     const [toTree] = replaceToTree;
-
-    fromTree.leader = id2;
     toTree.leader = id1;
 
+    if (replaceFromTree) {
+      const [fromTree] = replaceFromTree;
+      fromTree.leader = id2;
+    } else {
+      // id1 wanst in hierarchy to begin with
+      // so delete id2 and remove id1 from unassigned
+      const newUnassigned = lodash.without(unassignedUsers, id1);
+      newUnassigned.push(id2);
+      setUnassignedUsers(newUnassigned);
+    }
+
     changeCurrentHierarchy(newHierarchy);
-    console.log(newHierarchy);
-  }, [currentHierarchy, changeCurrentHierarchy]);
+  });
 
   const addUser = useCallback((id1, id2) => {
     const newHierarchy = lodash.cloneDeep(currentHierarchy);
     const addFromTree = getTreeOf(id1, newHierarchy, null);
     const addToTree = getTreeOf(id2, newHierarchy, null);
 
-    if (!addFromTree) {
-      throw new Error(`Invalid ids given! couldn't find id ${id1} in hierarchy tree`);
-    }
 
     if (!addToTree) {
       throw new Error(`Invalid ids given! couldn't find id ${id2} in hierarchy tree`);
     }
 
-    const [fromTree, fromTreeParent] = addFromTree;
     const [toTree] = addToTree;
-
-    // add all childs of current to parent
-    fromTreeParent.childs.push(...(fromTree.childs || []));
-    // delete childs of current
-    fromTree.childs = [];
-    // remove from parent
-    lodash.pull(fromTreeParent.childs, fromTree);
-
     toTree.childs = lodash.get(toTree, 'childs', []);
-    toTree.childs.push(fromTree);
+    if (addFromTree) {
+      const [fromTree, fromTreeParent] = addFromTree;
+      // // add all childs of current to parent
+      // fromTreeParent.childs.push(...(fromTree.childs || []));
+      // // delete childs of current
+      // fromTree.childs = [];
+      // remove from parent
+      lodash.pull(fromTreeParent.childs, fromTree);
+      toTree.childs.push(fromTree);
+    } else {
+      toTree.childs.push({
+        leader: id1,
+        childs: []
+      });
+      setUnassignedUsers(lodash.without(unassignedUsers, id1));
+    }
 
     changeCurrentHierarchy(newHierarchy);
-    console.log(newHierarchy);
-  }, [currentHierarchy, changeCurrentHierarchy]);
+  });
 
+  const saveHierarchy = useCallback(() => {
+    MadorsService.updateHierarchy(selectedMador, currentHierarchy, unassignedUsers);
+  });
   return (
     <PageContainer stretched>
       <Build hierarchy={currentHierarchy}
-        replaceUser={replaceUser}
-        addUser={addUser}
+             replaceUser={replaceUser}
+             addUser={addUser}
+             setLeader={setLeader}
+             unsetUser={unsetUser}
+             saveHierarchy={saveHierarchy}
+             selectedMador={selectedMador}
+             changeSelectedMador={changeSelectedMador}
+             unsetUsersIds={unassignedUsers}
       />
     </PageContainer>
   );
