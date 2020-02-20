@@ -31,7 +31,10 @@ class TestQuery(unittest.TestCase):
             get_fake_current_user(self.APP_TEST, self.session, "one report")
 
         admin_permission = models.Permission(type="admin")
-        self.session.add_all([admin_permission])
+        reporter_permission = models.Permission(type="reporter")
+        commander_permission = models.Permission(type="commander")
+        self.session.add_all([admin_permission, reporter_permission,
+                              commander_permission])
         self.session.commit()
 
         self.reasons = {"1_abc": "abc", "2_bcd": "bcd", "3_efg": "efg"}

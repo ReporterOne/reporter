@@ -18,7 +18,7 @@ import {
   fetchMyDates, setDateStatus,
 } from '~/actions/calendar';
 import {formatDate} from '~/components/Calendar/components/utils';
-import {useMe} from "~/hooks/common";
+import {useMe} from '~/hooks/common';
 
 
 const HeaderWelcome = styled.h2`

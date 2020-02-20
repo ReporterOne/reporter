@@ -1,7 +1,5 @@
-import React from 'react';
-import {useSelector} from "react-redux";
-import _ from "lodash";
-
+import {useSelector} from 'react-redux';
+import _ from 'lodash';
 
 
 export const useMe = () => {

@@ -115,18 +115,26 @@ class UsersService_ extends HttpService {
     });
   }
 
+  /**
+   * Get all subjects of me. (soldiers)
+   * @return {Promise<T>}
+   */
   async getMySubjects() {
     return await this.request({
       method: 'get',
       url: `/me/subjects`,
-    })
+    });
   }
 
+  /**
+   * Get all unassigned users.
+   * @return {Promise<T>}
+   */
   async getUnassignedUsers() {
     return await this.request({
       method: 'get',
-      url: `/unassigned`
-    })
+      url: `/unassigned`,
+    });
   }
 }
 

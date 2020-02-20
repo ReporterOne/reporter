@@ -1,11 +1,9 @@
 from typing import List
-from datetime import date, time
 
 from sqlalchemy.orm import Session
 
 from db import schemas
-from db.models import User, Permission, Mador, MadorSettings
-from .crud_utils import put_values
+from db.models import User, Mador
 
 
 def get_all_madors(db: Session) -> List[Mador]:
@@ -16,7 +14,11 @@ def get_mador_by_name(db: Session, name: str) -> Mador:
     return db.query(Mador).filter(Mador.name == name).first()
 
 
-def set_hierarchy_recursive(db: Session, mador: Mador, hierarchy):
+def set_hierarchy_recursive(
+    db: Session,
+    mador: Mador,
+    hierarchy: schemas.Hierarchy
+) -> List[User]:
     user_id = hierarchy.leader
     user = db.query(User).filter(User.id == user_id).one()
     users = [user]
@@ -30,7 +32,12 @@ def set_hierarchy_recursive(db: Session, mador: Mador, hierarchy):
     return users
 
 
-def set_hierarchy(db: Session, mador: Mador, hierarchy, unassigned):
+def set_hierarchy(
+    db: Session,
+    mador: Mador,
+    hierarchy: schemas.Hierarchy,
+    unassigned: List[int]
+):
     for user_id in unassigned:
         user = db.query(User).filter(User.id == user_id).one()
         user.mador = None

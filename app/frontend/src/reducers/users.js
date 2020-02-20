@@ -1,7 +1,7 @@
 import {
   UPDATE_CURRENT_USER,
   UPDATE_SUBJECTS,
-  UPDATE_USERS
+  UPDATE_USERS,
 } from '~/actions/users';
 import AuthService from '~/services/auth';
 
@@ -30,7 +30,7 @@ export const usersReducer = (state = initialState, action) => {
     case UPDATE_SUBJECTS:
       return {
         ...state,
-        subjects: action.subjects
+        subjects: action.subjects,
       };
 
     default: return state;

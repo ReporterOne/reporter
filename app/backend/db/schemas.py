@@ -1,7 +1,7 @@
 # pylint: disable=missing-class-docstring
 """Schemes for db responses."""
 from enum import Enum
-from typing import List, Any, ForwardRef
+from typing import List, ForwardRef
 from datetime import date, time, datetime
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
@@ -51,6 +51,7 @@ class Hierarchy(BaseModel):
 
 
 Hierarchy.update_forward_refs()
+
 
 class StatusTypes(str, Enum):
     required = "required"

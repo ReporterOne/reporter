@@ -45,8 +45,9 @@ describe("test date_datas service", () => {
   });
   test("delete today", () => {
     mockDate.set("01/01/2020", 0);
-    const request = DateDatasService.deleteToday({
-      userId: 0
+    const request = DateDatasService.deleteDate({
+      userId: 0,
+      date: new Date()
     });
     expectHTTP(request).delete('/api/v1/dates_status/').withBody({
       start_date: "2020-01-01", user_id: 0

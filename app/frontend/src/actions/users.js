@@ -20,7 +20,7 @@ export const updateUsers = (users) => ({
 
 export const updateSubjects = (subjects) => ({
   type: UPDATE_SUBJECTS,
-  subjects
+  subjects,
 });
 
 
@@ -33,7 +33,7 @@ export const fetchAllowedUsers = () => async (dispatch) => {
 
 
 export const fetchSubjects = () => async (dispatch) => {
-  await logoutIfNoPermission(async() => {
+  await logoutIfNoPermission(async () => {
     const subjects = await UsersService.getMySubjects();
     dispatch(updateSubjects(subjects));
   }, dispatch);

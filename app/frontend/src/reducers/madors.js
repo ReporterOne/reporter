@@ -1,4 +1,4 @@
-import {UPDATE_MADORS} from "~/actions/madors";
+import {UPDATE_MADORS} from '~/actions/madors';
 
 const initialState = {
   all: [],
@@ -10,7 +10,7 @@ export const madorsReducer = (state = initialState, action) => {
     case UPDATE_MADORS:
       return {
         ...state,
-        all: action.madors
+        all: action.madors,
       };
 
     default: return state;

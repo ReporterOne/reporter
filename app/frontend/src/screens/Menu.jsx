@@ -9,9 +9,8 @@ import operatorIconUrl from '~/assets/signature.svg';
 import hierarchyIconUrl from '~/assets/hierarchy.svg';
 import settingsIconUrl from '~/assets/settings.svg';
 import {Container, SVGIcon} from '~/components/common';
-import {useSelector} from 'react-redux';
 import {isAllowed} from '~/components/Menu/PrivateRoute';
-import {useMe} from "~/hooks/common";
+import {useMe} from '~/hooks/common';
 
 const OptionsContainer = styled(Container)`
   align-items: center;

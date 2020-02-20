@@ -12,7 +12,7 @@ import {motion, useAnimation} from 'framer-motion';
 import {formatDate} from '~/components/Calendar/components/utils';
 import {fetchDatesOf} from '~/actions/calendar';
 import {useDispatch, useSelector} from 'react-redux';
-import {useMe} from "~/hooks/common";
+import {useMe} from '~/hooks/common';
 
 
 const CALENDAR_HEIGHT = 460;

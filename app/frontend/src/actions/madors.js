@@ -1,5 +1,5 @@
-import MadorsService from "~/services/madors";
-import {logoutIfNoPermission} from "~/actions/general";
+import MadorsService from '~/services/madors';
+import {logoutIfNoPermission} from '~/actions/general';
 
 export const UPDATE_MADORS = 'UPDATE_MADORS';
 
@@ -10,7 +10,7 @@ export const updateMadors = (madors) => ({
 
 
 export const fetchMadors = () => async (dispatch) => {
-  await logoutIfNoPermission(async() => {
+  await logoutIfNoPermission(async () => {
     const madors = await MadorsService.getMadors();
     dispatch(updateMadors(madors));
   }, dispatch);

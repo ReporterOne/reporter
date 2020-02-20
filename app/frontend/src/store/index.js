@@ -4,7 +4,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 
 
 import {generalReducer, usersReducer, calendarReducer} from '~/reducers';
-import {madorsReducer} from "~/reducers/madors";
+import {madorsReducer} from '~/reducers/madors';
 
 export const mainReducer = combineReducers({
   general: generalReducer,

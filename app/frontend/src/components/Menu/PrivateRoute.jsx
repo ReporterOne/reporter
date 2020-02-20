@@ -2,8 +2,7 @@ import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 
 import {useSelector} from 'react-redux';
-import lodash from 'lodash';
-import {useMe} from "~/hooks/common";
+import {useMe} from '~/hooks/common';
 
 export const isAllowed = (permissions, allowedPermissions) => {
   return permissions === undefined || allowedPermissions.length === 0 ||

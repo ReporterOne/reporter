@@ -1,4 +1,4 @@
-import { hot } from 'react-hot-loader/root';
+import {hot} from 'react-hot-loader/root';
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import {Provider, useDispatch, useSelector} from 'react-redux';
@@ -24,7 +24,7 @@ import store from './store';
 import {fetchAllowedUsers, fetchSubjects} from '~/actions/users';
 import {fetchMyToday} from '~/actions/calendar';
 import {fetchReasons, popNotification, updateOnline} from '~/actions/general';
-import {fetchMadors} from "~/actions/madors";
+import {fetchMadors} from '~/actions/madors';
 
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
