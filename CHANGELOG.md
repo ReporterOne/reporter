@@ -14,16 +14,16 @@
 - new user routes added.
   * `/api/v1/users/unassigned` - get all unassigned mador users.
 
-### 0.1.2-alpha
+### [0.1.2-alpha](https://github.com/TeamTash/one_report/compare/0.1.1-alpha...0.1.2-alpha) - 15/02/2020
 Bug fixes:
 - fixed calendar display bug (white spaces between dates colors).
 - fixed calendar days header bug (wrong spacing).
 - fixed fast filling statuses (attending slider doesnt change).
 
-### 0.1.1-alpha
+### [0.1.1-alpha](https://github.com/TeamTash/one_report/compare/0.1.0-alpha...0.1.1-alpha) - 15/02/2020
 - added auto deployment to docker hub.
 
-### 0.1.0-alpha
+### [0.1.0-alpha](https://github.com/TeamTash/one_report/releases/tag/0.1.0-alpha) - 15/02/2020
 Initial release contained:
 - initial `dashboard screen`.
   * calendar have color-coded status days (here, not here).
