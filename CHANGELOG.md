@@ -6,6 +6,13 @@
   * ability to select viewing mador.
 - `commander screen` - connected to db and released publicly.
   * ability to change status of each soldier.
+- auth token now expanded to a week.
+- new mador routes added.
+  * `/api/v1/madors/` - get all available madors.
+  * `/api/v1/madors/{mador_name}/hierarchy` - get/set mador hierarchy.
+  * `/api/v1/madors/{mador_name}/users` - get users of mador.
+- new user routes added.
+  * `/api/v1/users/unassigned` - get all unassigned mador users.
 
 ### 0.1.2-alpha
 Bug fixes:
