@@ -1,13 +1,11 @@
-from datetime import timedelta
-
 import requests
 from fastapi import HTTPException, APIRouter, Body, Depends
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from db import crud, schemas
 from db.database import get_db, Session
-from .utils import create_access_token, Token
-from .consts import FACEBOOK_SECRET, FACEBOOK_APP, ACCESS_TOKEN_EXPIRE_MINUTES
+from .utils import Token, generate_token
+from .consts import FACEBOOK_SECRET, FACEBOOK_APP
 
 
 router = APIRouter()
@@ -45,17 +43,7 @@ async def login_using_facebook(
         raise HTTPException(status_code=400,
                             detail="User isn't registered yet!")
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # TODO: give only possible scopes
-    access_token = create_access_token(
-        data={"sub": user.username, "id": user.id, "scopes": ["personal"]},
-        expires_delta=access_token_expires,
-    )
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id
-    }
+    return generate_token(user)
 
 
 @router.post("/register/facebook", response_model=schemas.User)
