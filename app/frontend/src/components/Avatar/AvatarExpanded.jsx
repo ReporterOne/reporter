@@ -65,6 +65,7 @@ const Reason = styled.div`
   align-items: center;
   font-size: 1.8rem;
   line-height: 100%;
+  direction: rtl;
   display: flex;
 `;
 

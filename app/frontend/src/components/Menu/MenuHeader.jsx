@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
 import {
   Container,
@@ -7,7 +7,9 @@ import {
   SVGIcon,
 } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
-import alphaIcon from '~/assets/alph_icon.svg';
+import reloadUrl from './assets/reload.svg';
+import {useDispatch} from "react-redux";
+import {reload} from "~/actions/general";
 
 
 const TitleWrapper = styled(Container)`
@@ -25,14 +27,19 @@ const PageTitle = styled.h3`
   font-weight: 600;
 `;
 
-const StyledAlpha = styled(SVGIcon)`
-  margin-right: 10px;
-  opacity: 0.7;
-  fill: white;
-`;
-
 
 export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
+  const dispatch = useDispatch();
+  const [blocked, setBlocked] = useState(false);
+
+  const reloadPage = useCallback(() => {
+    if (!blocked) {
+      dispatch(reload());
+      setTimeout(() => setBlocked(false), 3000);
+      setBlocked(true);
+    }
+  });
+
   return (
     <Container row>
       <StyledIconButton onClick={onMenuClick} style={{zIndex: 1}} id="openMainmenu">
@@ -44,7 +51,9 @@ export const MenuHeader = React.memo(({titleComponent, onMenuClick}) => {
         </PageTitle>
       </TitleWrapper>
       <Spacer/>
-      <StyledAlpha src={alphaIcon}/>
+      <StyledIconButton onClick={reloadPage}>
+        <SVGIcon src={reloadUrl} color={blocked? 'gray' : 'white'}/>
+      </StyledIconButton>
     </Container>
   );
 });

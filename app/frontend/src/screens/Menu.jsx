@@ -51,7 +51,7 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
         <SVGIcon src={operatorIconUrl} size={20}/>
       </Option>
       <Option path="/hierarchy" id="hierarchyButton"
-        hidden={!isAllowed(permissions, ['admin'])}>
+        hidden={!isAllowed(permissions, ['admin', 'reporter'])}>
         <SVGIcon src={hierarchyIconUrl} size={20}/>
       </Option>
       <Spacer/>

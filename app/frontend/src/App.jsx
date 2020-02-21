@@ -26,14 +26,15 @@ import {fetchMyToday} from '~/actions/calendar';
 import {fetchReasons, popNotification, updateOnline} from '~/actions/general';
 import {fetchMadors} from '~/actions/madors';
 
-const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const Alert = (props) => <MuiAlert elevation={6}
+                                   variant="filled" {...props} />;
 
 
 export const App = (props) => {
   const dispatch = useDispatch();
   const [avatar, changeAvatar] = useState({manual: false, appearing: 0});
   const avatarRef = useRef(null);
-  const isLoggedIn = useSelector((state) => state.general.login);
+  const {login: isLoggedIn, reloadCount} = useSelector((state) => state.general);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -43,7 +44,7 @@ export const App = (props) => {
       dispatch(fetchSubjects());
       dispatch(fetchMadors());
     }
-  }, [isLoggedIn, dispatch]);
+  }, [isLoggedIn, dispatch, reloadCount]);
 
   const updateOnlineState = useCallback(() => {
     dispatch(updateOnline(navigator.onLine));
@@ -89,7 +90,7 @@ export const App = (props) => {
       <Route path="/entrance" component={Entrance}/>
       <Route path="/" render={() => (
         <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-          onDragEnd={onDrawerDragEnd}>
+                onDragEnd={onDrawerDragEnd}>
           <DrawerMenu>
             <Menu avatar={avatar} avatarRef={avatarRef}/>
           </DrawerMenu>
@@ -111,12 +112,16 @@ export const App = (props) => {
             )}>
             <Switch>
               <PrivateRoute path="/hierarchy" component={Hierarchy}
-                allowedPermissions={['admin']}/>
+                            key={reloadCount}
+                            allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/operator" component={Operator}
-                allowedPermissions={['admin', 'reporter']}/>
+                            key={reloadCount}
+                            allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/commander" component={Commander}
-                allowedPermissions={['admin', 'commander']}/>
-              <PrivateRoute path="/" component={Dashboard}/>
+                            key={reloadCount}
+                            allowedPermissions={['admin', 'commander']}/>
+              <PrivateRoute path="/" component={Dashboard}
+                            key={reloadCount}/>
             </Switch>
           </DrawerContent>
         </Drawer>
@@ -154,10 +159,10 @@ export const StyledApp = (props) => {
         <ThemeProvider theme={theme}>
           <App/>
           <Snackbar open={notification !== null}
-            autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
-            onClose={handleClose}>
+                    autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
+                    onClose={handleClose}>
             <Alert onClose={handleClose}
-              severity={notification?.severity ?? 'error'}>
+                   severity={notification?.severity ?? 'error'}>
               {notification?.message}
             </Alert>
           </Snackbar>
