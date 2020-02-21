@@ -22,6 +22,27 @@ module.exports = {
     avatars: path.resolve(src, 'assets', 'avatars', 'index.js'),
     fonts: path.resolve(src, 'assets', 'fonts', 'index.js'),
   },
+  devServer: {
+    contentBase: dist,
+    host: '0.0.0.0',
+    disableHostCheck: true,
+    port: 8000,
+    historyApiFallback: true,
+    hot: true,
+    headers: {
+      'Service-Worker-Allowed': '/'
+    },
+    proxy: [
+      {
+        context: ['/api/**'],
+        target: 'http://0.0.0.0:8443',
+      },
+      {
+        context: ['/docs', '/redoc', '/openapi.json'],
+        target: 'http://0.0.0.0:8443',
+      },
+    ],
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
