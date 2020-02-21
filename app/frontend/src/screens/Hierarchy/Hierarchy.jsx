@@ -584,23 +584,16 @@ export const Hierarchy = React.memo((props) => {
     }
     const [fromTree, fromTreeParent] = removeTree;
 
+    const toUnset = getAllChilds(fromTree);
+    setUnassignedUsers([...unassignedUsers, ...toUnset]);
     // remove from parent
     if (!fromTreeParent) {
       changeCurrentHierarchy({leader: null, childs: []}); // new hierarchy
       return;
     }
 
-    if (fromTree.childs.length > 0) {
-      dispatch(newNotification({
-        message: 'Removing a commander with soldiers is not allowed!',
-      }));
-      return;
-    }
-
     lodash.pull(fromTreeParent.childs, fromTree); // remove self from tree
     changeCurrentHierarchy(newHierarchy);
-
-    setUnassignedUsers([...unassignedUsers, id]);
   });
 
   const replaceUser = useCallback((id1, id2) => {

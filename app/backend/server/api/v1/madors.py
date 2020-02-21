@@ -47,8 +47,12 @@ def available_users(db, mador):
 
 def extract_users_from_hierarchy(db, hierarchy):
     user_id = hierarchy.leader
+    if user_id is None:
+        return []
+
     user = crud.users.get_user(db, user_id)
     to_ret = [user]
+
     for child_hierarchy in hierarchy.childs:
         to_ret += extract_users_from_hierarchy(db, child_hierarchy)
 

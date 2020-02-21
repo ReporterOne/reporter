@@ -51,7 +51,7 @@ def get_relevant_madors(db, user):
 
     allowed_madors = user.operates
     if user.mador:
-        allowed_madors += user.mador
+        allowed_madors.append(user.mador)
 
     return allowed_madors
 

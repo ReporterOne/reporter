@@ -1,7 +1,7 @@
 # pylint: disable=missing-class-docstring
 """Schemes for db responses."""
 from enum import Enum
-from typing import List, ForwardRef
+from typing import List, ForwardRef, Optional
 from datetime import date, time, datetime
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
@@ -46,7 +46,7 @@ Hierarchy = ForwardRef('Hierarchy')
 
 class Hierarchy(BaseModel):
     """"Hierarchy for User and Commander."""
-    leader: int
+    leader: Optional[int]
     childs: List[Hierarchy]  # list of Hierarchy.
 
 

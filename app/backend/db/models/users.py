@@ -71,6 +71,9 @@ class User(Base):
     def __hash__(self):
         return hash(self.id)
 
+    def __repr__(self):
+        return f'User(username={self.username})'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         mador_name = self.mador.name if self.mador else self.mador_name

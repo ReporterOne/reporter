@@ -20,6 +20,9 @@ def set_hierarchy_recursive(
     hierarchy: schemas.Hierarchy
 ) -> List[User]:
     user_id = hierarchy.leader
+    if user_id is None:
+        return []
+
     user = db.query(User).filter(User.id == user_id).one()
     users = [user]
     soldiers = []
@@ -42,14 +45,16 @@ def set_hierarchy(
         user = db.query(User).filter(User.id == user_id).one()
         user.mador = None
         user.manages_mador = None
+        user.commander_id = None
 
     users = set_hierarchy_recursive(db, mador, hierarchy)
     mador.users = users
-    user_id = hierarchy.leader
-    user = db.query(User).filter(User.id == user_id).one()
     if mador.manager:
         mador.manager.manages_mador = None
     db.commit()
 
-    mador.manager = user
-    db.commit()
+    user_id = hierarchy.leader
+    if user_id is not None:
+        user = db.query(User).filter(User.id == user_id).one()
+        mador.manager = user
+        db.commit()
