@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from db import schemas
+from .users import remove_permission, add_permission
 from db.models import User, Mador
 
 
@@ -26,6 +27,9 @@ def set_hierarchy_recursive(
     user = db.query(User).filter(User.id == user_id).one()
     users = [user]
     soldiers = []
+    if len(hierarchy.childs) > 0:
+        add_permission(db, user, 'commander')
+
     for child_hierarchy in hierarchy.childs:
         child = db.query(User).filter(User.id == child_hierarchy.leader).one()
         soldiers.append(child)
@@ -46,6 +50,7 @@ def set_hierarchy(
         user.mador = None
         user.manages_mador = None
         user.commander_id = None
+        remove_permission(db, user, 'commander')
 
     users = set_hierarchy_recursive(db, mador, hierarchy)
     mador.users = users

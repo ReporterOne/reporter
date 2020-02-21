@@ -132,8 +132,15 @@ def is_operator(db: Session, user: User) -> bool:
     return operator_permission in user.permissions
 
 
+def is_commnader(db: Session, user: User) -> bool:
+    """Check if user is commander."""
+    commander_permission = db.query(Permission).filter(
+        Permission.type == 'commander').one()
+    return commander_permission in user.permissions
+
+
 def add_permission(db: Session, user: User, permission: str,
-                   create_if_missing=False):
+                   create_if_missing=False, should_commit=False):
     """Add user permission and create if missing"""
     if create_if_missing:  # create new if not exists
         permission = db.query(Permission).filter(
@@ -148,13 +155,27 @@ def add_permission(db: Session, user: User, permission: str,
     if permission in user.permissions:
         return
 
-    user.permissions += permission
-    db.commit()
+    user.permissions.append(permission)
+    if should_commit:
+        db.commit()
+
+
+def remove_permission(db: Session, user: User, permission: str,
+                      should_commit=False):
+    """Remove given permission from user."""
+    permission = db.query(Permission).filter(
+        Permission.type == permission).one()
+
+    if permission in user.permissions:
+        user.permissions.remove(permission)
+
+    if should_commit:
+        db.commit()
 
 
 def set_admin(db: Session, user: User):
     """Add admin permission for a user."""
-    return add_permission(db, user, 'admin')
+    return add_permission(db, user, 'admin', should_commit=True)
 
 
 def get_all_users(db: Session) -> List[User]:
