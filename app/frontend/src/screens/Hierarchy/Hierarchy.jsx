@@ -744,9 +744,9 @@ export const Hierarchy = React.memo((props) => {
       await MadorsService.updateHierarchy(selectedMador, currentHierarchy, unassignedUsers);
       dispatch(newNotification({
         message: 'Saved Successfully!',
-        severity: 'success'
-      }))
-    })()
+        severity: 'success',
+      }));
+    })();
   });
   return (
     <PageContainer stretched>

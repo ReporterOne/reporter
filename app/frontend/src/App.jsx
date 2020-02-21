@@ -8,7 +8,7 @@ import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import AddToHomescreen from 'react-add-to-homescreen';
-import useErrorBoundary from "use-error-boundary"
+import useErrorBoundary from 'use-error-boundary';
 
 
 import Menu from '@/Menu';
@@ -29,12 +29,12 @@ import {
   fetchReasons,
   newNotification,
   popNotification,
-  updateOnline
+  updateOnline,
 } from '~/actions/general';
 import {fetchMadors} from '~/actions/madors';
 
 const Alert = (props) => <MuiAlert elevation={6}
-                                   variant="filled" {...props} />;
+  variant="filled" {...props} />;
 
 
 export const App = (props) => {
@@ -97,7 +97,7 @@ export const App = (props) => {
       <Route path="/entrance" component={Entrance}/>
       <Route path="/" render={() => (
         <Drawer onDrag={onDrawerDrag} onToggle={onDrawerToggle}
-                onDragEnd={onDrawerDragEnd}>
+          onDragEnd={onDrawerDragEnd}>
           <DrawerMenu>
             <Menu avatar={avatar} avatarRef={avatarRef}/>
           </DrawerMenu>
@@ -119,16 +119,16 @@ export const App = (props) => {
             )}>
             <Switch>
               <PrivateRoute path="/hierarchy" component={Hierarchy}
-                            key={reloadCount}
-                            allowedPermissions={['admin', 'reporter']}/>
+                key={reloadCount}
+                allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/operator" component={Operator}
-                            key={reloadCount}
-                            allowedPermissions={['admin', 'reporter']}/>
+                key={reloadCount}
+                allowedPermissions={['admin', 'reporter']}/>
               <PrivateRoute path="/commander" component={Commander}
-                            key={reloadCount}
-                            allowedPermissions={['admin', 'commander']}/>
+                key={reloadCount}
+                allowedPermissions={['admin', 'commander']}/>
               <PrivateRoute path="/" component={Dashboard}
-                            key={reloadCount}/>
+                key={reloadCount}/>
             </Switch>
           </DrawerContent>
         </Drawer>
@@ -149,14 +149,14 @@ export const StyledApp = (props) => {
     ErrorBoundary, // class - The react component to wrap your children in. This WILL NOT CHANGE
     didCatch, // boolean - Whether the ErrorBoundary catched something
     error, // null or the error
-    errorInfo // null or the error info as described in the react docs
+    errorInfo, // null or the error info as described in the react docs
   } = useErrorBoundary();
 
   useEffect(() => {
     if (didCatch) {
       dispatch(newNotification({
-        message: 'Critical Error Occurred'
-      }))
+        message: 'Critical Error Occurred',
+      }));
     }
   }, [didCatch]);
 
@@ -174,7 +174,7 @@ export const StyledApp = (props) => {
     setShowNotification(false);
     setTimeout(() => {
       dispatch(popNotification());
-    }, 500) // allow for new notification.
+    }, 500); // allow for new notification.
   };
 
   return (
@@ -192,17 +192,16 @@ export const StyledApp = (props) => {
                   <br/>
                   {errorInfo.componentStack}
                 </details>
-              </div>
-              :
+              </div> :
               <ErrorBoundary>
                 <App/>
               </ErrorBoundary>
           }
           <Snackbar open={showNotification}
-                    autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
-                    onClose={handleClose}>
+            autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
+            onClose={handleClose}>
             <Alert onClose={handleClose}
-                   severity={notification?.severity ?? 'error'}>
+              severity={notification?.severity ?? 'error'}>
               {notification?.message}
             </Alert>
           </Snackbar>
