@@ -4,7 +4,7 @@ import posed, {PoseGroup} from 'react-pose';
 import lodash from 'lodash';
 import {NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
 
-import {Container, StyledIconButton, SVGIcon} from '~/components/common';
+import {Container, SVGIcon} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
 import Calender from '~/components/Calendar';
@@ -14,7 +14,6 @@ import {fetchDatesOf} from '~/actions/calendar';
 import {useDispatch, useSelector} from 'react-redux';
 import {useMe} from '~/hooks/common';
 import arrowUrl from './arrow.svg';
-import reloadUrl from "~/components/Menu/assets/reload.svg";
 
 
 const CALENDAR_HEIGHT = 460;

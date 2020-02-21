@@ -4,7 +4,7 @@ import lodash from 'lodash';
 
 import {AnimatePresence, motion, useMotionValue} from 'framer-motion';
 
-import {Container, SVGIcon} from '~/components/common';
+import {Container} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded.jsx';
 import Avatar from '~/components/Avatar/Avatar.jsx';
@@ -21,7 +21,7 @@ import {useMe} from '~/hooks/common';
 import UsersService from '~/services/users';
 import {useDispatch, useSelector} from 'react-redux';
 import MadorsService from '~/services/madors';
-import {newNotification} from "~/actions/general";
+import {newNotification} from '~/actions/general';
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -170,7 +170,7 @@ const Option = styled.img`
   width: 40px;
   height: 40px;
   transition: 0.3s transform;
-`
+`;
 const Swap = styled(Option)`
 `;
 const Add = styled(Option)`
@@ -250,10 +250,10 @@ const THRESHOLD = 60;
 
 let changed = null;
 const Build = (
-  {
-    hierarchy, replaceUser, addUser, setLeader, unsetUser,
-    unsetUsersIds, saveHierarchy, selectedMador, changeSelectedMador,
-  }) => {
+    {
+      hierarchy, replaceUser, addUser, setLeader, unsetUser,
+      unsetUsersIds, saveHierarchy, selectedMador, changeSelectedMador,
+    }) => {
   const draggedElement = useRef(null);
   const canvas = useRef(null);
   const teams = useMemo(() => lodash.get(hierarchy, 'childs', []));
@@ -365,8 +365,8 @@ const Build = (
   return (
     <>
       <HierarchyHolder stretched
-                       onTouchMove={onMove}
-                       onTouchEnd={onMoveEnd}>
+        onTouchMove={onMove}
+        onTouchEnd={onMoveEnd}>
         <Container stretched>
           {
             !leader ? (
@@ -390,19 +390,19 @@ const Build = (
                   <MainManager>
                     <ManagerShrink>
                       <AvatarExpanded kind={leader.icon_path}
-                                      name={leader.english_name} rounded
-                                      inline/>
+                        name={leader.english_name} rounded
+                        inline/>
                       <DragFrom data-id={leader.id} initial={{opacity: 0}}
-                                onTouchStart={(e) => onTouchStart(e, leader, 0)}/>
+                        onTouchStart={(e) => onTouchStart(e, leader, 0)}/>
                     </ManagerShrink>
                     <AddNotch/>
                     <AppendSubject initial={{opacity: 0}}
-                                   animate={{
-                                     opacity: dragging.element && dragging.id !== leader.id &&
+                      animate={{
+                        opacity: dragging.element && dragging.id !== leader.id &&
                                      dragging.level !== 1 ? // to prevent recursion
                                        1 : 0,
-                                   }}
-                                   data-id={leader.id}>
+                      }}
+                      data-id={leader.id}>
                       <Swap src={swapUrl} data-id={leader.id}/>
                       <Add src={addUrl} data-id={leader.id}/>
                     </AppendSubject>
@@ -410,9 +410,9 @@ const Build = (
                   <HierarchyLine/>
                   <Container stretched>
                     <Scroll drag={dragging.element ? false : 'x'}
-                            contentHeight="100%"
-                            updateBounds={changeScrollXBounds}
-                            style={{height: '100%', x: scrollX}}>
+                      contentHeight="100%"
+                      updateBounds={changeScrollXBounds}
+                      style={{height: '100%', x: scrollX}}>
                       <Teams stretched row>
                         {teams.map((team) => {
                           const members = lodash.get(team, 'childs', []);
@@ -422,19 +422,19 @@ const Build = (
                               <TopNotch/>
                               <TeamLeaderShrink>
                                 <AvatarExpanded kind={teamLeader.icon_path}
-                                                name={teamLeader.english_name}
-                                                rounded
-                                                inline/>
+                                  name={teamLeader.english_name}
+                                  rounded
+                                  inline/>
                                 <DragFrom data-id={teamLeader.id}
-                                          initial={{opacity: 0}}
-                                          onTouchStart={(e) => onTouchStart(e, teamLeader, 1)}/>
+                                  initial={{opacity: 0}}
+                                  onTouchStart={(e) => onTouchStart(e, teamLeader, 1)}/>
                               </TeamLeaderShrink>
                               <AppendSubject initial={{opacity: 0}}
-                                             animate={{
-                                               opacity: dragging.element && dragging.id !== teamLeader.id ? // to prevent recursion
+                                animate={{
+                                  opacity: dragging.element && dragging.id !== teamLeader.id ? // to prevent recursion
                                                  1 : 0,
-                                             }}
-                                             data-id={teamLeader.id}>
+                                }}
+                                data-id={teamLeader.id}>
                                 <Swap src={swapUrl} data-id={teamLeader.id}/>
                                 {
                                   dragging.level !== 1 &&
@@ -444,17 +444,17 @@ const Build = (
                             </TeamLeader>
                             <MembersWrapper stretched>
                               <Scroll drag={dragging.element ? false : 'y'}
-                                      style={{height: '100%'}}>
+                                style={{height: '100%'}}>
                                 <TeamMembers stretched>
                                   <AnimatePresence>
                                     {members.map((member, index) => {
                                       const user = lodash.find(users, {id: member.leader});
                                       return (
                                         <StyledMotion key={user.id}
-                                                      exit={{opacity: 0}}
-                                                      initial={{opacity: 0}}
-                                                      animate={{opacity: 1}}
-                                                      positionTransition>
+                                          exit={{opacity: 0}}
+                                          initial={{opacity: 0}}
+                                          animate={{opacity: 1}}
+                                          positionTransition>
                                           <Member key={user.id}>
                                             <TopNotch index={index}/>
                                             <MemberShrink>
@@ -466,8 +466,8 @@ const Build = (
                                                   name={user.english_name}
                                                   rounded inline/>
                                                 <DragFrom data-id={user.id}
-                                                          initial={{opacity: 0}}
-                                                          onTouchStart={(e) => onTouchStart(e, user, 2)}/>
+                                                  initial={{opacity: 0}}
+                                                  onTouchStart={(e) => onTouchStart(e, user, 2)}/>
                                               </StyledMotion>
                                             </MemberShrink>
                                             <AddNotch
@@ -479,7 +479,7 @@ const Build = (
                                               }}
                                               data-id={teamLeader.id}>
                                               <Swap src={swapUrl}
-                                                    data-id={user.id}/>
+                                                data-id={user.id}/>
                                             </AppendSubject>
                                           </Member>
                                         </StyledMotion>
@@ -517,7 +517,7 @@ const Build = (
           </Options>
         </Container>
         <SettingsDialog open={settingsOpen} selectedMador={selectedMador}
-                        onClose={onClose}/>
+          onClose={onClose}/>
         <SubjectDrawer>
           <AvatarsWrapper>
             <HandleWrapper>
@@ -555,16 +555,16 @@ const Build = (
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>
         <div ref={draggedElement}
-             style={{
-               display: 'inline-flex',
-               flexDirection: 'column',
-               alignItems: 'center',
-             }}>
+          style={{
+            display: 'inline-flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
           <AnimatePresence>
             {
               dragging.element && (
                 <StyledMotion initial={{opacity: 0}} animate={{opacity: 1}}
-                              exit={{opacity: 0}}>
+                  exit={{opacity: 0}}>
                   <dragging.element/>
                 </StyledMotion>
               )
@@ -720,7 +720,7 @@ export const Hierarchy = React.memo((props) => {
       const [fromTree, fromTreeParent] = addFromTree;
       if (isConnected(fromTree, toTree)) {
         dispatch(newNotification({
-          message: 'Stop trying to make recursions.. :('
+          message: 'Stop trying to make recursions.. :(',
         }));
         return;
       }
@@ -745,14 +745,14 @@ export const Hierarchy = React.memo((props) => {
   return (
     <PageContainer stretched>
       <Build hierarchy={currentHierarchy}
-             replaceUser={replaceUser}
-             addUser={addUser}
-             setLeader={setLeader}
-             unsetUser={unsetUser}
-             saveHierarchy={saveHierarchy}
-             selectedMador={selectedMador}
-             changeSelectedMador={changeSelectedMador}
-             unsetUsersIds={unassignedUsers}
+        replaceUser={replaceUser}
+        addUser={addUser}
+        setLeader={setLeader}
+        unsetUser={unsetUser}
+        saveHierarchy={saveHierarchy}
+        selectedMador={selectedMador}
+        changeSelectedMador={changeSelectedMador}
+        unsetUsersIds={unassignedUsers}
       />
     </PageContainer>
   );
