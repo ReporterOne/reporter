@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST
 
 from .security import (get_all_allowed_users_of,
-                       secure_user_accessing)
+                       secure_user_accessing, secure_access_unassigned_users)
 from server.auth.utils import get_current_user
 
 from db import crud
@@ -17,6 +17,16 @@ from db.database import get_db, get_password_hash
 from .dates_data import get_calendar_of_users
 
 router = APIRouter()
+
+
+@router.get("/unassigned")
+async def get_unassigned_users(
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"]),
+    db: Session = Depends(get_db),
+):
+    with secure_access_unassigned_users(db, current_user):
+        return [user.id for user in crud.users.get_users_without_mador(db)]
 
 
 @router.get("/me", response_model=schemas.User)
@@ -68,73 +78,17 @@ async def get_allowed_users(
     return get_all_allowed_users_of(db, current_user)
 
 
-@router.get("/{user_id}", response_model=schemas.User)
-async def get_user(
-    user_id: int,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Security(get_current_user,
-                                          scopes=["personal"])
-):
-    """Get user."""
-    with secure_user_accessing(db, current_user, [user_id]):
-        return crud.get_user(
-            db=db,
-            user_id=user_id
-        )
-
-
-@router.delete("/{user_id}")
-async def delete_user(
-    user_id: int = None,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Security(get_current_user,
-                                          scopes=["personal"])
-):
-    """Delete user."""
-    with secure_user_accessing(db, current_user, [user_id]):
-        crud.delete_user(db=db, user_id=user_id)
-
-
-@router.get("/{user_id}/commander_id")
-async def get_commander(
-    user_id: int,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Security(get_current_user,
-                                          scopes=["personal"])
-) -> int:
-    """Get commander."""
-    with secure_user_accessing(db, current_user, [user_id]):
-        return crud.get_commander_id(db=db, user_id=user_id)
-
-
-@router.get("/{user_id}/subjects", response_model=List[schemas.User])
-async def get_subjects(
-    user_id: int,
+@router.get("/me/subjects", response_model=List[int])
+async def get_my_subjects(
     db: Session = Depends(get_db),
     current_user: schemas.User = Security(get_current_user,
                                           scopes=["personal"])
 ):
     """Get subjects."""
-    with secure_user_accessing(db, current_user, [user_id]):
-        return crud.get_subjects(
-            db=db,
-            commander_id=user_id
-        )
-
-
-def post_calendar_of_user(db, user_id, start, end, state, reason,
-                          current_user):
-    response = crud.set_new_date_data(
+    return [user.id for user in crud.users.get_subjects(
         db=db,
-        user_id=user_id,
-        start_date=start,
-        end_date=end,
-        state=state,
-        reason=reason,
-        reported_by_id=current_user.id,
-        reported_time=datetime.now()
-    )
-    return response
+        commander_id=current_user.id
+    )]
 
 
 @router.get("/me/statuses",
@@ -168,6 +122,75 @@ async def post_calendar_me(
     return post_calendar_of_user(user_id=user_id, start=start, end=end,
                                  reason=reason, state=state,
                                  db=db, current_user=current_user)
+
+
+@router.get("/{user_id}", response_model=schemas.User)
+async def get_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"])
+):
+    """Get user."""
+    with secure_user_accessing(db, current_user, [user_id]):
+        return crud.users.get_user(
+            db=db,
+            user_id=user_id
+        )
+
+
+@router.delete("/{user_id}")
+async def delete_user(
+    user_id: int = None,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"])
+):
+    """Delete user."""
+    with secure_user_accessing(db, current_user, [user_id]):
+        crud.users.delete_user(db=db, user_id=user_id)
+
+
+@router.get("/{user_id}/commander_id")
+async def get_commander(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"])
+) -> int:
+    """Get commander."""
+    with secure_user_accessing(db, current_user, [user_id]):
+        return crud.users.get_commander_id(db=db, user_id=user_id)
+
+
+@router.get("/{user_id}/subjects", response_model=List[int])
+async def get_subjects(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Security(get_current_user,
+                                          scopes=["personal"])
+):
+    """Get subjects."""
+    with secure_user_accessing(db, current_user, [user_id]):
+        return [user.id for user in crud.users.get_subjects(
+            db=db,
+            commander_id=user_id
+        )]
+
+
+def post_calendar_of_user(db, user_id, start, end, state, reason,
+                          current_user):
+    response = crud.date_datas.set_new_date_data(
+        db=db,
+        user_id=user_id,
+        start_date=start,
+        end_date=end,
+        state=state,
+        reason=reason,
+        reported_by_id=current_user.id,
+        reported_time=datetime.now()
+    )
+    return response
 
 
 @router.get("/{user_id}/statuses",

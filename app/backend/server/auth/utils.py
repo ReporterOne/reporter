@@ -10,7 +10,7 @@ from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-from db.crud import get_user_by_username
+from db.crud.users import get_user_by_username
 from db.database import verify_password, get_db
 from db.schemas import User
 from .consts import SECRET_KEY, ALGORITHM
@@ -114,3 +114,22 @@ async def get_current_user_secured(
 ) -> User:
     """Get the current user with secured scope."""
     return current_user
+
+
+def generate_token(user: User):
+    """Generate new token for user.
+
+    Args:
+        user - user to generate token for.
+    """
+    access_token_expires = timedelta(days=7)
+    # TODO: give only possible scopes
+    access_token = create_access_token(
+        data={"sub": user.username, "id": user.id, "scopes": ["personal"]},
+        expires_delta=access_token_expires,
+    )
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.id
+    }

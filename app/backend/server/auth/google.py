@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from fastapi import HTTPException, Body, Depends, APIRouter
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_401_UNAUTHORIZED
@@ -8,12 +6,11 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 from db import schemas, crud
-from db.crud import create_user
+from db.crud.users import create_user
 from db.database import get_db
 from db.schemas import User
-from .utils import (Token,
-                    create_access_token)
-from .consts import ACCESS_TOKEN_EXPIRE_MINUTES, CLIENT_ID
+from .utils import (Token, generate_token)
+from .consts import CLIENT_ID
 
 
 router = APIRouter()
@@ -67,17 +64,7 @@ async def login_using_google(
         raise HTTPException(status_code=400,
                             detail="User isn't registered yet!")
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # TODO: give only possible scopes
-    access_token = create_access_token(
-        data={"sub": user.username, "id": user.id, "scopes": ["personal"]},
-        expires_delta=access_token_expires,
-    )
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id
-    }
+    return generate_token(user)
 
 
 @router.post("/register/google", response_model=User)

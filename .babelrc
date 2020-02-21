@@ -38,6 +38,7 @@
           "@": "./app/frontend/src/screens"
         }
       }
-    ]
+    ],
+    "react-hot-loader/babel"
   ]
 }

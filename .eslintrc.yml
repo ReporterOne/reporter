@@ -27,5 +27,5 @@ rules:
   camelcase: off
   max-len:
     - error
-    - 120  # max len
+    - 300  # max len
     - 2    # tabs len

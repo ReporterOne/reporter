@@ -7,6 +7,7 @@ export const UPDATE_DATES = 'UPDATE_DATES';
 export const UPDATE_ONLINE = 'UPDATE_ONLINE';
 export const NEW_NOTIFICATION = 'NEW_NOTIFICATION';
 export const POP_NOTIFICATION = 'POP_NOTIFICATION';
+export const RELOAD = 'RELOAD';
 
 
 export const updateReasons = (reasons) => ({
@@ -31,6 +32,10 @@ export const newNotification = (notification) => ({
 
 export const popNotification = () => ({
   type: POP_NOTIFICATION,
+});
+
+export const reload = () => ({
+  type: RELOAD,
 });
 
 export const logout = () => async (dispatch) => {

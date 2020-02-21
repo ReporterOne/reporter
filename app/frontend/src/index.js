@@ -45,9 +45,9 @@ if ('serviceWorker' in navigator) {
 //   console.log('popup shown')
 // });
 
-if (module.hot) {
-  module.hot.accept('./App.jsx', () => {
-    const app = require('./App.jsx').default;
-    renderApp(app);
-  });
-}
+// if (module.hot) {
+//   module.hot.accept('./App.jsx', () => {
+//     const app = require('./App.jsx').default;
+//     renderApp(app);
+//   });
+// }

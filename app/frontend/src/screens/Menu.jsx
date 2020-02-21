@@ -9,8 +9,8 @@ import operatorIconUrl from '~/assets/signature.svg';
 import hierarchyIconUrl from '~/assets/hierarchy.svg';
 import settingsIconUrl from '~/assets/settings.svg';
 import {Container, SVGIcon} from '~/components/common';
-import {useSelector} from 'react-redux';
 import {isAllowed} from '~/components/Menu/PrivateRoute';
+import {useMe} from '~/hooks/common';
 
 const OptionsContainer = styled(Container)`
   align-items: center;
@@ -32,7 +32,7 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
   const {
     icon_path: iconPath,
     permissions = undefined,
-  } = useSelector((state) => _.find(state.users.all, {id: state.users.me}) ?? {});
+  } = useMe();
   return (
     <OptionsContainer stretched>
       <Avatar appearing={avatar.appearing} manual={avatar.manual}
@@ -51,7 +51,7 @@ export const Menu = React.memo(({avatar, avatarRef}) => {
         <SVGIcon src={operatorIconUrl} size={20}/>
       </Option>
       <Option path="/hierarchy" id="hierarchyButton"
-        hidden={!isAllowed(permissions, ['admin'])}>
+        hidden={!isAllowed(permissions, ['admin', 'reporter'])}>
         <SVGIcon src={hierarchyIconUrl} size={20}/>
       </Option>
       <Spacer/>

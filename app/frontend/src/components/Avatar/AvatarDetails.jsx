@@ -30,7 +30,7 @@ export const AvatarDetails = ({name, onClick, isFaded = false, ...props}) => {
     <AvatarWrapper onClick={onClick} faded={isFaded}>
       <Avatar type="big" {...props} />
       <Name>
-        {name.split(' ', 1).concat(name.split(' ').slice(1).join(' ')).map(
+        {name.split(' ').map(
             (fragment, index) => <NameFragment key={index}>{fragment}</NameFragment>)}
       </Name>
     </AvatarWrapper>

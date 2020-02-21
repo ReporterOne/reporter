@@ -48,7 +48,7 @@ export const Scroll = ({children, contentHeight, contentWidth, updateBounds, ...
                       changeSize({width, height});
                     }
                     return (
-                      <div style={{width, height}} className="resized_container_inner_scroll">
+                      <div className="resized_container_inner_scroll">
                         {children}
                       </div>
                     );

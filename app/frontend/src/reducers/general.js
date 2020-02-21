@@ -1,5 +1,5 @@
 import {
-  NEW_NOTIFICATION, POP_NOTIFICATION,
+  NEW_NOTIFICATION, POP_NOTIFICATION, RELOAD,
   UPDATE_LOGIN,
   UPDATE_ONLINE,
   UPDATE_REASONS,
@@ -12,6 +12,7 @@ const initialState = {
   login: AuthService.isLoggedIn(),
   online: navigator.onLine,
   notifications: [],
+  reloadCount: 0,
 };
 
 
@@ -41,6 +42,11 @@ export const generalReducer = (state = initialState, action) => {
       return {
         ...state,
         notifications: state.notifications.slice(1),
+      };
+    case RELOAD:
+      return {
+        ...state,
+        reloadCount: state.reloadCount + 1,
       };
 
     default: return state;

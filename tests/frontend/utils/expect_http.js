@@ -12,6 +12,7 @@ class Request {
       "Authorization": 'Bearer null'
     };
   }
+
   toReturn(data) {
     mockAxios.mockResponse({
       data,
@@ -19,6 +20,7 @@ class Request {
     expect(this.request).resolves.toBe(data);
     this.toInvoke()
   }
+
   toPermissionFail() {
     mockAxios.mockError({
       response: {
@@ -31,29 +33,36 @@ class Request {
     expect(this.request).rejects.toThrow(PermissionsError);
     this.toInvoke()
   }
+
   toInvoke() {
+    const expected = {
+      'method': this._method,
+      'url': this._url,
+      'headers': this._headers,
+      'paramsSerializer': expect.any(Function)
+    };
+    if (this._query) expected.params = this._query;
+    if (this._body) expected.data = this._body;
     expect(mockAxios.request).toBeCalledWith(
-      {
-        'method': this._method,
-        'url': this._url,
-        'params': this._query,
-        'data': this._body,
-        'headers': this._headers
-      }
+      expect.objectContaining(expected)
     )
   }
+
   withQuery(query) {
     this._query = query;
     return this;
   }
+
   withHeader(headers) {
     this._headers = headers;
     return this;
   }
+
   withBody(body) {
     this._body = body;
     return this;
   }
+
   requestMethod(method) {
     return (url) => {
       this._method = method;
@@ -61,6 +70,7 @@ class Request {
       return this;
     }
   }
+
   get = this.requestMethod('get');
   post = this.requestMethod('post');
   put = this.requestMethod('put');

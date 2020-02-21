@@ -134,12 +134,12 @@ export const Avatar = (
   }, [jumping, isJumping, setIsJumping]);
 
   return (
-    <AvatarContainer onClick={onClick} opacity={opacity}>
+    <AvatarContainer onClick={onClick} opacity={opacity} {...props}>
       <BackgroundBottomHalf avatarSize={style.avatarSize}
         size={style.backgroundSize} squared={squared}>
         <BackgroundTopHalf size={style.backgroundSize}
           color={background} avatarSize={style.avatarSize}/>
-        <AvatarImage src={avatarsAvailable[parseInt(kind)]} size={style.avatarSize}
+        <AvatarImage src={avatarsAvailable[parseInt(kind ?? 0)]} size={style.avatarSize}
           ref={innerRef}
           backgroundSize={style.backgroundSize}
           className={manual ? 'avatarManual' : 'avatarAutomatic'}

@@ -1,6 +1,4 @@
 """Authentication module."""
-from datetime import timedelta
-
 from fastapi import (Depends, HTTPException, APIRouter, Body)
 from fastapi.security import (
     OAuth2PasswordRequestForm,
@@ -10,11 +8,10 @@ from sqlalchemy.orm import Session
 
 from db import schemas, crud
 from db.database import get_db, get_password_hash
-from db.crud import get_user_by_username, create_user
+from db.crud.users import get_user_by_username, create_user
 from .utils import (Token,
                     authenticate_user,
-                    create_access_token)
-from .consts import ACCESS_TOKEN_EXPIRE_MINUTES
+                    generate_token)
 
 
 router = APIRouter()
@@ -31,17 +28,8 @@ async def login_for_access_token(
     if user is None:
         raise HTTPException(status_code=400,
                             detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    # TODO: give only possible scopes
-    access_token = create_access_token(
-        data={"sub": user.username, "id": user.id, "scopes": ["personal"]},
-        expires_delta=access_token_expires,
-    )
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id
-    }
+
+    return generate_token(user)
 
 
 @router.post("/register", response_model=schemas.User)
