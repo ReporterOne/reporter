@@ -3,6 +3,8 @@
 
 ### [0.2.2-beta](https://github.com/TeamTash/one_report/compare/0.2.1-alpha...0.2.2-beta) - 22/02/2020
 - Added more icons and cosmetics
+- Added success message on hierarchy page
+- Fixed notification hidden visual bug
 
 ### [0.2.1-beta](https://github.com/TeamTash/one_report/compare/0.2.0-alpha...0.2.1-beta) - 21/02/2020
 - fixed recursion in hierarchy

@@ -137,10 +137,12 @@ export const StyledApp = (props) => {
   const dispatch = useDispatch();
   const notifications = useSelector((state) => state.general.notifications);
   const [notification, setNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     if (notifications.length === 0) return;
     setNotification(notifications[0]);
+    setShowNotification(true);
   }, [notifications]);
 
   const handleClose = (event, reason) => {
@@ -148,8 +150,10 @@ export const StyledApp = (props) => {
       return;
     }
 
-    setNotification(null);
-    dispatch(popNotification());
+    setShowNotification(false);
+    setTimeout(() => {
+      dispatch(popNotification());
+    }, 500) // allow for new notification.
   };
 
   return (
@@ -158,7 +162,7 @@ export const StyledApp = (props) => {
         <GlobalStyle/>
         <ThemeProvider theme={theme}>
           <App/>
-          <Snackbar open={notification !== null}
+          <Snackbar open={showNotification}
             autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
             onClose={handleClose}>
             <Alert onClose={handleClose}

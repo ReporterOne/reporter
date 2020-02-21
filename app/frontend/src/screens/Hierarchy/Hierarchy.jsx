@@ -740,7 +740,13 @@ export const Hierarchy = React.memo((props) => {
   });
 
   const saveHierarchy = useCallback(() => {
-    MadorsService.updateHierarchy(selectedMador, currentHierarchy, unassignedUsers);
+    (async () => {
+      await MadorsService.updateHierarchy(selectedMador, currentHierarchy, unassignedUsers);
+      dispatch(newNotification({
+        message: 'Saved Successfully!',
+        severity: 'success'
+      }))
+    })()
   });
   return (
     <PageContainer stretched>
