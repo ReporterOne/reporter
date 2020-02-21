@@ -4,7 +4,7 @@ import posed, {PoseGroup} from 'react-pose';
 import lodash from 'lodash';
 import {NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
 
-import {Container} from '~/components/common';
+import {Container, SVGIcon} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded';
 import Calender from '~/components/Calendar';
@@ -13,6 +13,7 @@ import {formatDate} from '~/components/Calendar/components/utils';
 import {fetchDatesOf} from '~/actions/calendar';
 import {useDispatch, useSelector} from 'react-redux';
 import {useMe} from '~/hooks/common';
+import arrowUrl from './arrow.svg';
 
 
 const CALENDAR_HEIGHT = 460;
@@ -69,6 +70,19 @@ const AnimatedReason = posed(Container)({
     opacity: 0,
   },
 });
+
+const HandleWrapper = styled.div`
+  pointer-events: none;
+  position: absolute;
+  height: ${HANDLE_HEIGHT}px;
+  width: 100%;
+  top: -${HANDLE_HEIGHT}px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Handle = styled(SVGIcon)`
+`;
 
 const useUsersAsDict = (users) => {
   return useMemo(() => {
@@ -228,6 +242,9 @@ export const Operator = React.memo((props) => {
         dragPropagation={true}
       >
         <CalenderContainer onPointerDown={disableDrag}>
+          <HandleWrapper>
+            <Handle src={arrowUrl}/>
+          </HandleWrapper>
           <Calender selectedDate={selectedDate}
             setSelectedDate={changeSelectedDate}
             fetchData={fetchDates}/>

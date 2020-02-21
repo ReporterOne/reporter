@@ -8,6 +8,8 @@ import {StylesProvider, createMuiTheme} from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import AddToHomescreen from 'react-add-to-homescreen';
+import useErrorBoundary from 'use-error-boundary';
+
 
 import Menu from '@/Menu';
 import Entrance from '@/Entrance';
@@ -23,7 +25,12 @@ import PrivateRoute from '~/components/Menu/PrivateRoute';
 import store from './store';
 import {fetchAllowedUsers, fetchSubjects} from '~/actions/users';
 import {fetchMyToday} from '~/actions/calendar';
-import {fetchReasons, popNotification, updateOnline} from '~/actions/general';
+import {
+  fetchReasons,
+  newNotification,
+  popNotification,
+  updateOnline,
+} from '~/actions/general';
 import {fetchMadors} from '~/actions/madors';
 
 const Alert = (props) => <MuiAlert elevation={6}
@@ -137,10 +144,26 @@ export const StyledApp = (props) => {
   const dispatch = useDispatch();
   const notifications = useSelector((state) => state.general.notifications);
   const [notification, setNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const {
+    ErrorBoundary, // class - The react component to wrap your children in. This WILL NOT CHANGE
+    didCatch, // boolean - Whether the ErrorBoundary catched something
+    error, // null or the error
+    errorInfo, // null or the error info as described in the react docs
+  } = useErrorBoundary();
+
+  useEffect(() => {
+    if (didCatch) {
+      dispatch(newNotification({
+        message: 'Critical Error Occurred',
+      }));
+    }
+  }, [didCatch]);
 
   useEffect(() => {
     if (notifications.length === 0) return;
     setNotification(notifications[0]);
+    setShowNotification(true);
   }, [notifications]);
 
   const handleClose = (event, reason) => {
@@ -148,8 +171,10 @@ export const StyledApp = (props) => {
       return;
     }
 
-    setNotification(null);
-    dispatch(popNotification());
+    setShowNotification(false);
+    setTimeout(() => {
+      dispatch(popNotification());
+    }, 500); // allow for new notification.
   };
 
   return (
@@ -157,8 +182,22 @@ export const StyledApp = (props) => {
       <MUIThemeProvider theme={createMuiTheme(theme)}>
         <GlobalStyle/>
         <ThemeProvider theme={theme}>
-          <App/>
-          <Snackbar open={notification !== null}
+          {
+            didCatch ?
+              <div style={{overflow: 'scroll'}}>
+                <h1>An error was occurred</h1>
+                Please report to devs:
+                <details style={{whiteSpace: 'pre-wrap'}}>
+                  {error.toString()}
+                  <br/>
+                  {errorInfo.componentStack}
+                </details>
+              </div> :
+              <ErrorBoundary>
+                <App/>
+              </ErrorBoundary>
+          }
+          <Snackbar open={showNotification}
             autoHideDuration={notification?.timeout ?? SNACKBAR_TIMEOUT}
             onClose={handleClose}>
             <Alert onClose={handleClose}
