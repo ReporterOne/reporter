@@ -4,12 +4,14 @@ import lodash from 'lodash';
 
 import {AnimatePresence, motion, useMotionValue} from 'framer-motion';
 
-import {Container} from '~/components/common';
+import {Container, SVGIcon} from '~/components/common';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
 import AvatarExpanded from '~/components/Avatar/AvatarExpanded.jsx';
 import Avatar from '~/components/Avatar/Avatar.jsx';
 import Scroll from '~/components/Scroll/Scroll.jsx';
 import InlineSVG from 'react-inlinesvg';
+import swapUrl from './swap_icon.svg';
+import addUrl from './plus_icon.svg';
 import arrowsURL from './arrows.svg';
 import AppIcon from '@material-ui/icons/Settings';
 import SaveIcon from '@material-ui/icons/Save';
@@ -158,17 +160,28 @@ const DraggableCanvas = styled(Container)`
 
 const AppendSubject = styled(motion.div)`
   position: absolute;
-  width: 25px;
-  height: 25px;
-  background-color: green;
+  display: flex;
   bottom: 0;
-  border-radius: 50%;
   z-index: 15;
   transform: translateY(50%);
 `;
 
+const Option = styled.img`
+  width: 40px;
+  height: 40px;
+  transition: 0.3s transform;
+`
+const Swap = styled(Option)`
+`;
+const Add = styled(Option)`
+`;
 
-const Replace = styled(motion.div)`
+const SetLeader = styled(Option)`
+  width: 58px;
+  height: 58px;
+`;
+
+const DragFrom = styled(motion.div)`
   position: absolute;
   width: 58px;
   height: 58px;
@@ -178,12 +191,17 @@ const Replace = styled(motion.div)`
   left: 7px;
 `;
 
-const SetLeader = styled.div`
-  width: 58px;
-  height: 58px;
-  background-color: brown;
-  border-radius: 50%; 
+
+const NoHierarchyMessage = styled.div`
+  color: white;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
+
 
 const SubjectDrawer = styled(Container)`
   height: 170px;
@@ -213,9 +231,14 @@ const DroppableDrawer = styled(motion.div)`
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: purple;
+  background-color: rgba(100, 100, 100, 0.9);
   z-index: 1;
-  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  font-weight: bold;
 `;
 
 const StyledFab = styled(Fab)`
@@ -225,7 +248,7 @@ const StyledFab = styled(Fab)`
 
 const THRESHOLD = 60;
 
-
+let changed = null;
 const Build = (
   {
     hierarchy, replaceUser, addUser, setLeader, unsetUser,
@@ -272,6 +295,19 @@ const Build = (
   const onMove = useCallback((e) => {
     setDraggedPos(e);
     const x = e.changedTouches[0].pageX;
+    const y = e.changedTouches[0].pageY;
+    const element = document.elementFromPoint(x, y);
+    if (changed && changed !== element) {
+      changed.style.webkitTransform = 'scale(1)';
+      changed.style.zIndex = 0;
+      changed = null;
+    }
+    if (element && element.classList.contains(Option.styledComponentId)) {
+      element.style.webkitTransform = 'scale(2)';
+      element.style.zIndex = 1;
+      changed = element;
+    }
+
     if (draggedElement.current && dragging.element && scrollXBounds) {
       const currentX = scrollX.get();
       if (x < THRESHOLD && currentX < scrollXBounds.right) {
@@ -283,15 +319,20 @@ const Build = (
   }, [dragging, draggedElement, setDraggedPos, scrollXBounds]);
 
   const onMoveEnd = useCallback((e) => {
+    if (changed) {
+      changed.style.webkitTransform = 'scale(1)';
+      changed.style.zIndex = 0;
+      changed = null;
+    }
     if (dragging.element) {
       const x = e.changedTouches[0].pageX;
       const y = e.changedTouches[0].pageY;
       const element = document.elementFromPoint(x, y);
-      if (element && element.classList.contains(AppendSubject.styledComponentId)) {
+      if (element && element.classList.contains(Add.styledComponentId)) {
         console.log('adding', dragging.id, 'to', element.dataset.id);
         addUser(dragging.id, parseInt(element.dataset.id));
       }
-      if (element && element.classList.contains(Replace.styledComponentId)) {
+      if (element && element.classList.contains(Swap.styledComponentId)) {
         console.log('replacing', dragging.id, 'with', element.dataset.id);
         replaceUser(dragging.id, parseInt(element.dataset.id));
       }
@@ -331,9 +372,17 @@ const Build = (
             !leader ? (
                 <>
                   <MainManager>
-                    <SetLeader/>
+                    {
+                      dragging.element && <SetLeader src={addUrl}/>
+                    }
                   </MainManager>
-                  <Container stretched/>
+                  <Container stretched>
+                    <NoHierarchyMessage>
+                      No Hierarchy yet!
+                      <br/>
+                      Please drag from below.
+                    </NoHierarchyMessage>
+                  </Container>
                 </>
               ) :
               (
@@ -343,9 +392,8 @@ const Build = (
                       <AvatarExpanded kind={leader.icon_path}
                                       name={leader.english_name} rounded
                                       inline/>
-                      <Replace data-id={leader.id} initial={{opacity: 0}}
-                               animate={{opacity: dragging.element && dragging.id !== leader.id ? 1 : 0}}
-                               onTouchStart={(e) => onTouchStart(e, leader, 0)}/>
+                      <DragFrom data-id={leader.id} initial={{opacity: 0}}
+                                onTouchStart={(e) => onTouchStart(e, leader, 0)}/>
                     </ManagerShrink>
                     <AddNotch/>
                     <AppendSubject initial={{opacity: 0}}
@@ -354,7 +402,10 @@ const Build = (
                                      dragging.level !== 1 ? // to prevent recursion
                                        1 : 0,
                                    }}
-                                   data-id={leader.id}/>
+                                   data-id={leader.id}>
+                      <Swap src={swapUrl} data-id={leader.id}/>
+                      <Add src={addUrl} data-id={leader.id}/>
+                    </AppendSubject>
                   </MainManager>
                   <HierarchyLine/>
                   <Container stretched>
@@ -374,18 +425,22 @@ const Build = (
                                                 name={teamLeader.english_name}
                                                 rounded
                                                 inline/>
-                                <Replace data-id={teamLeader.id}
-                                         initial={{opacity: 0}}
-                                         animate={{opacity: dragging.element && dragging.id !== teamLeader.id ? 1 : 0}}
-                                         onTouchStart={(e) => onTouchStart(e, teamLeader, 1)}/>
+                                <DragFrom data-id={teamLeader.id}
+                                          initial={{opacity: 0}}
+                                          onTouchStart={(e) => onTouchStart(e, teamLeader, 1)}/>
                               </TeamLeaderShrink>
                               <AppendSubject initial={{opacity: 0}}
                                              animate={{
-                                               opacity: dragging.element && dragging.id !== teamLeader.id &&
-                                               dragging.level !== 1 ? // to prevent recursion
+                                               opacity: dragging.element && dragging.id !== teamLeader.id ? // to prevent recursion
                                                  1 : 0,
                                              }}
-                                             data-id={teamLeader.id}/>
+                                             data-id={teamLeader.id}>
+                                <Swap src={swapUrl} data-id={teamLeader.id}/>
+                                {
+                                  dragging.level !== 1 &&
+                                  <Add src={addUrl} data-id={teamLeader.id}/>
+                                }
+                              </AppendSubject>
                             </TeamLeader>
                             <MembersWrapper stretched>
                               <Scroll drag={dragging.element ? false : 'y'}
@@ -410,14 +465,22 @@ const Build = (
                                                   kind={user.icon_path}
                                                   name={user.english_name}
                                                   rounded inline/>
-                                                <Replace data-id={user.id}
-                                                         initial={{opacity: 0}}
-                                                         animate={{opacity: dragging.element && dragging.id !== user.id ? 1 : 0}}
-                                                         onTouchStart={(e) => onTouchStart(e, user, 2)}/>
+                                                <DragFrom data-id={user.id}
+                                                          initial={{opacity: 0}}
+                                                          onTouchStart={(e) => onTouchStart(e, user, 2)}/>
                                               </StyledMotion>
                                             </MemberShrink>
                                             <AddNotch
                                               last={members.length === index + 1}/>
+                                            <AppendSubject
+                                              initial={{opacity: 0}}
+                                              animate={{
+                                                opacity: dragging.element && dragging.id !== user.id ? 1 : 0,
+                                              }}
+                                              data-id={teamLeader.id}>
+                                              <Swap src={swapUrl}
+                                                    data-id={user.id}/>
+                                            </AppendSubject>
                                           </Member>
                                         </StyledMotion>
                                       );
@@ -477,9 +540,17 @@ const Build = (
               }
             </AvatarsContainer>
           </AvatarsWrapper>
-          {
-            dragging.element && <DroppableDrawer/>
-          }
+          <AnimatePresence>
+            {
+              dragging.element && <DroppableDrawer
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+              >
+                Drop here to unset
+              </DroppableDrawer>
+            }
+          </AnimatePresence>
         </SubjectDrawer>
       </HierarchyHolder>
       <DraggableCanvas ref={canvas}>
