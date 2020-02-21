@@ -35,7 +35,7 @@ export const popNotification = () => ({
 });
 
 export const reload = () => ({
-  type: RELOAD
+  type: RELOAD,
 });
 
 export const logout = () => async (dispatch) => {

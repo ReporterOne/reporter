@@ -8,8 +8,8 @@ import {
 } from '~/components/common';
 import iconUrl from './assets/menu_icon.svg';
 import reloadUrl from './assets/reload.svg';
-import {useDispatch} from "react-redux";
-import {reload} from "~/actions/general";
+import {useDispatch} from 'react-redux';
+import {reload} from '~/actions/general';
 
 
 const TitleWrapper = styled(Container)`

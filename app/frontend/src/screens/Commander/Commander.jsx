@@ -5,18 +5,16 @@ import {Container, RoundedContainer, theme, FadeInContainer} from '~/components/
 import Calender from '~/components/Calendar';
 import AttendingButton from '~/components/AttendingButton';
 import AvatarDetails from '~/components/Avatar/AvatarDetails.jsx';
-import {users} from '~/utils/users';
 import ReasonsDialog from '~/dialogs/Reasons';
-import {formatDate} from "~/components/Calendar/components/utils";
-import {HERE, NOT_ANSWERED, NOT_HERE} from "~/utils/utils";
-import {useDispatch, useSelector} from "react-redux";
-import lodash from "lodash";
+import {formatDate} from '~/components/Calendar/components/utils';
+import {HERE, NOT_ANSWERED, NOT_HERE} from '~/utils/utils';
+import {useDispatch, useSelector} from 'react-redux';
+import lodash from 'lodash';
 import {
   deleteDateOf,
   fetchDatesOf,
-  fetchMyDates,
-  setDateStatus
-} from "~/actions/calendar";
+  setDateStatus,
+} from '~/actions/calendar';
 
 const Header = styled(Container)`
   padding: 0 0 30px 0;
@@ -71,8 +69,8 @@ const AvatarsContainer = styled.div`
 
 
 const useSoldiers = () => {
-  const {all: users, subjects} = useSelector(state => state.users);
-  return useMemo(() => lodash.compact(subjects.map(subject => lodash.find(users, {id: subject}))), [users, subjects]);
+  const {all: users, subjects} = useSelector((state) => state.users);
+  return useMemo(() => lodash.compact(subjects.map((subject) => lodash.find(users, {id: subject}))), [users, subjects]);
 };
 
 
@@ -95,8 +93,9 @@ export const Commander = React.memo((props) => {
   } = useSelector((state) => lodash.find(state.calendar.dates?.[selectedDate]?.data, {user_id: selectedSoldier?.id}) ?? {});
 
   const fetchDates = useCallback((start, end) => {
-    if (selectedSoldier)
+    if (selectedSoldier) {
       dispatch(fetchDatesOf(selectedSoldier.id, start, end));
+    }
   }, [dispatch, selectedSoldier]);
 
   const handleClose = useCallback((value) => {
@@ -133,9 +132,8 @@ export const Commander = React.memo((props) => {
           {
             selectedSoldier ?(
               <AttendingButton key={`${selectedDate}.${selectedSoldier.id}`} missingReason={todayReason?.name}
-                               onChange={handleOnChange} initialState={todayState}
-                               isDisabled={selectedDate < formatDate(new Date())}/>)
-              :
+                onChange={handleOnChange} initialState={todayState}
+                isDisabled={selectedDate < formatDate(new Date())}/>) :
               <WelcomeMessage>
                 <HeaderWelcome>Hello,</HeaderWelcome>
                 <HeaderName>Commander.</HeaderName>
@@ -145,8 +143,8 @@ export const Commander = React.memo((props) => {
       </Header>
       <RoundedContainer flex={4} shadow={5} background={theme.cards}>
         <Calender key="static" userId={selectedSoldier?.id} fetchData={fetchDates}
-                  selectedDate={selectedDate}
-                  setSelectedDate={changeSelectedDate}/>
+          selectedDate={selectedDate}
+          setSelectedDate={changeSelectedDate}/>
       </RoundedContainer>
       <SubjectDrawer>
         <AvatarsWrapper>

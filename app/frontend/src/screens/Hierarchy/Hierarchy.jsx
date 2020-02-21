@@ -17,9 +17,8 @@ import Fab from '@material-ui/core/Fab';
 import SettingsDialog from '@/Hierarchy/SettingsDialog';
 import {useMe} from '~/hooks/common';
 import UsersService from '~/services/users';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import MadorsService from '~/services/madors';
-import {newNotification} from '~/actions/general';
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -556,7 +555,6 @@ const useMyMador = () => {
 };
 
 export const Hierarchy = React.memo((props) => {
-  const dispatch = useDispatch();
   const [selectedMador, changeSelectedMador] = useMyMador();
   const [unassignedUsers, setUnassignedUsers] = useUnassignedUsers(selectedMador);
   const [currentHierarchy, changeCurrentHierarchy] = useHierarchy(selectedMador);

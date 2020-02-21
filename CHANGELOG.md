@@ -1,7 +1,7 @@
 
 ## Pre-release
 
-### next
+### [0.2.0-beta](https://github.com/TeamTash/one_report/compare/0.1.2-alpha...0.2.0-beta) - 21/02/2020
 - `hierarchy screen` - connected to db and released publicly.
   * ability to select viewing mador.
 - `commander screen` - connected to db and released publicly.
@@ -13,6 +13,7 @@
   * `/api/v1/madors/{mador_name}/users` - get users of mador.
 - new user routes added.
   * `/api/v1/users/unassigned` - get all unassigned mador users.
+- Refresh button added.
 
 ### [0.1.2-alpha](https://github.com/TeamTash/one_report/compare/0.1.1-alpha...0.1.2-alpha) - 15/02/2020
 Bug fixes:

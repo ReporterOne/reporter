@@ -1,6 +1,5 @@
 {
   "name": "one_report_web",
-  "version": "0.1.0",
   "main": "frontend/index.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",

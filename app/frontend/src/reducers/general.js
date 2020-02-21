@@ -12,7 +12,7 @@ const initialState = {
   login: AuthService.isLoggedIn(),
   online: navigator.onLine,
   notifications: [],
-  reloadCount: 0
+  reloadCount: 0,
 };
 
 
@@ -46,7 +46,7 @@ export const generalReducer = (state = initialState, action) => {
     case RELOAD:
       return {
         ...state,
-        reloadCount: state.reloadCount + 1
+        reloadCount: state.reloadCount + 1,
       };
 
     default: return state;
