@@ -1,6 +1,9 @@
 
 ## Pre-release
 
+### [0.2.1-beta](https://github.com/TeamTash/one_report/compare/0.2.0-alpha...0.2.1-beta) - 21/02/2020
+- fixed recursion in hierarchy
+
 ### [0.2.0-beta](https://github.com/TeamTash/one_report/compare/0.1.2-alpha...0.2.0-beta) - 21/02/2020
 - `hierarchy screen` - connected to db and released publicly.
   * ability to select viewing mador.
