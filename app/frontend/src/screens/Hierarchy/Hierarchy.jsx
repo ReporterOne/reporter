@@ -17,8 +17,9 @@ import Fab from '@material-ui/core/Fab';
 import SettingsDialog from '@/Hierarchy/SettingsDialog';
 import {useMe} from '~/hooks/common';
 import UsersService from '~/services/users';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import MadorsService from '~/services/madors';
+import {newNotification} from "~/actions/general";
 
 const PageContainer = styled(Container)`
   overflow: hidden;
@@ -554,16 +555,26 @@ const useMyMador = () => {
   return [selectedMador, changeSelectedMador];
 };
 
+const getAllChilds = (tree) => {
+  if (tree.childs.length === 0) return [tree.leader];
+  const lists = tree.childs.map((child) => getAllChilds(child)).flat();
+  return [tree.leader, ...lists];
+};
+
+const isConnected = (tree1, tree2) => {
+  const tree1Childs = getAllChilds(tree1);
+  const tree2Childs = getAllChilds(tree2);
+
+  return (tree1Childs.includes(tree2.leader) || tree2Childs.includes(tree1.leader));
+};
+
+
 export const Hierarchy = React.memo((props) => {
+  const dispatch = useDispatch();
   const [selectedMador, changeSelectedMador] = useMyMador();
   const [unassignedUsers, setUnassignedUsers] = useUnassignedUsers(selectedMador);
   const [currentHierarchy, changeCurrentHierarchy] = useHierarchy(selectedMador);
 
-  const getAllChilds = useCallback((tree) => {
-    if (tree.childs.length === 0) return [tree.leader];
-    const lists = tree.childs.map((child) => getAllChilds(child)).flat();
-    return [tree.leader, ...lists];
-  });
 
   const setLeader = useCallback((leaderId) => {
     changeCurrentHierarchy({
@@ -635,10 +646,17 @@ export const Hierarchy = React.memo((props) => {
     toTree.childs = lodash.get(toTree, 'childs', []);
     if (addFromTree) {
       const [fromTree, fromTreeParent] = addFromTree;
+      if (isConnected(fromTree, toTree)) {
+        dispatch(newNotification({
+          message: 'Stop trying to make recursions.. :('
+        }));
+        return;
+      }
       // remove from parent
       lodash.pull(fromTreeParent.childs, fromTree);
       toTree.childs.push(fromTree);
     } else {
+      // we add id1 from drawer
       toTree.childs.push({
         leader: id1,
         childs: [],
