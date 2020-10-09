@@ -18,6 +18,7 @@ services:
       - db
     environment:
       ONE_REPORT_PORT: 15432
+      ONE_REPORT_MODE: TEST
 
   frontend:
     build:
