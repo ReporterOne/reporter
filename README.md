@@ -11,3 +11,6 @@
 ![](https://img.shields.io/github/v/release/TeamTash/one_report?include_prereleases)
 
 Mobile PWA for filling up an attendance report.
+
+![](./docs/concepts/logged_out.png)
+![](./docs/concepts/main_screen.png)
