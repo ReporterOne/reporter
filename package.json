@@ -94,7 +94,7 @@
     "framer-motion": "^1.7.0",
     "jest-styled-components": "^6.3.4",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "qs": "^6.9.1",
     "react": "^16.10.2",
