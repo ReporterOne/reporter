@@ -96,7 +96,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
-    "qs": "^6.9.1",
+    "qs": "^6.9.7",
     "react": "^16.10.2",
     "react-add-to-homescreen": "^1.1.0",
     "react-animate-on-scroll": "^2.1.5",
